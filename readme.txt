@@ -28,6 +28,9 @@ Mailing Logger
       </mailing-logger>    
     </eventlog>
 
+    NB: For the %import to work, INSTANCE_HOME must be available in
+    the environment!
+
     A full description of the possible keys and defaults for the
     email-notifier section are given below:
 
@@ -106,6 +109,13 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     2.0.1
+
+       - Corrected documentation
+
+       - Fixed bug that caused the subject to include tracebacks,
+         which created a broken mail message.
 
      2.0.0
 
