@@ -127,6 +127,10 @@ Mailing Logger
 
   Changes
 
+     2.1.0
+
+       - Added summarising logger functionality
+
      2.0.1
 
        - Corrected documentation
