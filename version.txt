@@ -1,1 +1,1 @@
-MailingLogger-1-0-1
+MailingLogger-2-0-0

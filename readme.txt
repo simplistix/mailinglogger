@@ -1,57 +1,100 @@
 Mailing Logger
 
-  This is a simple plugin module that will mail certain log messages 
-  to a specified address.
+  This adds a more flexible and powerful email log handler. It has
+  both customisable log format and subject line.
 
   Installation
 
-    Just extract the .tar.gz which contains this file in the 
+    Extract the .tar.gz which contains this file in the 
     Products directory of your Zope instance.
-
+    
   Setup Instructions
 
-    Mailing Logger gets its configuration from the following
-    environment variables:
+    You will need to import Mailing Logger into your zope.conf and add
+    a mailing-logger section in one or more of the logger sections.
 
-     MAILING_LOGGER_ADDRESS
-       
-       The address to send the mail to. This must be specified.
+    For example:
 
-     MAILING_LOGGER_SMTPSERVER
-  
-       The SMTP server to use to send the mail. This must be 
-       specified.
+    %import Products.MailingLogger
 
-     MAILING_LOGGER_SUBJECT
- 
-       This is used to prefix the Subject of the messages sent.
-       It defaults to 'Zope Server : '
+    <eventlog>
+      level info
+      <mailing-logger>
+        level   critical
+        from    logging@example.com
+        to      receiver@example.com
+        to      support@example.com
+        subject [Zope] ${line}
+      </mailing-logger>    
+    </eventlog>
 
-     MAILING_LOGGER_SEVERITY
+    A full description of the possible keys and defaults for the
+    email-notifier section are given below:
 
-       This is the minimum severity of a log message that will 
-       trigger a mail. See the Zope documentation for log severity.
-       The default value is 100 which should suffice for most people.
+      dateformat
 
-    To set these variables on Unix, add the following lines to your
-    start script:
+        The date format to use in log entries. This will be used
+        wherever the %(asctime)s substitution is used.
 
-      MAILING_LOGGER_ADDRESS=your.address@your.domain
-      export MAILING_LOGGER_ADDRESS
-      MAILING_LOGGER_SMTPSERVER=your.smtp.server
-      export MAILING_LOGGER_SMTPSERVER
-      MAILING_LOGGER_SUBJECT="My Message"
-      export MAILING_LOGGER_SUBJECT
-      MAILING_LOGGER_SEVERITY=0
-      export MAILING_LOGGER_SEVERITY
+	default: %Y-%m-%dT%H:%M:%S
 
-    To set these variables on Windows, add the following lines to your
-    start.bat script:
+      level
 
-      set MAILING_LOGGER_ADDRESS=your.address@your.domain
-      set MAILING_LOGGER_SMTPSERVER=your.smtp.server
-      set MAILING_LOGGER_SUBJECT="My Message"
-      set MAILING_LOGGER_SEVERITY=0         
+        The level at or above which an email log notification will be
+        sent.
+
+        This can either be a numeric level or one of the textual level
+        identifiers.
+
+        default: notset
+
+      from
+
+        The address from which email log notifications will originate.
+
+        This must be set.
+
+      to
+
+        The address to which email log notifications will be sent.
+
+        At least one 'to' line must be included, but multiple lines
+        can be included if email log notifications should be sent to
+        multiple addresses.
+
+      smtp-server 
+
+        The SMTP server that should be used to send email
+        notifications.
+
+	default: localhost
+
+      subject 
+
+        This is a format string specifying what information will be
+        included in the subject line of the email notification.
+
+	Information on what can be included in a format string can be
+	found at:
+
+	http://docs.python.org/lib/node293.html
+
+	In addition to the substitutions listed there, %(line)s may
+	also be used. This is the first line of %(message)s
+
+        default: [Zope] %(line)s
+
+      format 
+
+        This is a format string specifying what information will be
+        included in the body of the email notification.
+
+	Information on what can be included in a format string can be
+	found at:
+
+	http://docs.python.org/lib/node293.html
+
+        default: %(message)s
 
   Licensing
 
@@ -63,6 +106,10 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     2.0.0
+
+       - Re-write for Zope 2.7
 
      1.0.1
 

@@ -5,10 +5,3 @@
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
-from ZLogger import ZLogger
-from MailingLogger import MailingLogger
-
-loggers = list(ZLogger.loggers)
-loggers.append(MailingLogger())
-ZLogger.loggers = tuple(loggers)
-
