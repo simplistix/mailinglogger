@@ -28,6 +28,14 @@ Mailing Logger
       </mailing-logger>    
     </eventlog>
 
+    NB: For the %import to work, INSTANCE_HOME must be available in
+    the environment or you need to change the import to be:
+
+    %import MailingLogger
+
+    ...and make sure that your zope instance's Products folder is on
+    the python path.
+
     A full description of the possible keys and defaults for the
     email-notifier section are given below:
 
