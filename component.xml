@@ -7,6 +7,7 @@
     <key name="subject" default="[Zope] %(line)s" datatype=".subject_log_format"/>
     <key name="smtp-server" default="localhost" datatype="inet-address"/>
     <key name="send-empty-entries" default="no" datatype="boolean"/>
+    <key name="flood-level" default="10" datatype="integer"/>
     <key name="format" default="%(message)s"
          datatype="zLOG.datatypes.log_format"/>
   </sectiontype>
@@ -18,6 +19,7 @@
     <key name="subject" default="[Zope] %(line)s" datatype=".subject_log_format"/>
     <key name="smtp-server" default="localhost" datatype="inet-address"/>
     <key name="send-empty-entries" default="no" datatype="boolean"/>
+    <key name="flood-level" default="10" datatype="integer"/>
     <key name="format" default="%(message)s"
          datatype="zLOG.datatypes.log_format"/>
   </sectiontype>

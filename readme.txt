@@ -116,6 +116,21 @@ Mailing Logger
 
         default: no
 
+      flood-level
+
+        This is an integer value specifying the maximum number of
+        emails that can be sent in an hour that will not be considered
+        a "flood".
+
+        When a "flood" is detected, one email is sent at the CRITICAL
+        level indicating that a flood has been detected, and no more
+        emails will be sent in the same hour.
+
+        So, this option, in effect, specifies the maximum number of
+        emails that will be sent in any particular hour of the day.
+
+        default: 10
+
   mailing-logger or summarising-logger?
 
      mailing-logger will send one email for each message logged.

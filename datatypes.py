@@ -22,7 +22,8 @@ class MailingLoggerHandlerFactory(HandlerFactory):
                           self.section.fromaddr,
                           self.section.toaddrs,
                           self.section.subject,
-                          self.section.send_empty_entries)
+                          self.section.send_empty_entries,
+                          self.section.flood_level)
 
 class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
