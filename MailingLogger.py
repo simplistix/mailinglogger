@@ -20,11 +20,17 @@ class SubjectFormatter(Formatter):
     
 class MailingLogger(SMTPHandler):
 
-    def __init__(self, mailhost, fromaddr, toaddrs, subject):
+    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
+        self.send_empty_entries = send_empty_entries
         
     def getSubject(self,record):
         return self.subject_formatter.format(record)
 
-
+    def emit(self,record):
+        if not self.send_empty_entries and not record.msg.strip():
+            return
+        SMTPHandler.emit(self,record)
+            
+        

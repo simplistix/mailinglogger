@@ -104,6 +104,18 @@ Mailing Logger
 
         default: %(message)s
 
+      send-empty-entries
+
+        This is a boolean value which specifies whether empty log
+        entries will be mailed or not.
+
+        Empty log entries are likely to occur when, for example, 
+        a summarising logger is used in a cron job that runs
+        very frequently but only generates log entries 
+        infrequently.
+
+        default: no
+
   mailing-logger or summarising-logger?
 
      mailing-logger will send one email for each message logged.
@@ -126,6 +138,8 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+       - Added ability to mute empty log entries
 
      2.1.0
 

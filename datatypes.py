@@ -21,7 +21,8 @@ class MailingLoggerHandlerFactory(HandlerFactory):
         return self.klass(mailhost,
                           self.section.fromaddr,
                           self.section.toaddrs,
-                          self.section.subject)
+                          self.section.subject,
+                          self.section.send_empty_entries)
 
 class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
