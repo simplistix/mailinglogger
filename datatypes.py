@@ -6,20 +6,28 @@
 
 from zLOG.datatypes import HandlerFactory, ctrl_char_insert
 from Products.MailingLogger.MailingLogger import MailingLogger
+from Products.MailingLogger.SummarisingLogger import SummarisingLogger
 
 class MailingLoggerHandlerFactory(HandlerFactory):
+
+    klass = MailingLogger
+    
     def create_loghandler(self):
         host, port = self.section.smtp_server
         if not port:
             mailhost = host
         else:
             mailhost = host, port
-        return MailingLogger(mailhost,
-                             self.section.fromaddr,
-                             self.section.toaddrs,
-                             self.section.subject)
+        return self.klass(mailhost,
+                          self.section.fromaddr,
+                          self.section.toaddrs,
+                          self.section.subject,
+                          self.section.send_empty_entries)
 
+class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
+    klass = SummarisingLogger
+    
 _log_format_variables = {
     'name': '',
     'levelno': '3',

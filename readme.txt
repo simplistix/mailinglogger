@@ -11,7 +11,8 @@ Mailing Logger
   Setup Instructions
 
     You will need to import Mailing Logger into your zope.conf and add
-    a mailing-logger section in one or more of the logger sections.
+    either a mailing-logger or summarising-logger section in one or 
+    more of the zope.conf logger sections.
 
     For example:
 
@@ -28,8 +29,11 @@ Mailing Logger
       </mailing-logger>    
     </eventlog>
 
+    NB: For the %import to work, INSTANCE_HOME must be available in
+    the environment!
+
     A full description of the possible keys and defaults for the
-    email-notifier section are given below:
+    mailing-logger and summarising-logger sections are given below:
 
       dateformat
 
@@ -87,7 +91,11 @@ Mailing Logger
       format 
 
         This is a format string specifying what information will be
-        included in the body of the email notification.
+        included in each message that is logged.
+
+        With mailing-logger, one log message will be included in each
+        email. With summarising-logger, all log messages will be 
+        included in one email.
 
 	Information on what can be included in a format string can be
 	found at:
@@ -95,6 +103,30 @@ Mailing Logger
 	http://docs.python.org/lib/node293.html
 
         default: %(message)s
+
+      send-empty-entries
+
+        This is a boolean value which specifies whether empty log
+        entries will be mailed or not.
+
+        Empty log entries are likely to occur when, for example, 
+        a summarising logger is used in a cron job that runs
+        very frequently but only generates log entries 
+        infrequently.
+
+        default: no
+
+  mailing-logger or summarising-logger?
+
+     mailing-logger will send one email for each message logged.
+
+     summarising-logger will send one email containing all messages
+     logged from the time the logger is initialised to the time it
+     is closed.
+
+     summarising-logger should not be used for long running processes.
+     It is designed for generating reports from single-run scripts or
+     cron jobs.
 
   Licensing
 
@@ -106,6 +138,21 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     2.2.0
+
+       - Added ability to mute empty log entries
+
+     2.1.0
+
+       - Added summarising logger functionality
+
+     2.0.1
+
+       - Corrected documentation
+
+       - Fixed bug that caused the subject to include tracebacks,
+         which created a broken mail message.
 
      2.0.0
 
