@@ -110,6 +110,13 @@ Mailing Logger
 
   Changes
 
+     Not Released
+
+       - Corrected documentation
+
+       - Fixed bug that caused the subject to include tracebacks,
+         which created a broken mail message.
+
      2.0.0
 
        - Re-write for Zope 2.7
