@@ -154,6 +154,13 @@ Mailing Logger
 
   Changes
 
+     2.3.0
+
+       - Added the ability to limit the number of emails
+         sent per hour.
+
+     2.2.0
+
        - Added ability to mute empty log entries
 
      2.1.0
