@@ -1,10 +1,9 @@
-# Copyright (c) 2001 New Information Paradigms Ltd
+# Copyright (c) 2004 Simplistix Ltd
+# Copyright (c) 2001-2003 New Information Paradigms Ltd
 #
-# This Software is realease under the MIT License:
+# This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
-#
-# $Id: mailer.py,v 1.2.2.1 2003/03/05 22:59:54 chrisw Exp $
 
 from smtplib import SMTP
 from rfc822 import Message
