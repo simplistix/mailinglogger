@@ -11,7 +11,8 @@ Mailing Logger
   Setup Instructions
 
     You will need to import Mailing Logger into your zope.conf and add
-    a mailing-logger section in one or more of the logger sections.
+    either a mailing-logger or summarising-logger section in one or 
+    more of the zope.conf logger sections.
 
     For example:
 
@@ -32,7 +33,7 @@ Mailing Logger
     the environment!
 
     A full description of the possible keys and defaults for the
-    email-notifier section are given below:
+    mailing-logger and summarising-logger sections are given below:
 
       dateformat
 
@@ -90,7 +91,11 @@ Mailing Logger
       format 
 
         This is a format string specifying what information will be
-        included in the body of the email notification.
+        included in each message that is logged.
+
+        With mailing-logger, one log message will be included in each
+        email. With summarising-logger, all log messages will be 
+        included in one email.
 
 	Information on what can be included in a format string can be
 	found at:
@@ -98,6 +103,18 @@ Mailing Logger
 	http://docs.python.org/lib/node293.html
 
         default: %(message)s
+
+  mailing-logger or summarising-logger?
+
+     mailing-logger will send one email for each message logged.
+
+     summarising-logger will send one email containing all messages
+     logged from the time the logger is initialised to the time it
+     is closed.
+
+     summarising-logger should not be used for long running processes.
+     It is designed for generating reports from single-run scripts or
+     cron jobs.
 
   Licensing
 
