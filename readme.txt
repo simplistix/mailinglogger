@@ -110,7 +110,7 @@ Mailing Logger
 
   Changes
 
-     Not Released
+     2.0.1
 
        - Corrected documentation
 
