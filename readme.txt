@@ -25,7 +25,7 @@ Mailing Logger
         from    logging@example.com
         to      receiver@example.com
         to      support@example.com
-        subject [Zope] ${line}
+        subject [Zope] %(line)s
       </mailing-logger>    
     </eventlog>
 
