@@ -6,11 +6,16 @@
 # See license.txt for more details.
 
 import datetime
+import os
+import smtplib
 
+from email.MIMEText import MIMEText
 from logging.handlers import SMTPHandler
 from logging import Formatter, LogRecord, CRITICAL
 
 now = datetime.datetime.now
+
+x_mailer = open(os.path.join(os.path.dirname(__file__),'version.txt')).read()
 
 class SubjectFormatter(Formatter):
     
@@ -67,6 +72,21 @@ that may contain important entries that have not been emailed.
             # do nothing, we've sent too many emails already
             return
         self.sent += 1
-        SMTPHandler.emit(self,record)
-            
-        
+
+        # actually send the mail
+        try:
+            import smtplib
+            port = self.mailport
+            if not port:
+                port = smtplib.SMTP_PORT
+            smtp = smtplib.SMTP(self.mailhost, port)
+            msg = self.format(record)
+            email = MIMEText(msg)
+            email['Subject']=self.getSubject(record)
+            email['From']=self.fromaddr
+            email['To']=', '.join(self.toaddrs)
+            email['X-Mailer']=x_mailer
+            smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
+            smtp.quit()
+        except:
+            self.handleError(record)
