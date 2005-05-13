@@ -32,7 +32,7 @@ class SubjectFormatter(Formatter):
     
 class MailingLogger(SMTPHandler):
 
-    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries,flood_level):
+    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries,flood_level=None):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries

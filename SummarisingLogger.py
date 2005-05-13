@@ -13,7 +13,7 @@ from tempfile import mkstemp
 
 class SummarisingLogger(FileHandler):
 
-    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries):
+    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries,flood_level=None):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(mailhost, fromaddr, toaddrs, subject, send_empty_entries)
         # set the mailing logger's log format
