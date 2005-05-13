@@ -44,6 +44,7 @@ _log_format_variables = {
     'thread': 1,
     'message': 'amessage',
     'line':'aline',
+    'hostname':'ahost',
     }
 
 def subject_log_format(value):

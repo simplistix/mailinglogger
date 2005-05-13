@@ -8,6 +8,7 @@
 import datetime
 import os
 import smtplib
+import socket
 
 from email.MIMEText import MIMEText
 from logging.handlers import SMTPHandler
@@ -25,6 +26,8 @@ class SubjectFormatter(Formatter):
             record.line = record.message.split('\n')[0]
         if self._fmt.find("%(asctime)") >= 0:
             record.asctime = self.formatTime(record, self.datefmt)
+        if self._fmt.find("%(hostname)") >= 0:
+            record.hostname = socket.gethostname()
         return self._fmt % record.__dict__
     
 class MailingLogger(SMTPHandler):
