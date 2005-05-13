@@ -3,6 +3,12 @@ Mailing Logger
   This adds a more flexible and powerful email log handler. It has
   both customisable log format and subject line.
 
+  All emails sent will have a header set as follows:
+
+  X-Mailer: MailingLogger <version>
+
+  This is to allow easier filtering of these emails.
+
   Installation
 
     Extract the .tar.gz which contains this file in the 
@@ -83,10 +89,13 @@ Mailing Logger
 
 	http://docs.python.org/lib/node293.html
 
-	In addition to the substitutions listed there, %(line)s may
-	also be used. This is the first line of %(message)s
+	In addition to the substitutions listed there, the following
+	are also available:
 
-        default: [Zope] %(line)s
+        %(line)s - the first line of %(message)s
+        %(hostname)s - the hostname of the current machine
+
+        default: [%(hostname)s] %(line)s
 
       format 
 
