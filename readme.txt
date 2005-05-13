@@ -169,6 +169,9 @@ Mailing Logger
 
        - Added %(hostname)s for use in subject format.
 
+       - Fixed bug preventing use of summarising logger introduced in
+         2.3.0.
+
      2.3.0
 
        - Added the ability to limit the number of emails
