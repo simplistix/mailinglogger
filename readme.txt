@@ -163,6 +163,12 @@ Mailing Logger
 
   Changes
 
+     2.4.0
+
+       - Added sending of X-Mailer header with all emails.
+
+       - Added %(hostname)s for use in subject format.
+
      2.3.0
 
        - Added the ability to limit the number of emails
