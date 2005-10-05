@@ -17,7 +17,7 @@ from logging import Formatter, LogRecord, CRITICAL
 
 now = datetime.datetime.now
 
-x_mailer = open(os.path.join(os.path.dirname(__file__),'version.txt')).read()
+x_mailer = open(os.path.join(os.path.dirname(__file__),'version.txt')).read().strip()
 
 class SubjectFormatter(Formatter):
     
