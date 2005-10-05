@@ -163,6 +163,17 @@ Mailing Logger
 
   Changes
 
+     2.4.1
+
+       - Fixed bug in flood protection that often meant no more mail
+         was ever sent after midnight on the day when the flood
+         protection was triggered.
+
+       - Correct X-Mailer header which was set with a training newline
+         which broke any further headers that were set.
+
+       - A date header is now set on all emails sent.
+
      2.4.0
 
        - Added sending of X-Mailer header with all emails.
@@ -184,7 +195,7 @@ Mailing Logger
      2.1.0
 
        - Added summarising logger functionality
-
+ 
      2.0.1
 
        - Corrected documentation
