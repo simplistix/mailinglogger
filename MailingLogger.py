@@ -10,6 +10,7 @@ import os
 import smtplib
 import socket
 
+from DateTime import DateTime
 from email.MIMEText import MIMEText
 from logging.handlers import SMTPHandler
 from logging import Formatter, LogRecord, CRITICAL
@@ -89,6 +90,7 @@ that may contain important entries that have not been emailed.
             email['From']=self.fromaddr
             email['To']=', '.join(self.toaddrs)
             email['X-Mailer']=x_mailer
+            email['Date']=DateTime().rfc822()
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()
         except:
