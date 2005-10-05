@@ -49,7 +49,7 @@ class MailingLogger(SMTPHandler):
             return
         current_time = now()
         current_hour = current_time.hour
-        if current_hour > self.hour:
+        if current_hour != self.hour:
             self.hour = current_hour
             self.sent = 0
         if self.sent == self.flood_level:
