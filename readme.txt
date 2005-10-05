@@ -172,7 +172,7 @@ Mailing Logger
          was ever sent after midnight on the day when the flood
          protection was triggered.
 
-       - Correct X-Mailer header which was set with a training newline
+       - Correct X-Mailer header which was set with a trailing newline
          which broke any further headers that were set.
 
        - A date header is now set on all emails sent.
