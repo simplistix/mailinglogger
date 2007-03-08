@@ -3,6 +3,12 @@ Mailing Logger
   This adds a more flexible and powerful email log handler. It has
   both customisable log format and subject line.
 
+  All emails sent will have a header set as follows:
+
+  X-Mailer: MailingLogger <version>
+
+  This is to allow easier filtering of these emails.
+
   Installation
 
     Extract the .tar.gz which contains this file in the 
@@ -83,10 +89,13 @@ Mailing Logger
 
 	http://docs.python.org/lib/node293.html
 
-	In addition to the substitutions listed there, %(line)s may
-	also be used. This is the first line of %(message)s
+	In addition to the substitutions listed there, the following
+	are also available:
 
-        default: [Zope] %(line)s
+        %(line)s - the first line of %(message)s
+        %(hostname)s - the hostname of the current machine
+
+        default: [%(hostname)s] %(line)s
 
       format 
 
@@ -153,6 +162,29 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     2.5.0
+
+       - Added compatability for Zope 2.8.x+ at the expense of now
+         being incompatible with Zope 2.7.x. 
+
+       - Fixed bug in flood protection that often meant no more mail
+         was ever sent after midnight on the day when the flood
+         protection was triggered.
+
+       - Correct X-Mailer header which was set with a trailing newline
+         which broke any further headers that were set.
+
+       - A date header is now set on all emails sent.
+
+     2.4.0
+
+       - Added sending of X-Mailer header with all emails.
+
+       - Added %(hostname)s for use in subject format.
+
+       - Fixed bug preventing use of summarising logger introduced in
+         2.3.0.
 
      2.3.0
 

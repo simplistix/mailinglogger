@@ -4,7 +4,8 @@
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
-from zLOG.datatypes import HandlerFactory, ctrl_char_insert
+from ZConfig.components.logger.handlers import HandlerFactory
+from ZConfig.components.logger.handlers import ctrl_char_insert
 from Products.MailingLogger.MailingLogger import MailingLogger
 from Products.MailingLogger.SummarisingLogger import SummarisingLogger
 
@@ -44,6 +45,7 @@ _log_format_variables = {
     'thread': 1,
     'message': 'amessage',
     'line':'aline',
+    'hostname':'ahost',
     }
 
 def subject_log_format(value):

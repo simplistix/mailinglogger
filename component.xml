@@ -1,27 +1,31 @@
 <component prefix="Products.MailingLogger.datatypes">
 
-  <sectiontype name="mailing-logger" datatype=".MailingLoggerHandlerFactory"
-               implements="zLOG.loghandler" extends="zLOG.base-log-handler">
+  <sectiontype name="mailing-logger" 
+               datatype=".MailingLoggerHandlerFactory"
+               implements="ZConfig.logger.handler" 
+               extends="ZConfig.logger.base-log-handler">
     <key name="from" required="yes" attribute="fromaddr"/>
     <multikey name="to" required="yes" attribute="toaddrs"/>
-    <key name="subject" default="[Zope] %(line)s" datatype=".subject_log_format"/>
+    <key name="subject" default="[%(hostname)s] %(line)s" datatype=".subject_log_format"/>
     <key name="smtp-server" default="localhost" datatype="inet-address"/>
     <key name="send-empty-entries" default="no" datatype="boolean"/>
     <key name="flood-level" default="10" datatype="integer"/>
     <key name="format" default="%(message)s"
-         datatype="zLOG.datatypes.log_format"/>
+         datatype="ZConfig.components.logger.handlers.log_format"/>
   </sectiontype>
 
-  <sectiontype name="summarising-logger" datatype=".SummarisingLoggerHandlerFactory"
-               implements="zLOG.loghandler" extends="zLOG.base-log-handler">
+  <sectiontype name="summarising-logger" 
+               datatype=".SummarisingLoggerHandlerFactory"
+               implements="ZConfig.logger.handler" 
+               extends="ZConfig.logger.base-log-handler">
     <key name="from" required="yes" attribute="fromaddr"/>
     <multikey name="to" required="yes" attribute="toaddrs"/>
-    <key name="subject" default="[Zope] %(line)s" datatype=".subject_log_format"/>
+    <key name="subject" default="[%(hostname)s] %(line)s" datatype=".subject_log_format"/>
     <key name="smtp-server" default="localhost" datatype="inet-address"/>
     <key name="send-empty-entries" default="no" datatype="boolean"/>
     <key name="flood-level" default="10" datatype="integer"/>
     <key name="format" default="%(message)s"
-         datatype="zLOG.datatypes.log_format"/>
+         datatype="ZConfig.components.logger.handlers.log_format"/>
   </sectiontype>
 
 </component>

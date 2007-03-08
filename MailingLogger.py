@@ -6,11 +6,18 @@
 # See license.txt for more details.
 
 import datetime
+import os
+import smtplib
+import socket
 
+from DateTime import DateTime
+from email.MIMEText import MIMEText
 from logging.handlers import SMTPHandler
 from logging import Formatter, LogRecord, CRITICAL
 
 now = datetime.datetime.now
+
+x_mailer = open(os.path.join(os.path.dirname(__file__),'version.txt')).read().strip()
 
 class SubjectFormatter(Formatter):
     
@@ -20,11 +27,13 @@ class SubjectFormatter(Formatter):
             record.line = record.message.split('\n')[0]
         if self._fmt.find("%(asctime)") >= 0:
             record.asctime = self.formatTime(record, self.datefmt)
+        if self._fmt.find("%(hostname)") >= 0:
+            record.hostname = socket.gethostname()
         return self._fmt % record.__dict__
     
 class MailingLogger(SMTPHandler):
 
-    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries,flood_level):
+    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries,flood_level=None):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
@@ -40,7 +49,7 @@ class MailingLogger(SMTPHandler):
             return
         current_time = now()
         current_hour = current_time.hour
-        if current_hour > self.hour:
+        if current_hour != self.hour:
             self.hour = current_hour
             self.sent = 0
         if self.sent == self.flood_level:
@@ -67,6 +76,22 @@ that may contain important entries that have not been emailed.
             # do nothing, we've sent too many emails already
             return
         self.sent += 1
-        SMTPHandler.emit(self,record)
-            
-        
+
+        # actually send the mail
+        try:
+            import smtplib
+            port = self.mailport
+            if not port:
+                port = smtplib.SMTP_PORT
+            smtp = smtplib.SMTP(self.mailhost, port)
+            msg = self.format(record)
+            email = MIMEText(msg)
+            email['Subject']=self.getSubject(record)
+            email['From']=self.fromaddr
+            email['To']=', '.join(self.toaddrs)
+            email['X-Mailer']=x_mailer
+            email['Date']=DateTime().rfc822()
+            smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
+            smtp.quit()
+        except:
+            self.handleError(record)
