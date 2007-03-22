@@ -1,0 +1,10 @@
+Too Many Log Entries
+                
+More than %s entries have been logged that would have resulted in
+emails being sent.
+
+No further emails will be sent for log entries generated between
+%s and %i:00:00
+
+Please consult any other configured logs, such as a File Logger,
+that may contain important entries that have not been emailed.
