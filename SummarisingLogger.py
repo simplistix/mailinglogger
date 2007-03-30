@@ -5,36 +5,44 @@
 # See license.txt for more details.
 
 import os
-import atexit
 
+from atexit import register
 from logging import FileHandler, Formatter, INFO, LogRecord
 from MailingLogger import MailingLogger
 from tempfile import mkstemp
 
 class SummarisingLogger(FileHandler):
 
-    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries,flood_level=None):
+    def __init__(self,
+                 fromaddr,
+                 toaddrs,
+                 mailhost='localhost',
+                 subject='Summary of Log Messages',
+                 send_empty_entries=True,
+                 atexit=True):
         # create the "real" mailinglogger
-        self.mailer = MailingLogger(mailhost, fromaddr, toaddrs, subject, send_empty_entries)
+        self.mailer = MailingLogger(fromaddr,
+                                    toaddrs,
+                                    mailhost,
+                                    subject,
+                                    send_empty_entries)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         # create a temp file logger to store log entries
         self.fd, self.filename = mkstemp()
-        self.mailer_record_level = INFO
         FileHandler.__init__(self,self.filename,'w')
-        # register our close method
         self.closed = False
-        atexit.register(self.close)
+        # register our close method
+        if atexit:
+            register(self.close)
 
     def setLevel(self,lvl):
         self.mailer.setLevel(lvl)
         FileHandler.setLevel(self,lvl)
 
     def emit(self,record):
-        # keep track of highest level
-        if record.levelno > self.level:
-            self.mailer_record_level = record.levelno
-        # emit to the file
+        if self.closed:
+            return
         FileHandler.emit(self,record)
 
     def close(self):

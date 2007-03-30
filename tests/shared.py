@@ -1,6 +1,8 @@
+import atexit
+import datetime
+import logging
 import smtplib
 import time
-import datetime
 
 class DummySMTP:
 
@@ -102,7 +104,14 @@ def setUp(test):
     test.globs['resumeTime']=resumeTime
     
 def tearDown(test):
+    # strip all added handlers
+    logger = logging.getLogger('')
+    for handler in list(logger.handlers):
+        logger.removeHandler(handler)
+    # make sure we have no dummy smtp
     DummySMTP.remove()
     # just in case ;-)
     resumeTime()
+    # make sure we haven't registered any atexit funcs
+    atexit._exithandlers[:] = []
     
