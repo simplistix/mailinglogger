@@ -16,7 +16,8 @@ The MailingLogger Class
 
   toaddrs
 
-    The addresses to which email log notifications will be sent.
+    A sequence of addresses to which email log notifications will be
+    sent.
 
     This must be supplied.
 
@@ -185,6 +186,8 @@ The MailingLogger Class
   To help show what happens, we'll 'stop time':
 
   >>> setTime('2007-01-01 10:00:00')
+
+  Now we log a message as normal:
 
   >>> logging.error('An Error')
   sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)

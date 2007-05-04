@@ -25,7 +25,8 @@ The SummarisingLogger Class
 
   toaddrs
 
-    The addresses to which the summary email will be sent.
+    A sequence on strings containing  addresses to which the summary
+    email will be sent. 
 
     This must be supplied.
 
@@ -59,6 +60,14 @@ The SummarisingLogger Class
 
   If you would like detailed examples of how to use SummarisingLogger,
   please see the examples below.
+
+  atexit
+
+    If True, this close method of the summarising logger is set as an
+    atexit function that runs when the currently executing python
+    script finishes.
+
+    default: True
 
  Examples
 
@@ -329,6 +338,7 @@ The SummarisingLogger Class
   Sending empty emails is helpful for batch processes as even if no
   activity is logged, the mail itself is an indication that the batch
   process did at least run.
+
   However, if you do not want empty entries to be mailed, all you need
   to do is supply the 'send_empty_entries' parameter:
 
@@ -338,7 +348,7 @@ The SummarisingLogger Class
   >>> logging.error(' ')
   >>> logging.shutdown()
     
-  By default, as we've seen above, SummarisingLogger uses the local host
+  By default, as we've seen above, SummarisingLogger uses localhost
   to send mails. If you wish to use a specific smtp server to send
   mail, this can be done by specifying the 'mailhost' parameter to the
   SummarisingLogger constructor:
