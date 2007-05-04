@@ -1,4 +1,4 @@
-# Copyright (c) 2004-2005 Simplistix Ltd
+# Copyright (c) 2004-2007 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -6,30 +6,36 @@
 
 from ZConfig.components.logger.handlers import HandlerFactory
 from ZConfig.components.logger.handlers import ctrl_char_insert
-from Products.MailingLogger.MailingLogger import MailingLogger
-from Products.MailingLogger.SummarisingLogger import SummarisingLogger
+from mailinglogger.MailingLogger import MailingLogger
+from mailinglogger.SummarisingLogger import SummarisingLogger
 
 class MailingLoggerHandlerFactory(HandlerFactory):
 
-    klass = MailingLogger
-    
-    def create_loghandler(self):
+    def mailhost(self):
         host, port = self.section.smtp_server
         if not port:
-            mailhost = host
+            return host
         else:
-            mailhost = host, port
-        return self.klass(mailhost,
-                          self.section.fromaddr,
-                          self.section.toaddrs,
-                          self.section.subject,
-                          self.section.send_empty_entries,
-                          self.section.flood_level)
+            return host, port
+        
+    def create_loghandler(self):        
+        return MailingLogger(self.section.fromaddr,
+                             self.section.toaddrs,
+                             self.mailhost(),
+                             self.section.subject,
+                             self.section.send_empty_entries,
+                             self.section.flood_level)
 
 class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
-    klass = SummarisingLogger
-    
+    def create_loghandler(self):        
+        return SummarisingLogger(self.section.fromaddr,
+                                 self.section.toaddrs,
+                                 self.mailhost(),
+                                 self.section.subject,
+                                 self.section.send_empty_entries,
+                                 self.section.atexit)
+
 _log_format_variables = {
     'name': '',
     'levelno': '3',

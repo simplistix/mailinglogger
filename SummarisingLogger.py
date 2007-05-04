@@ -28,14 +28,17 @@ class SummarisingLogger(FileHandler):
                                     send_empty_entries)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
-        # create a temp file logger to store log entries
-        self.fd, self.filename = mkstemp()
-        FileHandler.__init__(self,self.filename,'w')
-        self.closed = False
+        self.open()
         # register our close method
         if atexit:
             register(self.close)
 
+    def open(self):
+        # create a temp file logger to store log entries
+        self.fd, self.filename = mkstemp()
+        FileHandler.__init__(self,self.filename,'w')
+        self.closed = False
+        
     def setLevel(self,lvl):
         self.mailer.setLevel(lvl)
         FileHandler.setLevel(self,lvl)
@@ -67,5 +70,8 @@ class SummarisingLogger(FileHandler):
             )
         self.closed = True
             
-
+    def reopen(self):
+        self.close()
+        self.open()
+        
         

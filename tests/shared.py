@@ -4,6 +4,9 @@ import logging
 import smtplib
 import time
 
+from mailinglogger.MailingLogger import MailingLogger
+from mailinglogger.SummarisingLogger import SummarisingLogger
+
 class DummySMTP:
 
     broken = False
@@ -105,9 +108,13 @@ def setUp(test):
     
 def tearDown(test):
     # strip all added handlers
-    logger = logging.getLogger('')
-    for handler in list(logger.handlers):
-        logger.removeHandler(handler)
+    to_handle = [logging.getLogger()]
+    for logger in logging.Logger.manager.loggerDict.values():
+        to_handle.append(logger)
+    for logger in to_handle:
+        for handler in list(logger.handlers):
+            if isinstance(handler,(MailingLogger,SummarisingLogger)):
+                logger.removeHandler(handler)
     # make sure we have no dummy smtp
     DummySMTP.remove()
     # just in case ;-)
