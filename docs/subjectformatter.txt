@@ -28,7 +28,6 @@ The SubjectFormatter Class
     ... %(msecs)d
     ... %(relativeCreated)f
     ... %(thread)d
-    ... %(threadName)r
     ... %(process)d
     ... %(message)r
     ... ''')
@@ -58,7 +57,6 @@ The SubjectFormatter Class
     0
     ...
     ...
-    'MainThread'
     ...
     'msgline1\nmsgline2'
     <BLANKLINE>
