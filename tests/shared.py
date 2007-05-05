@@ -112,6 +112,8 @@ def tearDown(test):
     for logger in logging.Logger.manager.loggerDict.values():
         to_handle.append(logger)
     for logger in to_handle:
+        if isinstance(logger,logging.PlaceHolder):
+            continue
         for handler in list(logger.handlers):
             if isinstance(handler,(MailingLogger,SummarisingLogger)):
                 logger.removeHandler(handler)
