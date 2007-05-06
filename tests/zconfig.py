@@ -15,7 +15,10 @@ from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 def setUp(test):
     shared_setUp(test)
     dir = test.globs['dir'] = mkdtemp()
+    os.mkdir(os.path.join(dir,'etc'))
     test.globs['startdir'] = os.getcwd()
+    test.globs['os'] = os
+    test.globs['INSTANCE_HOME'] = dir
     os.chdir(dir) 
     
 def tearDown(test):
