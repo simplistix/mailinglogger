@@ -28,7 +28,7 @@
     <key name="atexit" default="yes" datatype="boolean"/>
     <key name="subject" default="Summary of Log Messages" 
          datatype=".subject_log_format"/>
-    <key name="format" default="%(asctime) - %(levelname)s - %(message)s"
+    <key name="format" default="%(asctime)s - %(levelname)s - %(message)s"
          datatype="ZConfig.components.logger.handlers.log_format"/>
 
   </sectiontype>

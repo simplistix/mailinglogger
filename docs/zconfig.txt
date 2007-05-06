@@ -286,7 +286,7 @@ ZConfig Configuration
 
 	http://docs.python.org/lib/node293.html
 
-        default: %(asctime) - %(levelname)s - %(message)s
+        default: %(asctime)s - %(levelname)s - %(message)s
 
       send-empty-entries
 

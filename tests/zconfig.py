@@ -198,7 +198,7 @@ class Tests(unittest.TestCase):
                         logger_level=logging.INFO,
                         handler_level=0,
                         klass=SummarisingLogger,
-                        normal_format='%(asctime) - %(levelname)s - %(message)s',
+                        normal_format='%(asctime)s - %(levelname)s - %(message)s',
                         date_format='%Y-%m-%dT%H:%M:%S',
                         )
         # check mailer stored as attribure of summariser
