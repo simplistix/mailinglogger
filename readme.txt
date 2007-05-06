@@ -51,9 +51,14 @@ Mailing Logger
       Please refer to zconfig.txt in the docs directory of the
       distribution. 
 
-    - Zope
+    - Zope 2
 
-      Please refer to zope.txt in the docs directory of the
+      Please refer to zope2.txt in the docs directory of the
+      distribution. 
+      
+    - Zope 3
+
+      Please refer to zope3.txt in the docs directory of the
       distribution. 
       
     Code that enables easier use of this package with other frameworks
@@ -79,7 +84,7 @@ Mailing Logger
 
        - Added support for use ZConfig.
 
-       - Added support for config in Zope 3 as well as Zope 2.
+       - Added support for configuration in both Zope 3 and Zope 2.
 
      2.5.0
 
