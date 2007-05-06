@@ -23,7 +23,7 @@ class Zope2Tests(Tests):
 instancehome %s
 %%import mailinglogger
 <eventlog>
-''' % self.globs['dir']+'\n'
+''' % self.globs['dir']
 
     def getConfigPostfix(self):
         return '\n</eventlog>'
@@ -37,10 +37,10 @@ def test_suite():
         # no zope 2
         return unittest.TestSuite()
     return unittest.TestSuite((
-        #DocFileSuite('../docs/zope2.txt',
-        #             optionflags=options,
-        #             setUp=setUp,
-        #             tearDown=tearDown),
+        DocFileSuite('../docs/zope2.txt',
+                     optionflags=options,
+                     setUp=setUp,
+                     tearDown=tearDown),
         unittest.makeSuite(Zope2Tests),
         ))
 
