@@ -6,7 +6,6 @@
 
 import os
 import unittest
-import Zope2.Startup
 
 from zconfig import setUp,tearDown,Tests
 from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
@@ -14,6 +13,7 @@ from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 class Zope2Tests(Tests):
 
     def getSchemaPath(self):
+        import Zope2.Startup
         return os.path.join(os.path.dirname(
             os.path.realpath(Zope2.Startup.__file__)
             ),'zopeschema.xml')
