@@ -108,6 +108,8 @@ def removeHandlers():
             continue
         for handler in list(logger.handlers):
             logger.removeHandler(handler)
+    for k in logging._handlers.keys():
+        del logging._handlers[k]
     
 def setUp(test):
     removeHandlers()
