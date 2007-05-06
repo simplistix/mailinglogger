@@ -99,7 +99,7 @@ def unsetHostName():
     if old_hostname is not None:
         common.gethostname = old_hostname
 
-def setUp(test):
+def removeHandlers():
     to_handle = [logging.getLogger()]
     for logger in logging.Logger.manager.loggerDict.values():
         to_handle.append(logger)
@@ -108,11 +108,15 @@ def setUp(test):
             continue
         for handler in list(logger.handlers):
             logger.removeHandler(handler)
+    
+def setUp(test):
+    removeHandlers()
     DummySMTP.install()
     test.globs['smtp']=DummySMTP
     test.globs['setHostName']=setHostName
     test.globs['setTime']=setTime
     test.globs['resumeTime']=resumeTime
+    test.globs['removeHandlers']=removeHandlers
     
 def tearDown(test):
     # make sure we have no dummy smtp
