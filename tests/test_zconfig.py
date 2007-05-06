@@ -4,287 +4,34 @@
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
-import atexit
-import logging
 import os
-import shutil
 import unittest
-from mailinglogger.MailingLogger import MailingLogger
-from mailinglogger.SummarisingLogger import SummarisingLogger
-from shared import setUp as shared_setUp
-from shared import tearDown as shared_tearDown
-from tempfile import mkdtemp
-from ZConfig import loadSchema,loadConfig
-from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 
-def setUp(test):
-    shared_setUp(test)
-    dir = test.globs['dir'] = mkdtemp()
-    test.globs['startdir'] = os.getcwd()
-    os.chdir(dir)
-    
-def tearDown(test):
-    shared_tearDown(test)
-    os.chdir(test.globs['startdir'])
-    shutil.rmtree(test.globs['dir'])
+from zconfig import setUp,tearDown,Tests
+from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 
 schema_text = '''
 <schema>
-  <import package="ZConfig.components.logger" file="logger.xml"/>
+  <import package="ZConfig.components.logger" file="eventlog.xml"/>
   <import package="ZConfig.components.logger" file="handlers.xml"/>
   <import package="mailinglogger"/>
-  <multisection name="*"
-                attribute="loggers"
-                type="logger"/>
+  <section type="eventlog" name="*" attribute="eventlog"/>
 </schema>
 '''
 
-class ZConfigTests(unittest.TestCase):
+class ZConfigTests(Tests):
 
-    def setUp(self):
-        self.globs = {}
-        setUp(self)
-        # schema
+    def getSchemaPath(self):
         f = open('schema.xml','w')
         f.write(schema_text)
         f.close()
-        self.schema = loadSchema('schema.xml')
+        return 'schema.xml'
         
-    def _loadConfig(self,text):
-        f = open('my.conf','w')
-        f.write(text)
-        f.close()
-        config, handlers = loadConfig(self.schema, 'my.conf')
-        return config
+    def getConfigPrefix(self):
+        return '<eventlog>\n'
 
-    def _checkHandler(self,h,
-                      klass,
-                      normal_format,
-                      date_format,
-                      **expected):
-        # class
-        self.failUnless(isinstance(h,klass))
-        # formatter
-        f = h.formatter
-        self.assertEqual(f._fmt,normal_format)
-        self.assertEqual(f.datefmt,date_format)
-        self.assertEqual(f.datefmt,date_format)
-        # the rest
-        for name,value in expected.items():
-            self.assertEqual(getattr(h,name),value)
-        
-    def _check(self,c,
-               propagate,
-               logger_name,
-               logger_level,
-               handler_level,
-               klass,
-               normal_format,
-               date_format,
-               **expected):
-        self.assertEqual(len(c.loggers),1)
-        logger = c.loggers[0]()
-        # logger
-        self.assertEqual(logger.propagate,propagate)
-        self.assertEqual(logger.name,logger_name)
-        self.assertEqual(logger.level,logger_level)
-        self.assertEqual(len(logger.handlers),1)
-        self._checkHandler(
-            logger.handlers[0],
-            klass,
-            normal_format,
-            date_format,
-            level=handler_level,
-            **expected)
-        return logger
-            
-            
-    def tearDown(self):
-        tearDown(self)
-        
-    def test_all_keys_mailinglogger(self):
-        # load config
-        c = self._loadConfig('''
-<logger>
-  propagate no
-  name      mylogger
-  level     info
-  <mailing-logger>
-    dateformat  %H:%M:%S on %Y-%m-%d 
-    level       warning
-    from        logging@example.com
-    to          receiver@example.com
-    to          support@example.com
-    smtp-server mail.example.com
-    subject     [MyApp] %(line)s
-    format      %(levelname)s - %(message)s
-    send-empty-entries yes
-    flood-level        13
-  </mailing-logger>    
-</logger>
-        ''')
-        # check resulting logger
-        self._check(c,
-                    propagate=False,
-                    logger_name='mylogger',
-                    logger_level=logging.INFO,
-                    handler_level=logging.WARNING,
-                    klass=MailingLogger,
-                    normal_format='%(levelname)s - %(message)s',
-                    date_format='%H:%M:%S on %Y-%m-%d',
-                    mailhost='mail.example.com',
-                    mailport=None,
-                    fromaddr='logging@example.com',
-                    toaddrs=['receiver@example.com','support@example.com'],
-                    subject='[MyApp] %(line)s',
-                    send_empty_entries=True,
-                    flood_level=13
-                    )
-
-    def test_minimal_config_mailinglogger(self):
-        # load config
-        c = self._loadConfig('''
-<logger>
-  name      mylogger
-  <mailing-logger>
-    from        logging@example.com
-    to          support@example.com
-  </mailing-logger>    
-</logger>
-        ''')
-        # check resulting logger
-        self._check(c,
-                    propagate=True,
-                    logger_name='mylogger',
-                    logger_level=logging.INFO,
-                    handler_level=0,
-                    klass=MailingLogger,
-                    normal_format='%(message)s',
-                    date_format='%Y-%m-%dT%H:%M:%S',
-                    mailhost='localhost',
-                    mailport=None,
-                    fromaddr='logging@example.com',
-                    toaddrs=['support@example.com'],
-                    subject='[%(hostname)s] %(levelname)s - %(line)s',
-                    send_empty_entries=False,
-                    flood_level=10
-                    )
-
-    def test_all_keys_summarisinglogger(self):
-        # load config
-        c = self._loadConfig('''
-<logger>
-  propagate no
-  name      mylogger
-  level     info
-  <summarising-logger>
-    dateformat  %H:%M:%S on %Y-%m-%d 
-    level       warning
-    from        logging@example.com
-    to          receiver@example.com
-    to          support@example.com
-    smtp-server mail.example.com
-    subject     [MyApp] %(line)s
-    format      %(levelname)s - %(message)s
-    send-empty-entries no
-    atexit             no
-  </summarising-logger>    
-</logger>
-        ''')
-        # check resulting logger
-        l = self._check(c,
-                        propagate=False,
-                        logger_name='mylogger',
-                        logger_level=logging.INFO,
-                        handler_level=logging.WARNING,
-                        klass=SummarisingLogger,
-                        normal_format='%(levelname)s - %(message)s',
-                        date_format='%H:%M:%S on %Y-%m-%d',
-                        )
-        # check mailer stored as attribure of summariser
-        self._checkHandler(l.handlers[0].mailer,
-                           klass=MailingLogger,
-                           # This format is hardcoded and means we send
-                           # the whole of the summary
-                           normal_format='%(message)s',
-                           # We leave this as is, since it's never
-                           # actuallly used.
-                           date_format=None,
-                           mailhost='mail.example.com',
-                           mailport=None,
-                           fromaddr='logging@example.com',
-                           toaddrs=['receiver@example.com','support@example.com'],
-                           subject='[MyApp] %(line)s',
-                           send_empty_entries=False,
-                           # flood level doesn't matter so is left as default.
-                           # This mailer will only send one message.
-                           flood_level=10
-                           )
-        # check atexit
-        self.assertEqual(atexit._exithandlers,[])
-        
-    def test_minimal_config_summarisinglogger(self):
-        # load config
-        c = self._loadConfig('''
-<logger>
-  name      mylogger
-  <summarising-logger>
-    from        logging@example.com
-    to          receiver@example.com
-  </summarising-logger>    
-</logger>
-        ''')
-        # check resulting logger
-        l = self._check(c,
-                        propagate=True,
-                        logger_name='mylogger',
-                        logger_level=logging.INFO,
-                        handler_level=0,
-                        klass=SummarisingLogger,
-                        normal_format='%(asctime) - %(levelname)s - %(message)s',
-                        date_format='%Y-%m-%dT%H:%M:%S',
-                        )
-        # check mailer stored as attribure of summariser
-        self._checkHandler(l.handlers[0].mailer,
-                           klass=MailingLogger,
-                           normal_format='%(message)s',
-                           date_format=None,
-                           mailhost='localhost',
-                           mailport=None,
-                           fromaddr='logging@example.com',
-                           toaddrs=['receiver@example.com'],
-                           subject='Summary of Log Messages',
-                           send_empty_entries=True,
-                           flood_level=10
-                           )
-        # check atexit
-        self.assertEqual(atexit._exithandlers,[(l.handlers[0].close,(),{})])
-
-    def test_port_in_mailhost(self):
-        # test for mailinglogger only as summarisinglogger uses the same code
-        # load config
-        c = self._loadConfig('''
-<logger>
-  name      mylogger
-  <mailing-logger>
-    from        logging@example.com
-    to          support@example.com
-    smtp-server localhost:2525
-  </mailing-logger>    
-</logger>
-        ''')
-        # check resulting logger
-        self._check(c,
-                    propagate=True,
-                    logger_name='mylogger',
-                    logger_level=logging.INFO,
-                    handler_level=0,
-                    klass=MailingLogger,
-                    normal_format='%(message)s',
-                    date_format='%Y-%m-%dT%H:%M:%S',
-                    mailhost='localhost',
-                    mailport=2525,
-                    )
+    def getConfigPostfix(self):
+        return '\n</eventlog>'
     
 options = REPORT_NDIFF|ELLIPSIS
 def test_suite():
