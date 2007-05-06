@@ -39,10 +39,10 @@ def test_suite():
         # no zope 3
         return unittest.TestSuite()
     return unittest.TestSuite((
-        #DocFileSuite('../docs/zope3.txt',
-        #             optionflags=options,
-        #             setUp=setUp,
-        #             tearDown=tearDown),
+        DocFileSuite('../docs/zope3.txt',
+                     optionflags=options,
+                     setUp=setUp,
+                     tearDown=tearDown),
         unittest.makeSuite(Zope3Tests),
         ))
 
