@@ -10,30 +10,27 @@ import os
 import smtplib
 import socket
 
-from DateTime import DateTime
+from email.Utils import formatdate, make_msgid
 from email.MIMEText import MIMEText
 from logging.handlers import SMTPHandler
-from logging import Formatter, LogRecord, CRITICAL
+from logging import LogRecord, CRITICAL
+from mailinglogger.common import SubjectFormatter
 
 now = datetime.datetime.now
 
-x_mailer = open(os.path.join(os.path.dirname(__file__),'version.txt')).read().strip()
+this_dir = os.path.dirname(__file__)
+x_mailer = open(os.path.join(this_dir,'version.txt')).read().strip()
+flood_template = open(os.path.join(this_dir,'flood_template.txt')).read()
 
-class SubjectFormatter(Formatter):
-    
-    def format(self,record):
-        record.message = record.getMessage()
-        if self._fmt.find('%(line)') >= 0:
-            record.line = record.message.split('\n')[0]
-        if self._fmt.find("%(asctime)") >= 0:
-            record.asctime = self.formatTime(record, self.datefmt)
-        if self._fmt.find("%(hostname)") >= 0:
-            record.hostname = socket.gethostname()
-        return self._fmt % record.__dict__
-    
 class MailingLogger(SMTPHandler):
 
-    def __init__(self, mailhost, fromaddr, toaddrs, subject, send_empty_entries,flood_level=None):
+    def __init__(self,
+                 fromaddr,
+                 toaddrs,
+                 mailhost='localhost',
+                 subject='%(line)s',
+                 send_empty_entries=False,
+                 flood_level=10):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
@@ -59,27 +56,18 @@ class MailingLogger(SMTPHandler):
                 level = CRITICAL,
                 pathname = '',
                 lineno = 0,
-                msg = """Too Many Log Entries
-                
-More than %s entries have been logged that would have resulted in
-emails being sent.
-
-No further emails will be sent for log entries generated between
-%s and %i:00:00
-
-Please consult any other configured logs, such as a File Logger,
-that may contain important entries that have not been emailed.
-""" % (self.sent,current_time.strftime('%H:%M:%S'),current_hour+1),
+                msg = flood_template % (self.sent,
+                                        current_time.strftime('%H:%M:%S'),
+                                        current_hour+1),
                 args = (),
                 exc_info = None)
-        elif self.sent > self.flood_level:
+        elif self.flood_level and self.sent > self.flood_level:
             # do nothing, we've sent too many emails already
             return
         self.sent += 1
 
         # actually send the mail
         try:
-            import smtplib
             port = self.mailport
             if not port:
                 port = smtplib.SMTP_PORT
@@ -90,7 +78,8 @@ that may contain important entries that have not been emailed.
             email['From']=self.fromaddr
             email['To']=', '.join(self.toaddrs)
             email['X-Mailer']=x_mailer
-            email['Date']=DateTime().rfc822()
+            email['Date']=formatdate()
+            email['Message-ID']=make_msgid('MailingLogger')
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()
         except:

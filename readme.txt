@@ -1,160 +1,72 @@
 Mailing Logger
 
-  This adds a more flexible and powerful email log handler. It has
-  both customisable log format and subject line.
+  This provides more flexible and powerful email log handling for
+  python's standard logging framework. 
 
-  All emails sent will have a header set as follows:
+  Two log handlers are provided:
 
-  X-Mailer: MailingLogger <version>
+  MailingLogger
+  
+    This mails out appropriate log entries as they are emitted.
 
-  This is to allow easier filtering of these emails.
+    For more details see mailinglogger.txt in the docs directory of
+    the distribution.
+
+  SummarisingLogger
+
+    This mails out a summary of all appropriate log entries at the end
+    of the running python script.
+  
+    For more details see summarisinglogger.txt in the docs directory
+    of the distribution.
+
+  Both log handlers have the following features:
+ 
+  - customisable and dynamic subject lines for emails sent
+
+  - emails sent with a header as follows for easy filtering:
+
+    X-Mailer: MailingLogger <version>
+
+  - flood protection to ensure the number of emails sent is not
+    excessive
+
+  - fully documented and tested
+
+  The only caveat for using this package is that the smtp server you
+  are using must be fast. Email is sent via SMTP and, if using a
+  MailingLogger, at the time the message is logged. If your SMTP
+  server is slow, your application's performance may suffer.
 
   Installation
 
-    Extract the .tar.gz which contains this file in the 
-    Products directory of your Zope instance.
+    Extract the .tar.gz which contains this file anywhere on your
+    python path.
     
-  Setup Instructions
+    Additional support is provided if your application is based on one
+    of the following frameworks:
 
-    You will need to import Mailing Logger into your zope.conf and add
-    either a mailing-logger or summarising-logger section in one or 
-    more of the zope.conf logger sections.
+    - ZConfig
 
-    For example:
+      Please refer to zconfig.txt in the docs directory of the
+      distribution. 
 
-    %import Products.MailingLogger
+    - Zope 2
 
-    <eventlog>
-      level info
-      <mailing-logger>
-        level   critical
-        from    logging@example.com
-        to      receiver@example.com
-        to      support@example.com
-        subject [Zope] %(line)s
-      </mailing-logger>    
-    </eventlog>
+      Please refer to zope2.txt in the docs directory of the
+      distribution. 
+      
+    - Zope 3
 
-    NB: For the %import to work, INSTANCE_HOME must be available in
-    the environment!
-
-    A full description of the possible keys and defaults for the
-    mailing-logger and summarising-logger sections are given below:
-
-      dateformat
-
-        The date format to use in log entries. This will be used
-        wherever the %(asctime)s substitution is used.
-
-	default: %Y-%m-%dT%H:%M:%S
-
-      level
-
-        The level at or above which an email log notification will be
-        sent.
-
-        This can either be a numeric level or one of the textual level
-        identifiers.
-
-        default: notset
-
-      from
-
-        The address from which email log notifications will originate.
-
-        This must be set.
-
-      to
-
-        The address to which email log notifications will be sent.
-
-        At least one 'to' line must be included, but multiple lines
-        can be included if email log notifications should be sent to
-        multiple addresses.
-
-      smtp-server 
-
-        The SMTP server that should be used to send email
-        notifications.
-
-	default: localhost
-
-      subject 
-
-        This is a format string specifying what information will be
-        included in the subject line of the email notification.
-
-	Information on what can be included in a format string can be
-	found at:
-
-	http://docs.python.org/lib/node293.html
-
-	In addition to the substitutions listed there, the following
-	are also available:
-
-        %(line)s - the first line of %(message)s
-        %(hostname)s - the hostname of the current machine
-
-        default: [%(hostname)s] %(line)s
-
-      format 
-
-        This is a format string specifying what information will be
-        included in each message that is logged.
-
-        With mailing-logger, one log message will be included in each
-        email. With summarising-logger, all log messages will be 
-        included in one email.
-
-	Information on what can be included in a format string can be
-	found at:
-
-	http://docs.python.org/lib/node293.html
-
-        default: %(message)s
-
-      send-empty-entries
-
-        This is a boolean value which specifies whether empty log
-        entries will be mailed or not.
-
-        Empty log entries are likely to occur when, for example, 
-        a summarising logger is used in a cron job that runs
-        very frequently but only generates log entries 
-        infrequently.
-
-        default: no
-
-      flood-level
-
-        This is an integer value specifying the maximum number of
-        emails that can be sent in an hour that will not be considered
-        a "flood".
-
-        When a "flood" is detected, one email is sent at the CRITICAL
-        level indicating that a flood has been detected, and no more
-        emails will be sent in the same hour.
-
-        So, this option, in effect, specifies the maximum number of
-        emails that will be sent in any particular hour of the day.
-
-        default: 10
-
-  mailing-logger or summarising-logger?
-
-     mailing-logger will send one email for each message logged.
-
-     summarising-logger will send one email containing all messages
-     logged from the time the logger is initialised to the time it
-     is closed.
-
-     summarising-logger should not be used for long running processes.
-     It is designed for generating reports from single-run scripts or
-     cron jobs.
+      Please refer to zope3.txt in the docs directory of the
+      distribution. 
+      
+    Code that enables easier use of this package with other frameworks
+    is welcome and will be included in a future release!
 
   Licensing
 
-     Copyright (c) 2004-2005 Simplistix Ltd
+     Copyright (c) 2004-2007 Simplistix Ltd
      Copyright (c) 2001-2003 New Information Paradigms Ltd
 
      This Software is released under the MIT License:
@@ -162,6 +74,17 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     3.0.0
+
+       - Restructured to be used as a python package instead of a Zope
+         Product.
+
+       - Added comprehensive documentation and tests.
+
+       - Added support for use ZConfig.
+
+       - Added support for configuration in both Zope 3 and Zope 2.
 
      2.5.0
 
