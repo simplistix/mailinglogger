@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mailinglogger',
-    version='svn',
+    version=file('version.txt').read(),
     author='Chris Withers',
     author_email='chris@simplistix.co.uk',
     license='MIT',
@@ -32,7 +32,9 @@ setup(
     - fully documented and tested
     
     In addition, extra support is provided for configuring the
-    handlers when using ZConfig, Zope 2 or Zope 3.  
+    handlers when using ZConfig, Zope 2 or Zope 3.
+
+    For full documentation, start with the readme.txt in the source distribution.
     """,
     url='http://www.simplistix.co.uk/software/python/mailinglogger',
     keywords="logging email",

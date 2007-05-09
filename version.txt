@@ -1,1 +1,1 @@
-MailingLogger-SVN-$Rev$
+SVN
