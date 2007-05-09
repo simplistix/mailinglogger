@@ -19,7 +19,7 @@ from mailinglogger.common import SubjectFormatter
 now = datetime.datetime.now
 
 this_dir = os.path.dirname(__file__)
-x_mailer = open(os.path.join(this_dir,'version.txt')).read().strip()
+x_mailer = 'MailingLogger '+open(os.path.join(this_dir,'version.txt')).read().strip()
 flood_template = open(os.path.join(this_dir,'flood_template.txt')).read()
 
 class MailingLogger(SMTPHandler):
