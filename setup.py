@@ -1,37 +1,52 @@
-# Copyright (c) 2005 Simplistix Ltd
+# Copyright (c) 2007 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
-import os
+from setuptools import setup, find_packages
 
-from distutils.core import setup
+setup(
+    name='mailinglogger',
+    version='svn',
+    author='Chris Withers',
+    author_email='chris@simplistix.co.uk',
+    license='MIT',
+    description="Enhanced emailing handlers for the python logging package.",
+    long_description="""
+    This package contains two handlers for the python logging
+    framework that enable important log entries to be sent by email.
 
-base_path = os.path.abspath(os.path.dirname(__file__))
-os.chdir('..')
+    This can either be as the entries are logged or as a summary at
+    the end of the running process.
 
-version_path = os.path.join(
-    base_path,
-    'version.txt'
-    )
-
-manifest_path = os.path.join(
-    base_path,
-    'MANIFEST'
-    )
-
-if os.path.exists(manifest_path):
-    os.remove(manifest_path)
+    The handlers have the following features:
     
-setup(name='MailingLogger',
-      version=open(version_path).read().strip(),
-      description='Emailing LogHandlers for Python and Zope',
-      author='Simplistix',
-      author_email='support@simplistix.co.uk',
-      url='http://www.simplistix.co.uk',
-      packages=['MailingLogger'],
-      data_files=[('MailingLogger',['component.xml',
-                                    'license.txt',
-                                    'version.txt'])]
-     )
+    - customisable and dynamic subject lines for emails sent
+
+    - emails sent with an X-Mailer header for easy filtering
+    
+    - flood protection to ensure the number of emails sent is not
+      excessive
+
+    - fully documented and tested
+    
+    In addition, extra support is provided for configuring the
+    handlers when using ZConfig, Zope 2 or Zope 3.  
+    """,
+    url='http://www.simplistix.co.uk/software/python/mailinglogger',
+    keywords="logging email",
+    classifiers=[
+    'Development Status :: 6 - Mature',
+    'Framework :: Plone',
+    'Framework :: Zope2',
+    'Framework :: Zope3',
+    'Intended Audience :: Developers',
+    'Intended Audience :: System Administrators',
+    'License :: OSI Approved :: MIT License',
+    'Topic :: Communications :: Email',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Topic :: System :: Logging',
+    ],    
+    packages=find_packages(),
+    )
