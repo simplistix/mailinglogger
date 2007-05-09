@@ -86,6 +86,9 @@ Mailing Logger
 
        - Added support for configuration in both Zope 3 and Zope 2.
 
+       - Added support for disutils installation and for egg distribution.
+
+
      2.5.0
 
        - Added compatability for Zope 2.8.x+ at the expense of now
