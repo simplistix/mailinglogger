@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mailinglogger',
-    version=file('version.txt').read(),
+    version=file('version.txt').read().strip(),
     author='Chris Withers',
     author_email='chris@simplistix.co.uk',
     license='MIT',
