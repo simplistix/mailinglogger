@@ -75,6 +75,10 @@ Mailing Logger
 
   Changes
 
+     3.1.0
+
+       - Added support for SMTP servers that require authentication.
+
      3.0.0
 
        - Restructured to be used as a python package instead of a Zope
