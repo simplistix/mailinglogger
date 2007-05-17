@@ -96,6 +96,8 @@ class Tests(unittest.TestCase):
     format      %(levelname)s - %(message)s
     send-empty-entries yes
     flood-level        13
+    username    username
+    password    password
   </mailing-logger>    
         ''')
         # check resulting logger
@@ -106,12 +108,14 @@ class Tests(unittest.TestCase):
                     normal_format='%(levelname)s - %(message)s',
                     date_format='%H:%M:%S on %Y-%m-%d',
                     mailhost='mail.example.com',
-                    mailport=None,
+                    mailport=25,
                     fromaddr='logging@example.com',
                     toaddrs=['receiver@example.com','support@example.com'],
                     subject='[MyApp] %(line)s',
                     send_empty_entries=True,
-                    flood_level=13
+                    flood_level=13,
+                    username='username',
+                    password='password',
                     )
 
     def test_minimal_config_mailinglogger(self):
@@ -130,12 +134,14 @@ class Tests(unittest.TestCase):
                     normal_format='%(message)s',
                     date_format='%Y-%m-%dT%H:%M:%S',
                     mailhost='localhost',
-                    mailport=None,
+                    mailport=25,
                     fromaddr='logging@example.com',
                     toaddrs=['support@example.com'],
                     subject='[%(hostname)s] %(levelname)s - %(line)s',
                     send_empty_entries=False,
-                    flood_level=10
+                    flood_level=10,
+                    username=None,
+                    password=None,
                     )
 
     def test_all_keys_summarisinglogger(self):
@@ -153,6 +159,8 @@ class Tests(unittest.TestCase):
     format      %(levelname)s - %(message)s
     send-empty-entries no
     atexit             no
+    username    username
+    password    password
   </summarising-logger>    
         ''')
         # check resulting logger
@@ -173,14 +181,16 @@ class Tests(unittest.TestCase):
                            # actuallly used.
                            date_format=None,
                            mailhost='mail.example.com',
-                           mailport=None,
+                           mailport=25,
                            fromaddr='logging@example.com',
                            toaddrs=['receiver@example.com','support@example.com'],
                            subject='[MyApp] %(line)s',
                            send_empty_entries=False,
                            # flood level doesn't matter so is left as default.
                            # This mailer will only send one message.
-                           flood_level=10
+                           flood_level=10,
+                           username='username',
+                           password='password',
                            )
         # check atexit
         self.assertEqual(atexit._exithandlers,[])
@@ -207,12 +217,14 @@ class Tests(unittest.TestCase):
                            normal_format='%(message)s',
                            date_format=None,
                            mailhost='localhost',
-                           mailport=None,
+                           mailport=25,
                            fromaddr='logging@example.com',
                            toaddrs=['receiver@example.com'],
                            subject='Summary of Log Messages',
                            send_empty_entries=True,
-                           flood_level=10
+                           flood_level=10,
+                           username=None,
+                           password=None,
                            )
         # check atexit
         self.assertEqual(atexit._exithandlers,[(l.handlers[0].close,(),{})])

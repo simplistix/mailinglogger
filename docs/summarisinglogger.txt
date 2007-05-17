@@ -41,6 +41,26 @@ The SummarisingLogger Class
 
     default: ('localhost',25)
 
+  username
+
+    The username to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  password
+
+    The password to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
   subject 
 
     This is a format string specifying what information will be
@@ -396,3 +416,30 @@ The SummarisingLogger Class
   An Error
   <BLANKLINE>
 
+  If the smtp server you wish to use requires authentication,
+  pass the required username and password to the SummarisingLogger
+  constructor: 
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...				   username='auser',password='theirpassword')
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error('An Error')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  (authenticated using username:'auser' and password:'theirpassword')
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  An Error
+  <BLANKLINE>
+
+  For performance reasons, it's recommended that you don't use SMTP
+  authentication unless you absolutely need to.

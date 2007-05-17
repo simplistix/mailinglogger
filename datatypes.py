@@ -24,7 +24,9 @@ class MailingLoggerHandlerFactory(HandlerFactory):
                              self.mailhost(),
                              self.section.subject,
                              self.section.send_empty_entries,
-                             self.section.flood_level)
+                             self.section.flood_level,
+                             self.section.username,
+                             self.section.password)
 
 class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
@@ -34,7 +36,9 @@ class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
                                  self.mailhost(),
                                  self.section.subject,
                                  self.section.send_empty_entries,
-                                 self.section.atexit)
+                                 self.section.atexit,
+                                 self.section.username,
+                                 self.section.password)
 
 _log_format_variables = {
     'name': '',

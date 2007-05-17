@@ -1,4 +1,4 @@
-# Copyright (c) 2004-2005 Simplistix Ltd
+# Copyright (c) 2004-2007 Simplistix Ltd
 # Copyright (c) 2001-2003 New Information Paradigms Ltd
 #
 # This Software is released under the MIT License:
@@ -30,14 +30,20 @@ class MailingLogger(SMTPHandler):
                  mailhost='localhost',
                  subject='%(line)s',
                  send_empty_entries=False,
-                 flood_level=10):
+                 flood_level=10,
+                 username=None,
+                 password=None):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
         self.flood_level = flood_level
         self.hour = now().hour
         self.sent = 0
-        
+        self.username = username
+        self.password = password
+        if not self.mailport:
+            self.mailport = smtplib.SMTP_PORT
+
     def getSubject(self,record):
         return self.subject_formatter.format(record)
 
@@ -68,10 +74,6 @@ class MailingLogger(SMTPHandler):
 
         # actually send the mail
         try:
-            port = self.mailport
-            if not port:
-                port = smtplib.SMTP_PORT
-            smtp = smtplib.SMTP(self.mailhost, port)
             msg = self.format(record)
             email = MIMEText(msg)
             email['Subject']=self.getSubject(record)
@@ -80,6 +82,9 @@ class MailingLogger(SMTPHandler):
             email['X-Mailer']=x_mailer
             email['Date']=formatdate()
             email['Message-ID']=make_msgid('MailingLogger')
+            smtp = smtplib.SMTP(self.mailhost, self.mailport)
+            if self.username and self.password:
+                smtp.login(self.username,self.password)
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()
         except:

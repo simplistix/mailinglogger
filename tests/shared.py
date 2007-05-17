@@ -17,6 +17,9 @@ class DummySMTP:
     
     old_smtp = None
 
+    username = None
+    password = None
+    
     @staticmethod
     def install(stdout=True):
         if DummySMTP.old_smtp is None:
@@ -38,16 +41,30 @@ class DummySMTP:
         self.mailhost = mailhost
         self.port = port
         
+    def login(self,username,password):
+        self.username = username
+        self.password = password
+    
     def sendmail(self,fromaddr,toaddrs,msg):
         msg = msg.replace('\r\n','\n')
         if self.stdout:
             print 'sending to %r from %r using %r' % (
                 toaddrs,fromaddr,(self.mailhost,self.port)
                 )
+            if self.username and self.password:
+                print '(authenticated using username:%r and password:%r)' % (
+                    self.username,
+                    self.password,
+                    )
             print msg
         else:
             self.sent.append((
-                toaddrs,fromaddr,(self.mailhost,self.port),msg
+                toaddrs,
+                fromaddr,
+                (self.mailhost,self.port),
+                msg,
+                self.username,
+                self.password
                 ))
         
     def quit(self):

@@ -19,13 +19,17 @@ class SummarisingLogger(FileHandler):
                  mailhost='localhost',
                  subject='Summary of Log Messages',
                  send_empty_entries=True,
-                 atexit=True):
+                 atexit=True,
+                 username=None,
+                 password=None):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(fromaddr,
                                     toaddrs,
                                     mailhost,
                                     subject,
-                                    send_empty_entries)
+                                    send_empty_entries,
+                                    username=username,
+                                    password=password)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.open()
