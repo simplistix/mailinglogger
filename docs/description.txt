@@ -13,6 +13,8 @@
     - flood protection to ensure the number of emails sent is not
       excessive
 
+    - support for SMTP servers that require authentication
+
     - fully documented and tested
     
     In addition, extra support is provided for configuring the
