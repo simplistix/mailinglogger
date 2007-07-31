@@ -15,6 +15,7 @@ from email.MIMEText import MIMEText
 from logging.handlers import SMTPHandler
 from logging import LogRecord, CRITICAL
 from mailinglogger.common import SubjectFormatter
+from mailinglogger.common import process_ignore
 
 now = datetime.datetime.now
 
@@ -32,7 +33,8 @@ class MailingLogger(SMTPHandler):
                  send_empty_entries=False,
                  flood_level=10,
                  username=None,
-                 password=None):
+                 password=None,
+                 ignore=()):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
@@ -41,6 +43,7 @@ class MailingLogger(SMTPHandler):
         self.sent = 0
         self.username = username
         self.password = password
+        self.ignore = process_ignore(ignore)
         if not self.mailport:
             self.mailport = smtplib.SMTP_PORT
 
@@ -50,6 +53,11 @@ class MailingLogger(SMTPHandler):
     def emit(self,record):
         if not self.send_empty_entries and not record.msg.strip():
             return
+
+        for criterion in self.ignore:
+            if criterion(record.msg):
+                return
+            
         current_time = now()
         current_hour = current_time.hour
         if current_hour != self.hour:

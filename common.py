@@ -6,6 +6,7 @@
 
 from logging import Formatter
 from socket import gethostname
+from ZConfig.datatypes import RegularExpressionConversion
 
 class SubjectFormatter(Formatter):
     
@@ -19,3 +20,16 @@ class SubjectFormatter(Formatter):
             record.hostname = gethostname()
         return self._fmt % record.__dict__
     
+class RegexConversion(RegularExpressionConversion):
+    def __call__(self, value):
+        return bool(self._rx.search(value))
+
+def process_ignore(ignore):
+    if isinstance(ignore,basestring):
+        ignore = [ignore]
+    result = []
+    for i in ignore:
+        if not isinstance(i,RegexConversion):
+            i = RegexConversion(i)
+        result.append(i)
+    return result

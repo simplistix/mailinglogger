@@ -8,7 +8,8 @@ import os
 
 from atexit import register
 from logging import FileHandler, Formatter, INFO, LogRecord
-from MailingLogger import MailingLogger
+from mailinglogger.MailingLogger import MailingLogger
+from mailinglogger.common import process_ignore
 from tempfile import mkstemp
 
 class SummarisingLogger(FileHandler):
@@ -21,7 +22,8 @@ class SummarisingLogger(FileHandler):
                  send_empty_entries=True,
                  atexit=True,
                  username=None,
-                 password=None):
+                 password=None,
+                 ignore=()):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(fromaddr,
                                     toaddrs,
@@ -32,6 +34,7 @@ class SummarisingLogger(FileHandler):
                                     password=password)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
+        self.ignore = process_ignore(ignore)
         self.open()
         # register our close method
         if atexit:
@@ -50,6 +53,11 @@ class SummarisingLogger(FileHandler):
     def emit(self,record):
         if self.closed:
             return
+
+        for criterion in self.ignore:
+            if criterion(record.msg):
+                return
+
         FileHandler.emit(self,record)
 
     def close(self):

@@ -78,9 +78,6 @@ The SummarisingLogger Class
 
     default: True
 
-  If you would like detailed examples of how to use SummarisingLogger,
-  please see the examples below.
-
   atexit
 
     If True, this close method of the summarising logger is set as an
@@ -88,6 +85,19 @@ The SummarisingLogger Class
     script finishes.
 
     default: True
+
+  ignore
+
+    This sequence of strings, each of which is compiled into a regular
+    expression, allows the user to set up rules for ignoring certain
+    log entries. If the body of the message logged matched any of the
+    regular expressions, the log message will be silently discarded
+    and not mailed out in the summary.
+
+    default: ()
+
+  If you would like detailed examples of how to use SummarisingLogger,
+  please see the examples below.
 
  Examples
 
@@ -443,3 +453,60 @@ The SummarisingLogger Class
 
   For performance reasons, it's recommended that you don't use SMTP
   authentication unless you absolutely need to.
+
+  In order to ignore certain log entries you can use the 'ignore' parameter:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             ignore='^An Err')
+  >>> logging.getLogger('').addHandler(handler)
+
+  Now if the regular expression specified is matched, the log entry
+  will not be sent:
+
+  >>> logging.error('An Error')
+
+  However, other log entries are still sent:
+
+  >>> logging.error('The Error!')
+
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger SVN
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  The Error!
+  <BLANKLINE>
+
+  A sequence of regular expressions to ignore can also be supplied:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             ignore=('^An Err','Error!'))
+  >>> logging.getLogger('').addHandler(handler)
+
+  Now, anything matching any of the expressions will be ignored:
+
+  >>> logging.error('An Error')
+  >>> logging.error('The Error!')
+
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger SVN
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  <BLANKLINE>

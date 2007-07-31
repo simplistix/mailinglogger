@@ -147,7 +147,7 @@ ZConfig Configuration
         The date format to use in log entries. This will be used
         wherever the %(asctime)s substitution is used.
 
-	default: %Y-%m-%dT%H:%M:%S
+        default: %Y-%m-%dT%H:%M:%S
 
       level
 
@@ -179,7 +179,7 @@ ZConfig Configuration
         notifications. This can include a port number, 
         eg: mail.example.com:2525 
 
-	default: localhost
+        default: localhost
 
       subject 
 
@@ -196,10 +196,10 @@ ZConfig Configuration
         This is a format string specifying what information will be
         included in each message that is logged.
 
-	Information on what can be included in a format string can be
-	found at:
+        Information on what can be included in a format string can be
+        found at:
 
-	http://docs.python.org/lib/node293.html
+        http://docs.python.org/lib/node293.html
 
         default: %(message)s
 
@@ -225,6 +225,17 @@ ZConfig Configuration
 
         default: 10
 
+      ignore
+
+        A regular expression for entries to be silently discarded
+
+        You can specify one or more regular expressions that are checked 
+        against when a log entry is being handled. If the log entry message
+        matches at least one of the regular expressions it will be discarded
+        silently.
+
+        default: unset
+
     summarising-logger:
 
       dateformat
@@ -232,7 +243,7 @@ ZConfig Configuration
         The date format to use in log entries. This will be used
         wherever the %(asctime)s substitution is used.
 
-	default: %Y-%m-%dT%H:%M:%S
+        default: %Y-%m-%dT%H:%M:%S
 
       level
 
@@ -261,10 +272,10 @@ ZConfig Configuration
       smtp-server 
 
         The SMTP server that should be used to send send the summary
-	mail. This can include a port number, 
+        mail. This can include a port number, 
         eg: mail.example.com:2525 
 
-	default: localhost
+        default: localhost
 
       subject 
 
@@ -281,10 +292,10 @@ ZConfig Configuration
         This is a format string specifying what information will be
         included in each message that is logged.
 
-	Information on what can be included in a format string can be
-	found at:
+        Information on what can be included in a format string can be
+        found at:
 
-	http://docs.python.org/lib/node293.html
+        http://docs.python.org/lib/node293.html
 
         default: %(asctime)s - %(levelname)s - %(message)s
 
@@ -294,6 +305,18 @@ ZConfig Configuration
         emails will be mailed or not.
 
         default: yes
+
+
+      ignore
+
+        A regular expression for entries to be silently discarded
+
+        You can specify one or more regular expressions that are checked 
+        against when a log entry is being handled. If the log entry message
+        matches at least one of the regular expressions it will be discarded
+        silently.
+
+        default: unset
 
       atexit
 

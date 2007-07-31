@@ -31,6 +31,8 @@ Mailing Logger
   - flood protection to ensure the number of emails sent is not
     excessive
 
+  - configurable log entry filtering
+
   - fully documented and tested
 
   The only caveat for using this package is that the smtp server you
@@ -74,6 +76,10 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     3.2.0
+
+       - Added support for log entry filtering, funded by Campux GmbH
 
      3.1.0
 

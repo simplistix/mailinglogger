@@ -4,6 +4,7 @@ import logging
 import os
 import shutil
 import unittest
+from mailinglogger.common import RegexConversion
 from mailinglogger.MailingLogger import MailingLogger
 from mailinglogger.SummarisingLogger import SummarisingLogger
 from shared import setUp as shared_setUp
@@ -57,6 +58,16 @@ class Tests(unittest.TestCase):
         self.assertEqual(f._fmt,normal_format)
         self.assertEqual(f.datefmt,date_format)
         self.assertEqual(f.datefmt,date_format)
+        # ignore
+        ignore = expected.get('ignore')
+        if ignore:
+            self.assertEqual(len(h.ignore),len(ignore))
+            for i,regex in enumerate(h.ignore):
+                self.failUnless(isinstance(regex, RegexConversion))
+                self.assertEqual(regex._rx.pattern,ignore[i])
+            del expected['ignore']
+        else:
+            self.assertEqual(len(h.ignore),0)
         # the rest
         for name,value in expected.items():
             self.assertEqual(getattr(h,name),value)
@@ -98,6 +109,8 @@ class Tests(unittest.TestCase):
     flood-level        13
     username    username
     password    password
+    ignore      ^MyError(.*)
+    ignore      Foobar
   </mailing-logger>    
         ''')
         # check resulting logger
@@ -116,6 +129,7 @@ class Tests(unittest.TestCase):
                     flood_level=13,
                     username='username',
                     password='password',
+                    ignore=('^MyError(.*)','Foobar')
                     )
 
     def test_minimal_config_mailinglogger(self):
@@ -142,6 +156,7 @@ class Tests(unittest.TestCase):
                     flood_level=10,
                     username=None,
                     password=None,
+                    ignore=[],
                     )
 
     def test_all_keys_summarisinglogger(self):
@@ -161,6 +176,8 @@ class Tests(unittest.TestCase):
     atexit             no
     username    username
     password    password
+    ignore      ^MyError(.*)
+    ignore      Foobar
   </summarising-logger>    
         ''')
         # check resulting logger
@@ -170,6 +187,7 @@ class Tests(unittest.TestCase):
                         klass=SummarisingLogger,
                         normal_format='%(levelname)s - %(message)s',
                         date_format='%H:%M:%S on %Y-%m-%d',
+                        ignore=('^MyError(.*)','Foobar'),
                         )
         # check mailer stored as attribure of summariser
         self._checkHandler(l.handlers[0].mailer,
@@ -191,7 +209,13 @@ class Tests(unittest.TestCase):
                            flood_level=10,
                            username='username',
                            password='password',
+                           ignore=[],
                            )
+
+        # Test the ignore setting, which should never be passed to the mailer
+        mailinglogger = l.handlers[0].mailer
+        self.assertEqual(len(mailinglogger.ignore), 0)
+
         # check atexit
         self.assertEqual(atexit._exithandlers,[])
         
@@ -210,6 +234,7 @@ class Tests(unittest.TestCase):
                         klass=SummarisingLogger,
                         normal_format='%(asctime)s - %(levelname)s - %(message)s',
                         date_format='%Y-%m-%dT%H:%M:%S',
+                        ignore=[],
                         )
         # check mailer stored as attribure of summariser
         self._checkHandler(l.handlers[0].mailer,
@@ -225,6 +250,7 @@ class Tests(unittest.TestCase):
                            flood_level=10,
                            username=None,
                            password=None,
+                           ignore=[],
                            )
         # check atexit
         self.assertEqual(atexit._exithandlers,[(l.handlers[0].close,(),{})])

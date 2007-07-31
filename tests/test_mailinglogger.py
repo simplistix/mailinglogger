@@ -6,6 +6,7 @@
 
 import logging
 
+from mailinglogger.common import RegexConversion
 from mailinglogger.MailingLogger import MailingLogger
 from shared import DummySMTP,setTime,resumeTime
 from unittest import TestSuite,makeSuite,TestCase,main
@@ -63,6 +64,37 @@ class TestMailingLogger(TestCase):
         logger.critical('message4')
         # check we are emitted now!
         self.assertEqual(len(DummySMTP.sent),3)
+
+    def test_ignore(self):
+        ignored = [ RegexConversion('^bad start')
+                  , RegexConversion('(.*)Some String')
+                  , RegexConversion('(.*)http:(.*)\/view')
+                  ]
+        self.handler = MailingLogger( 'from@example.com'
+                                    , ('to@example.com',)
+                                    , ignore=ignored
+                                    )
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        # make it 11pm
+        setTime('2007-03-15 23:00:00')
+        # paranoid check
+        self.assertEqual(len(DummySMTP.sent),0)
+
+        # Now test a few variations
+        logger.critical('This Line Contains Some String.')
+        self.assertEqual(len(DummySMTP.sent),0)
+
+        logger.critical('bad starts and terrible endings')
+        self.assertEqual(len(DummySMTP.sent),0)
+
+        logger.critical('NotFoundError: http://my.site.com/some/path/view')
+        self.assertEqual(len(DummySMTP.sent),0)
+
+        # Non-matching stuff still gets through
+        logger.critical('message1')
+        self.assertEqual(len(DummySMTP.sent),1)
+
         
 def test_suite():
     return TestSuite((

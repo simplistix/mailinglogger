@@ -8,6 +8,7 @@
     <key name="smtp-server" default="localhost" datatype="inet-address"/>
     <key name="username" required="no"/>
     <key name="password" required="no"/>
+    <multikey name="ignore" required="no" datatype="mailinglogger.common.RegexConversion"/>
   </sectiontype>
 
   <sectiontype name="mailing-logger" 

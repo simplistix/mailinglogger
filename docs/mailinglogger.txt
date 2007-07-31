@@ -84,6 +84,16 @@ The MailingLogger Class
 
     default: 10
 
+  ignore
+
+    This sequence of strings, each of which is compiled into a regular
+    expression, allows the user to set up rules for ignoring certain
+    log entries. If the body of the message logged matched any of the
+    regular expressions, the log message will be silently discarded
+    and not mailed out.
+
+    default: ()
+
   If you would like detailed examples of how to use MailingLogger,
   please see the examples below.
 
@@ -349,3 +359,44 @@ The MailingLogger Class
 
   For performance reasons, it's recommended that you don't use SMTP
   authentication unless you absolutely need to.
+
+  In order to ignore certain log entries you can use the 'ignore' parameter:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = MailingLogger('from@example.com',('to@example.com',),
+  ...                          ignore='^An Err')
+  >>> logging.getLogger('').addHandler(handler)
+
+  Now if the regular expression specified is matched, the log entry
+  will not be sent:
+
+  >>> logging.error('An Error')
+
+  However, other log entries are still sent:
+
+  >>> logging.error('The Error!')
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: The Error!
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  The Error!
+
+  A sequence of regular expressions to ignore can also be supplied:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = MailingLogger('fromz@example.com',('toz@example.com',),
+  ...                          ignore=('^An Err','Error!'))
+  >>> logging.getLogger('').addHandler(handler)
+
+  Now, anything matching any of the expressions will be ignored:
+
+  >>> logging.error('An Error')
+  >>> logging.error('The Error!')
+
