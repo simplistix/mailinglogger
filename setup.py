@@ -31,3 +31,6 @@ setup(
     ],    
     packages=find_packages(),
     )
+
+# to build and upload the eggs, do:
+# setup.py sdist bdist_egg upload
