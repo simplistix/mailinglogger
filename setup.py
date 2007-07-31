@@ -33,4 +33,5 @@ setup(
     )
 
 # to build and upload the eggs, do:
-# setup.py sdist bdist_egg upload
+# python setup.py sdist bdist_egg upload
+# ...on a unix box!
