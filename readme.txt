@@ -31,6 +31,8 @@ Mailing Logger
   - flood protection to ensure the number of emails sent is not
     excessive
 
+  - support for SMTP servers that require authentication
+
   - configurable log entry filtering
 
   - fully documented and tested
@@ -42,9 +44,12 @@ Mailing Logger
 
   Installation
 
-    Extract the .tar.gz which contains this file anywhere on your
-    python path.
+    To install, either:
+
+    - Extract the .tar.gz anywhere on your python path.
     
+    - use easy_install mailinglogger
+
     Additional support is provided if your application is based on one
     of the following frameworks:
 
@@ -79,7 +84,9 @@ Mailing Logger
 
      3.2.0
 
-       - Added support for log entry filtering, funded by Campux GmbH
+       - Added support for log entry filtering.
+         Thanks to Jens Vagelpohl for the work which was funded by
+         Campux GmbH.
 
      3.1.0
 
