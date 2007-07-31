@@ -12,7 +12,12 @@ Zope Configuration
   eventlog section.
 
   The examples below show this for both types of handler provided by
-  the mailinglogger package
+  the mailinglogger package.
+
+  A full description of the possible keys and defaults for the
+  mailing-logger and summarising-logger sections are given in the
+  reference section of zconfig.txt in the docs directory of the
+  distribution. 
 
   MailingLogger
 
@@ -127,11 +132,3 @@ Zope Configuration
     <BLANKLINE>
     ... - INFO - something happened
     <BLANKLINE>
-
-  Reference
-
-    A full description of the possible keys and defaults for the
-    mailing-logger and summarising-logger sections are given in the
-    reference section of zconfig.txt in the docs directory of the
-    distribution. 
-
