@@ -82,6 +82,10 @@ Mailing Logger
 
   Changes
 
+     3.2.1
+
+       - Fixed egg distribution.
+
      3.2.0
 
        - Added support for log entry filtering.
