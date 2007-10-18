@@ -11,8 +11,6 @@ from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 options = REPORT_NDIFF|ELLIPSIS
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('../readme.txt',
-                     optionflags=options),
         DocFileSuite('../docs/mailinglogger.txt',
                      optionflags=options,
                      setUp=setUp,

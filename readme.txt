@@ -10,7 +10,7 @@ Mailing Logger
     This mails out appropriate log entries as they are emitted.
 
     For more details see mailinglogger.txt in the docs directory of
-    the distribution.
+    the package.
 
   SummarisingLogger
 
@@ -18,7 +18,7 @@ Mailing Logger
     of the running python script.
   
     For more details see summarisinglogger.txt in the docs directory
-    of the distribution.
+    of the package.
 
   Both log handlers have the following features:
  
@@ -56,17 +56,17 @@ Mailing Logger
     - ZConfig
 
       Please refer to zconfig.txt in the docs directory of the
-      distribution. 
+      package. 
 
     - Zope 2
 
       Please refer to zope2.txt in the docs directory of the
-      distribution. 
+      package. 
       
     - Zope 3
 
       Please refer to zope3.txt in the docs directory of the
-      distribution. 
+      package. 
       
     Code that enables easier use of this package with other frameworks
     is welcome and will be included in a future release!
