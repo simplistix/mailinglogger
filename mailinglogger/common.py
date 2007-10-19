@@ -4,9 +4,10 @@
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
+import re
+
 from logging import Formatter
 from socket import gethostname
-from ZConfig.datatypes import RegularExpressionConversion
 
 class SubjectFormatter(Formatter):
     
@@ -20,7 +21,11 @@ class SubjectFormatter(Formatter):
             record.hostname = gethostname()
         return self._fmt % record.__dict__
     
-class RegexConversion(RegularExpressionConversion):
+class RegexConversion:
+
+    def __init__(self, regex):
+        self._rx = re.compile(regex)
+
     def __call__(self, value):
         return bool(self._rx.search(value))
 
