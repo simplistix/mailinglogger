@@ -16,7 +16,7 @@ setup(
     author_email='chris@simplistix.co.uk',
     license='MIT',
     description="Enhanced emailing handlers for the python logging package.",
-    long_description=open(os.path.join(this_dir,'docs','description.txt')).read(),
+    long_description=open(os.path.join(this_dir,'mailinglogger','docs','description.txt')).read(),
     url='http://www.simplistix.co.uk/software/python/mailinglogger',
     keywords="logging email",
     classifiers=[
