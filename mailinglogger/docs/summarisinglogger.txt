@@ -478,7 +478,7 @@ The SummarisingLogger Class
   Subject: Summary of Log Messages
   From: from@example.com
   To: to@example.com
-  X-Mailer: MailingLogger SVN
+  X-Mailer: MailingLogger ...
   Date: ...
   Message-ID: <...MailingLogger@...>
   <BLANKLINE>
@@ -505,7 +505,7 @@ The SummarisingLogger Class
   Subject: Summary of Log Messages
   From: from@example.com
   To: to@example.com
-  X-Mailer: MailingLogger SVN
+  X-Mailer: MailingLogger ...
   Date: ...
   Message-ID: <...MailingLogger@...>
   <BLANKLINE>
