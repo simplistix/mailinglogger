@@ -73,7 +73,7 @@ Mailing Logger
 
   Licensing
 
-     Copyright (c) 2004-2007 Simplistix Ltd
+     Copyright (c) 2004-2008 Simplistix Ltd
      Copyright (c) 2001-2003 New Information Paradigms Ltd
 
      This Software is released under the MIT License:
@@ -81,6 +81,14 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     3.2.2
+
+       - Removed hard dependency on ZConfig
+
+       - Moved to zc.buildout-based development model
+
+       - Fix some doctests for newer versions of zope.testing
 
      3.2.1
 

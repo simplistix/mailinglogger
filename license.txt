@@ -1,4 +1,4 @@
-Copyright (c) 2004-2007 Simplistix Ltd
+Copyright (c) 2004-2008 Simplistix Ltd
 Copyright (c) 2001-2003 New Information Paradigms Ltd
 
 Permission is hereby granted, free of charge, to any person 
