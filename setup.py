@@ -38,4 +38,9 @@ setup(
 
 # to build and upload the eggs, do:
 # python setup.py sdist bdist_egg register upload
+# ...or...
+#  bin/buildout setup setup.py sdist bdist_egg register upload
 # ...on a unix box!
+
+# To check how things will show on pypi, install docutils and then:
+# bin/buildout -q setup setup.py --long-description | rst2html.py --link-stylesheet --stylesheet=http://www.python.org/styles/styles.css > dist/desc.html
