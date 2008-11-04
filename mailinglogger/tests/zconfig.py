@@ -10,7 +10,11 @@ from mailinglogger.SummarisingLogger import SummarisingLogger
 from shared import setUp as shared_setUp
 from shared import tearDown as shared_tearDown
 from tempfile import mkdtemp
-from ZConfig import loadSchema,loadConfig
+try:
+    from ZConfig import loadSchema,loadConfig
+except ImportError:
+    # we don't have a hard dependency on ZConfig
+    pass
 from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 
 def setUp(test):

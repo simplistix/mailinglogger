@@ -35,6 +35,11 @@ class ZConfigTests(Tests):
     
 options = REPORT_NDIFF|ELLIPSIS
 def test_suite():
+    try:
+        import ZConfig
+    except ImportError:
+        # no ZConfig
+        return unittest.TestSuite()
     return unittest.TestSuite((
         DocFileSuite('../docs/zconfig.txt',
                      optionflags=options,
