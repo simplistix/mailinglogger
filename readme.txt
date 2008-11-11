@@ -50,6 +50,10 @@ Mailing Logger
     
     - use easy_install mailinglogger
 
+    NB: Due to an bug in Python 2.5.0, SummarisingLogger requires a
+        any version of Python with the logging framework present
+        *other* than 2.5.0
+
     Additional support is provided if your application is based on one
     of the following frameworks:
 
