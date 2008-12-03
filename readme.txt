@@ -86,7 +86,7 @@ Mailing Logger
 
   Changes
 
-     3.2.2
+     3.2.2 (4 Nov 2008)
 
        - Removed hard dependency on ZConfig
 
@@ -94,21 +94,21 @@ Mailing Logger
 
        - Fix some doctests for newer versions of zope.testing
 
-     3.2.1
+     3.2.1 (14 Aug 2007)
 
        - Fixed egg distribution.
 
-     3.2.0
+     3.2.0 (31 Jul 2007)
 
        - Added support for log entry filtering.
          Thanks to Jens Vagelpohl for the work which was funded by
          Campux GmbH.
 
-     3.1.0
+     3.1.0 (18 May 2007)
 
        - Added support for SMTP servers that require authentication.
 
-     3.0.0
+     3.0.0 (9 May 2007)
 
        - Restructured to be used as a python package instead of a Zope
          Product.
@@ -122,7 +122,7 @@ Mailing Logger
        - Added support for disutils installation and for egg distribution.
 
 
-     2.5.0
+     2.5.0 (5 Oct 2005)
 
        - Added compatability for Zope 2.8.x+ at the expense of now
          being incompatible with Zope 2.7.x. 
@@ -136,7 +136,7 @@ Mailing Logger
 
        - A date header is now set on all emails sent.
 
-     2.4.0
+     2.4.0 (13 May 2005)
 
        - Added sending of X-Mailer header with all emails.
 
@@ -145,27 +145,27 @@ Mailing Logger
        - Fixed bug preventing use of summarising logger introduced in
          2.3.0.
 
-     2.3.0
+     2.3.0 (25 Jan 2005)
 
        - Added the ability to limit the number of emails
          sent per hour.
 
-     2.2.0
+     2.2.0 (13 Oct 2004)
 
        - Added ability to mute empty log entries
 
-     2.1.0
+     2.1.0 (11 Oct 2004)
 
        - Added summarising logger functionality
 
-     2.0.1
+     2.0.1 (1 Aug 2004)
 
        - Corrected documentation
 
        - Fixed bug that caused the subject to include tracebacks,
          which created a broken mail message.
 
-     2.0.0
+     2.0.0 (28 Jul 2004)
 
        - Re-write for Zope 2.7
 
