@@ -38,6 +38,9 @@ ZConfig Configuration
   ...      to      receiver@example.com
   ...      to      support@example.com
   ...      subject [MyApp] %(line)s
+  ...      <headers>
+  ...        filter some-customer
+  ...      </headers>
   ...    </mailing-logger>    
   ...  </logger>
   ... ''')
@@ -77,6 +80,7 @@ ZConfig Configuration
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
+  filter: some-customer
   Subject: [MyApp] something bad has happened
   From: logging@example.com
   To: receiver@example.com, support@example.com
@@ -98,6 +102,9 @@ ZConfig Configuration
   ...      to      summary@example.com
   ...      subject Summary of Activity
   ...      format  %(levelname)s - %(message)s
+  ...      <headers>
+  ...        filter some-customer
+  ...      </headers>
   ...    </summarising-logger>    
   ...  </logger>
   ... ''')
@@ -121,6 +128,7 @@ ZConfig Configuration
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
+  filter: some-customer
   Subject: Summary of Activity
   From: logging@example.com
   To: summary@example.com

@@ -1,5 +1,12 @@
 <component prefix="mailinglogger.datatypes">
 
+  <sectiontype name="headers">
+  <key datatype="string"
+       attribute="values"
+       name="+"
+       required="yes"/>
+  </sectiontype>
+
   <sectiontype name="base-mailer"
                implements="ZConfig.logger.handler" 
                extends="ZConfig.logger.base-log-handler">
@@ -9,6 +16,7 @@
     <key name="username" required="no"/>
     <key name="password" required="no"/>
     <multikey name="ignore" required="no" datatype="mailinglogger.common.RegexConversion"/>
+    <section name="*" attribute="headers" type="headers"/>
   </sectiontype>
 
   <sectiontype name="mailing-logger" 

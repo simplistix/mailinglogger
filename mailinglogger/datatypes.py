@@ -17,8 +17,14 @@ class MailingLoggerHandlerFactory(HandlerFactory):
             return host
         else:
             return host, port
+
+    def headers(self):
+        if self.section.headers:
+            return self.section.headers.values
+        else:
+            return {}
         
-    def create_loghandler(self):        
+    def create_loghandler(self):
         return MailingLogger(self.section.fromaddr,
                              self.section.toaddrs,
                              self.mailhost(),
@@ -27,7 +33,8 @@ class MailingLoggerHandlerFactory(HandlerFactory):
                              self.section.flood_level,
                              self.section.username,
                              self.section.password,
-                             self.section.ignore)
+                             self.section.ignore,
+                             self.headers())
 
 class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
@@ -40,7 +47,8 @@ class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
                                  self.section.atexit,
                                  self.section.username,
                                  self.section.password,
-                                 self.section.ignore)
+                                 self.section.ignore,
+                                 self.headers())
 
 _log_format_variables = {
     'name': '',

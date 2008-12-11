@@ -41,6 +41,9 @@ Zope Configuration
     ...      from    logging@example.com
     ...      to      support@example.com
     ...      subject [Zope] %(line)s
+    ...      <headers>
+    ...        filter some-customer
+    ...      </headers>
     ...    </mailing-logger>    
     ...  </eventlog>
     ... ''')
@@ -60,6 +63,7 @@ Zope Configuration
     Content-Type: text/plain; charset="us-ascii"
     MIME-Version: 1.0
     Content-Transfer-Encoding: 7bit
+    filter: some-customer
     Subject: [Zope] something happened
     From: logging@example.com
     To: support@example.com
@@ -99,6 +103,9 @@ Zope Configuration
     ...      from    logging@example.com
     ...      to      support@example.com
     ...      subject Summary of Zope Activity
+    ...      <headers>
+    ...        filter some-customer
+    ...      </headers>
     ...    </summarising-logger>    
     ...  </eventlog>
     ... ''')
@@ -123,6 +130,7 @@ Zope Configuration
     Content-Type: text/plain; charset="us-ascii"
     MIME-Version: 1.0
     Content-Transfer-Encoding: 7bit
+    filter: some-customer
     Subject: Summary of Zope Activity
     From: logging@example.com
     To: support@example.com
