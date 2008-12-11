@@ -94,6 +94,13 @@ The MailingLogger Class
 
     default: ()
 
+  headers
+
+    This is a dictionary containing headers and their values to be
+    added to any emails sent.
+   
+    default: {}
+
   If you would like detailed examples of how to use MailingLogger,
   please see the examples below.
 
@@ -399,4 +406,28 @@ The MailingLogger Class
 
   >>> logging.error('An Error')
   >>> logging.error('The Error!')
+
+  If you wish to add headers for filtering purposes, you can use the
+  headers parameter:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = MailingLogger('from@example.com',('to@example.com',),
+  ...                             headers={'foo':'bar','Baz':'bob'})
+  >>> logging.getLogger('').addHandler(handler)
+
+  >>> logging.error('The Error!')
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  foo: bar
+  Baz: bob
+  Subject: The Error!
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger ...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  The Error!
 

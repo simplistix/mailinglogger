@@ -69,7 +69,10 @@ The SummarisingLogger Class
     Information on what can be included in a subject format string can
     be found in docs/subjectformatter.txt
 
-    default: 'Summary of Log Messages (%(maxlevelname)s)'
+    NB: %(levelname)s when used in the subject parameter will be the
+        highest level message handled by the SummarisingLogger.
+
+    default: 'Summary of Log Messages (%(levelname)s)'
 
   send_empty_entries
 
@@ -96,6 +99,13 @@ The SummarisingLogger Class
 
     default: ()
 
+  headers
+
+    This is a dictionary containing headers and their values to be
+    added to any emails sent.
+   
+    default: {}
+
   If you would like detailed examples of how to use SummarisingLogger,
   please see the examples below.
 
@@ -111,6 +121,9 @@ The SummarisingLogger Class
 
   However, when we log a message, nothing appears to happen:
 
+  >>> logging.debug('some debugging')
+  >>> logging.info('some information')
+  >>> logging.warning('a warning')
   >>> logging.error('my message')
 
   This is because the messages have been recorded and will be sent as
@@ -131,6 +144,7 @@ The SummarisingLogger Class
   Date: ...
   Message-ID: <...MailingLogger@...>
   <BLANKLINE>
+  a warning
   my message
   <BLANKLINE>
 
@@ -322,7 +336,7 @@ The SummarisingLogger Class
   <BLANKLINE>
 
   It should be noted that the level used for the summary email sent is
-  the level at which the handler is set:
+  the maximum level message handled by the logger:
 
   >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
   ...                             subject='[%(levelname)s] summary')
@@ -342,6 +356,26 @@ The SummarisingLogger Class
   Message-ID: <...MailingLogger@...>
   <BLANKLINE>
   a message
+  <BLANKLINE>
+  
+  If no messages have been handled by the logger, then %(levelname)s
+  will be the string 'NOTSET':
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             subject='[%(levelname)s] summary')
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: [NOTSET] summary
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
   <BLANKLINE>
   
   By default, the SummarisingLogger handler will always send emails
@@ -502,7 +536,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages (Empty)
+  Subject: Summary of Log Messages (NOTSET)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger ...
@@ -510,3 +544,31 @@ The SummarisingLogger Class
   Message-ID: <...MailingLogger@...>
   <BLANKLINE>
   <BLANKLINE>
+
+  If you wish to add headers for filtering purposes, you can use the
+  headers parameter:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             headers={'foo':'bar','Baz':'bob'})
+  >>> logging.getLogger('').addHandler(handler)
+
+  >>> logging.error('The Error!')
+
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  foo: bar
+  Baz: bob
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger ...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  The Error!
+  <BLANKLINE>
+

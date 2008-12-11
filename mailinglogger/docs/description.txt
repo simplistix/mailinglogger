@@ -8,8 +8,7 @@
     
     - customisable and dynamic subject lines for emails sent
 
-    - emails sent with a configurable X-Mailer header for easy
-      filtering.
+    - emails sent with configurable headers for easy filtering
     
     - flood protection to ensure the number of emails sent is not
       excessive

@@ -30,7 +30,7 @@ Mailing Logger
 
     X-Mailer: MailingLogger <version>
 
-    In addition, the value of this header can be easilly configured.
+    In addition, other headers can be easilly configured.
 
   - flood protection to ensure the number of emails sent is not
     excessive
@@ -91,6 +91,19 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+     3.3.0 (11 Dec 2008)
+  
+       - Tweak installation documentation
+
+       - Add specific test runners for ZConfig, Zope 2 and Zope 3
+         support
+  
+       - %(levelname)s in the subject of a SummarisingLogger summary
+         is now the highest level message handled by that logger
+
+       - Add support for specifying additional headers to the mails
+         sent
 
      3.2.2 (4 Nov 2008)
 

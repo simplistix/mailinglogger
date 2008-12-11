@@ -14,18 +14,19 @@ from tempfile import mkstemp
 
 class SummarisingLogger(FileHandler):
 
-    maxlevelno = -1
+    maxlevelno = 0
     
     def __init__(self,
                  fromaddr,
                  toaddrs,
                  mailhost='localhost',
-                 subject='Summary of Log Messages (%(maxlevelname)s)',
+                 subject='Summary of Log Messages (%(levelname)s)',
                  send_empty_entries=True,
                  atexit=True,
                  username=None,
                  password=None,
-                 ignore=()):
+                 ignore=(),
+                 headers=None):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(fromaddr,
                                     toaddrs,
@@ -33,7 +34,8 @@ class SummarisingLogger(FileHandler):
                                     subject,
                                     send_empty_entries,
                                     username=username,
-                                    password=password)
+                                    password=password,
+                                    headers=headers)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.ignore = process_ignore(ignore)

@@ -11,10 +11,6 @@ from socket import gethostname
 
 class SubjectFormatter(Formatter):
     
-    def __init__(self, fmt,logger):
-        Formatter.__init__(self,fmt)
-        self.logger = logger
-
     def format(self,record):
         record.message = record.getMessage()
         if self._fmt.find('%(line)') >= 0:
@@ -23,12 +19,6 @@ class SubjectFormatter(Formatter):
             record.asctime = self.formatTime(record, self.datefmt)
         if self._fmt.find("%(hostname)") >= 0:
             record.hostname = gethostname()
-        if self._fmt.find("%(maxlevelname)") >= 0:
-            try:
-                record.maxlevelname = self.logger.maxlevelname
-            except:
-                import pdb; pdb.set_trace()
-                raise
         return self._fmt % record.__dict__
     
 class RegexConversion:
