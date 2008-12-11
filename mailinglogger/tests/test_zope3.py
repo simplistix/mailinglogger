@@ -37,6 +37,8 @@ def test_suite():
         from zope.app import twisted
     except ImportError:
         # no zope 3
+        if os.environ.get('mailinglogger_env')=='zope3':
+            raise
         return unittest.TestSuite()
     return unittest.TestSuite((
         DocFileSuite('../docs/zope3.txt',

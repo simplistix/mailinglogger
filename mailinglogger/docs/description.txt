@@ -8,7 +8,8 @@
     
     - customisable and dynamic subject lines for emails sent
 
-    - emails sent with an X-Mailer header for easy filtering
+    - emails sent with a configurable X-Mailer header for easy
+      filtering.
     
     - flood protection to ensure the number of emails sent is not
       excessive
@@ -24,7 +25,9 @@
 
     To install, either:
 
-    - Extract the .tar.gz anywhere on your python path.
+    - Extract the .tar.gz and do the usual::
+
+      python setup.py install
     
     - use easy_install mailinglogger
 

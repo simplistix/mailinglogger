@@ -9,7 +9,7 @@ Mailing Logger
   
     This mails out appropriate log entries as they are emitted.
 
-    For more details see mailinglogger.txt in the docs directory of
+    For more details, see mailinglogger.txt in the docs directory of
     the package.
 
   SummarisingLogger
@@ -17,16 +17,20 @@ Mailing Logger
     This mails out a summary of all appropriate log entries at the end
     of the running python script.
   
-    For more details see summarisinglogger.txt in the docs directory
+    For more details, see summarisinglogger.txt in the docs directory
     of the package.
 
   Both log handlers have the following features:
  
   - customisable and dynamic subject lines for emails sent
+    For more details, see subjectformatter.txt in the docs directory
+    of the package.
 
   - emails sent with a header as follows for easy filtering:
 
     X-Mailer: MailingLogger <version>
+
+    In addition, the value of this header can be easilly configured.
 
   - flood protection to ensure the number of emails sent is not
     excessive
@@ -46,7 +50,9 @@ Mailing Logger
 
     To install, either:
 
-    - Extract the .tar.gz anywhere on your python path.
+    - Extract the .tar.gz and do the usual:
+    
+      python setup.py install
     
     - use easy_install mailinglogger
 

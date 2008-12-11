@@ -35,6 +35,8 @@ def test_suite():
         from Zope2 import app
     except ImportError:
         # no zope 2
+        if os.environ.get('mailinglogger_env')=='zope2':
+            raise
         return unittest.TestSuite()
     return unittest.TestSuite((
         DocFileSuite('../docs/zope2.txt',

@@ -1,4 +1,4 @@
-# Copyright (c) 2007 Simplistix Ltd
+# Copyright (c) 2007-2008 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -11,6 +11,10 @@ from socket import gethostname
 
 class SubjectFormatter(Formatter):
     
+    def __init__(self, fmt,logger):
+        Formatter.__init__(self,fmt)
+        self.logger = logger
+
     def format(self,record):
         record.message = record.getMessage()
         if self._fmt.find('%(line)') >= 0:
@@ -19,6 +23,12 @@ class SubjectFormatter(Formatter):
             record.asctime = self.formatTime(record, self.datefmt)
         if self._fmt.find("%(hostname)") >= 0:
             record.hostname = gethostname()
+        if self._fmt.find("%(maxlevelname)") >= 0:
+            try:
+                record.maxlevelname = self.logger.maxlevelname
+            except:
+                import pdb; pdb.set_trace()
+                raise
         return self._fmt % record.__dict__
     
 class RegexConversion:

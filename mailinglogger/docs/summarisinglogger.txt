@@ -69,7 +69,7 @@ The SummarisingLogger Class
     Information on what can be included in a subject format string can
     be found in docs/subjectformatter.txt
 
-    default: 'Summary of Log Messages'
+    default: 'Summary of Log Messages (%(maxlevelname)s)'
 
   send_empty_entries
 
@@ -124,7 +124,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -173,7 +173,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -282,7 +282,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -311,7 +311,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (WARNING)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -334,7 +334,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: [WARNING] summary
+  Subject: [CRITICAL] summary
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -355,7 +355,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -392,7 +392,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -416,7 +416,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -441,7 +441,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...
@@ -475,7 +475,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (ERROR)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger ...
@@ -502,7 +502,7 @@ The SummarisingLogger Class
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: Summary of Log Messages
+  Subject: Summary of Log Messages (Empty)
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger ...

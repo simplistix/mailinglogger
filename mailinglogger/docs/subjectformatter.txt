@@ -30,7 +30,7 @@ The SubjectFormatter Class
     ... %(thread)d
     ... %(process)d
     ... %(message)r
-    ... ''')
+    ... ''',None)
 
     To show this in action, we can instantiate a log record and then
     format it with our formatter:
@@ -66,7 +66,7 @@ The SubjectFormatter Class
     additional keyword substitution is provided that equates to the
     first line of any object logged:
 
-    >>> f = SubjectFormatter('%(line)r')
+    >>> f = SubjectFormatter('%(line)r',None)
 
     We can now see how this formatter represents the log record
     generated previously:
@@ -115,14 +115,31 @@ The SubjectFormatter Class
     >>> print f.format(r)
     'bad things caught'
     
-    Finally, to aid administration where the same python software runs
+    To aid administration where the same python software runs
     on a cluster of machines, the hostname of the machine from which
     the email sent can also be easilly included:
 
     >>> setHostName('localhost')
-    >>> f = SubjectFormatter('[%(hostname)s] %(line)r')
+    >>> f = SubjectFormatter('[%(hostname)s] %(line)r',None)
     >>> print f.format(r)
     [localhost] 'bad things caught'
+
+    To make the messages the messages sent by a SummarisingLogger more
+    useful, the name of the maximum level logged can be included.
+
+    The maximum level logged is taken from the logger itself, here
+    we'll just use a dummy:
+
+    >>> class DummyLogger: pass
+    >>> l = DummyLogger()
+    >>> l.maxlevelname = 'ERROR'
+
+    >>> f = SubjectFormatter('Summary: %(maxlevelname)s',l)
+    >>> print f.format(r)
+    Summary: ERROR
+  
+    Both SummarisingLogger and MailingLogger keep track of the maximum
+    level logged and are compatible with `maxlevelname`.
 
     Please check the following url for further documentation that may
     detail new subtitution names that can be used in the string

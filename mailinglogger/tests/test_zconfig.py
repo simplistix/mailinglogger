@@ -39,6 +39,8 @@ def test_suite():
         import ZConfig
     except ImportError:
         # no ZConfig
+        if os.environ.get('mailinglogger_env')=='zconfig':
+            raise
         return unittest.TestSuite()
     return unittest.TestSuite((
         DocFileSuite('../docs/zconfig.txt',
