@@ -25,9 +25,6 @@ flood_template = open(os.path.join(this_dir,'flood_template.txt')).read()
 
 class MailingLogger(SMTPHandler):
 
-    maxlevelno = -1
-    maxlevelname = 'Empty'
-    
     def __init__(self,
                  fromaddr,
                  toaddrs,
@@ -83,10 +80,6 @@ class MailingLogger(SMTPHandler):
             return
         self.sent += 1
 
-        if record.levelno > self.maxlevelno:
-            self.maxlevelno = record.levelno
-            self.maxlevelname = record.levelname
-            
         # actually send the mail
         try:
             msg = self.format(record)

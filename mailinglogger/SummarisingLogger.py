@@ -14,13 +14,13 @@ from tempfile import mkstemp
 
 class SummarisingLogger(FileHandler):
 
-    maxlevelno = -1
+    maxlevelno = 0
     
     def __init__(self,
                  fromaddr,
                  toaddrs,
                  mailhost='localhost',
-                 subject='Summary of Log Messages (%(maxlevelname)s)',
+                 subject='Summary of Log Messages (%(levelname)s)',
                  send_empty_entries=True,
                  atexit=True,
                  username=None,
