@@ -34,7 +34,8 @@ class MailingLogger(SMTPHandler):
                  flood_level=10,
                  username=None,
                  password=None,
-                 ignore=()):
+                 ignore=(),
+                 headers=None):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject,self)
         self.send_empty_entries = send_empty_entries
@@ -44,6 +45,7 @@ class MailingLogger(SMTPHandler):
         self.username = username
         self.password = password
         self.ignore = process_ignore(ignore)
+        self.headers = headers or {}
         if not self.mailport:
             self.mailport = smtplib.SMTP_PORT
 
@@ -84,6 +86,8 @@ class MailingLogger(SMTPHandler):
         try:
             msg = self.format(record)
             email = MIMEText(msg)
+            for header,value in self.headers.items():
+                email[header]=value
             email['Subject']=self.getSubject(record)
             email['From']=self.fromaddr
             email['To']=', '.join(self.toaddrs)

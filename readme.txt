@@ -30,7 +30,7 @@ Mailing Logger
 
     X-Mailer: MailingLogger <version>
 
-    In addition, the value of this header can be easilly configured.
+    In addition, other headers can be easilly configured.
 
   - flood protection to ensure the number of emails sent is not
     excessive
