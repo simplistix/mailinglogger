@@ -113,6 +113,17 @@ class TestMailingLogger(TestCase):
         self.failUnless('To: to@example.com' in m)
         self.failUnless('to: someidiot' in m)
         
+    def test_subject_contains_date(self):
+        # set up logger
+        self.handler = MailingLogger('from@example.com',('to@example.com',),
+                                     subject="%(asctime)s")
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        setTime('2007-03-15 23:00:00')
+        logger.critical('message')
+        self.assertEqual(len(DummySMTP.sent),1)
+        m = DummySMTP.sent[0][3]
+        self.failUnless('Subject: 2007-03-15 23:00:00,000' in m)
         
 def test_suite():
     return TestSuite((

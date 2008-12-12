@@ -37,7 +37,7 @@ class MailingLogger(SMTPHandler):
                  ignore=(),
                  headers=None):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
-        self.subject_formatter = SubjectFormatter(subject,self)
+        self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
         self.flood_level = flood_level
         self.hour = now().hour
