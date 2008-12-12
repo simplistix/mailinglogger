@@ -24,7 +24,7 @@
 
     To install, either:
 
-    - Extract the .tar.gz and do the usual::
+    - Extract the .tar.gz and do the usual:
 
       python setup.py install
     
