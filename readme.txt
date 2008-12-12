@@ -92,6 +92,10 @@ Mailing Logger
 
   Changes
 
+     3.3.1 (12 Dec 2008)
+  
+       - Fix bug that occurred when subject format used %(asctime)s
+
      3.3.0 (11 Dec 2008)
   
        - Tweak installation documentation
