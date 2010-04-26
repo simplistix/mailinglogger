@@ -1,4 +1,4 @@
-# Copyright (c) 2007 Simplistix Ltd
+# Copyright (c) 2007-2010 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -6,7 +6,7 @@
 
 import unittest
 from shared import setUp,tearDown
-from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
+from doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 
 options = REPORT_NDIFF|ELLIPSIS
 def test_suite():

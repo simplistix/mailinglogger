@@ -105,7 +105,7 @@ The SubjectFormatter Class
     >>> print Formatter().format(r)
     bad things caught
     Traceback (most recent call last):
-      File "<doctest subjectformatter.txt[9]>", line 2, in ...
+      File "<doctest subjectformatter.txt[...]>", line 2, in ...
         raise RuntimeException('something bad happened')
     NameError: name 'RuntimeException' is not defined
 

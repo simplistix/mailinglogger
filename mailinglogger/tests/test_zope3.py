@@ -1,4 +1,4 @@
-# Copyright (c) 2007 Simplistix Ltd
+# Copyright (c) 2007-2010 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -8,7 +8,7 @@ import os
 import unittest
 
 from zconfig import setUp,tearDown,Tests
-from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
+from doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 
 class Zope3Tests(Tests):
 

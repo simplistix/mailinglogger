@@ -1,3 +1,9 @@
+# Copyright (c) 2007-2010 Simplistix Ltd
+#
+# This Software is released under the MIT License:
+# http://www.opensource.org/licenses/mit-license.html
+# See license.txt for more details.
+
 # base stuff for all zconfig-based (ZConfig, Zope 2, Zope 3) based tests
 import atexit
 import logging
@@ -15,7 +21,7 @@ try:
 except ImportError:
     # we don't have a hard dependency on ZConfig
     pass
-from zope.testing.doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
+from doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 
 def setUp(test):
     shared_setUp(test)
