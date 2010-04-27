@@ -83,7 +83,7 @@ Mailing Logger
 
   Licensing
 
-     Copyright (c) 2004-2008 Simplistix Ltd
+     Copyright (c) 2004-2010 Simplistix Ltd
      Copyright (c) 2001-2003 New Information Paradigms Ltd
 
      This Software is released under the MIT License:
@@ -91,6 +91,15 @@ Mailing Logger
      See license.txt for more details.
 
   Changes
+
+    3.3.2 (27 Apr 2010)
+
+       - Ignores are processed on the interpolated error message.
+
+       - Check for empty error messages is done on the interpolated error
+         message which in all cases is a string.
+
+       Thanks to Christian Zagrodnick for these changes.
 
      3.3.1 (12 Dec 2008)
   
@@ -143,7 +152,6 @@ Mailing Logger
        - Added support for configuration in both Zope 3 and Zope 2.
 
        - Added support for disutils installation and for egg distribution.
-
 
      2.5.0 (5 Oct 2005)
 

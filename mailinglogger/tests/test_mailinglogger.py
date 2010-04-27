@@ -91,6 +91,11 @@ class TestMailingLogger(TestCase):
         logger.critical('NotFoundError: http://my.site.com/some/path/view')
         self.assertEqual(len(DummySMTP.sent),0)
 
+        # Interpolations are also ignored
+        logger.critical('NotFoundError: %s',
+                        'http://my.site.com/some/path/view')
+        self.assertEqual(len(DummySMTP.sent),0)
+
         # Non-matching stuff still gets through
         logger.critical('message1')
         self.assertEqual(len(DummySMTP.sent),1)
@@ -124,7 +129,14 @@ class TestMailingLogger(TestCase):
         self.assertEqual(len(DummySMTP.sent),1)
         m = DummySMTP.sent[0][3]
         self.failUnless('Subject: 2007-03-15 23:00:00,000' in m)
-        
+
+    def test_non_string_error_messages_dont_break_logging(self):
+        self.handler = MailingLogger('from@example.com',('to@example.com',),)
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical(object())
+        self.assertEqual(len(DummySMTP.sent),1)
+
 def test_suite():
     return TestSuite((
         makeSuite(TestMailingLogger),

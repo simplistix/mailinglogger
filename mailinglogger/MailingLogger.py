@@ -53,13 +53,14 @@ class MailingLogger(SMTPHandler):
         return self.subject_formatter.format(record)
 
     def emit(self,record):
-        if not self.send_empty_entries and not record.msg.strip():
+        msg = record.getMessage()
+        if not self.send_empty_entries and not msg.strip():
             return
 
         for criterion in self.ignore:
-            if criterion(record.msg):
+            if criterion(msg):
                 return
-            
+
         current_time = now()
         current_hour = current_time.hour
         if current_hour != self.hour:
