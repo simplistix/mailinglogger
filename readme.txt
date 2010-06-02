@@ -92,6 +92,12 @@ Mailing Logger
 
   Changes
 
+    3.3.3 (02 Jun 2010)
+
+       - Let the tests also pass on in non GMT timezones.
+
+       Thanks to Christian Zagrodnick for these changes.
+
     3.3.2 (27 Apr 2010)
 
        - Ignores are processed on the interpolated error message.

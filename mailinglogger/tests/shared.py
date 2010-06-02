@@ -1,6 +1,7 @@
 import atexit
 import datetime
 import logging
+import os
 import smtplib
 import time
 
@@ -75,25 +76,31 @@ class Dummy:
     def __init__(self,value):
         self.value = value
 
-    def __call__(self):
+    def __call__(self, *args):
         return self.value
     
 old_time = None
 old_now = None
+old_tz = None
+no_tz_marker = object()
 
 def setTime(ts='2007-01-01 10:00:00'):
-    global old_time,old_now
+    global old_time, old_now, old_tz
     from mailinglogger import MailingLogger
     if old_now is None:
         old_now = MailingLogger.now
     if old_time is None:
         old_time = time.time
+    if old_tz is None:
+        old_tz = os.environ.get('TZ', no_tz_marker)
+    os.environ['TZ'] = 'GMT'
+    time.tzset()
     t = datetime.datetime(*time.strptime(ts,"%Y-%m-%d %H:%M:%S")[0:6])
     MailingLogger.now = Dummy(t)
     time.time = Dummy(time.mktime(t.timetuple()))
 
 def resumeTime():
-    global old_time,old_now
+    global old_time, old_now, old_tz
     from mailinglogger import MailingLogger
     if old_now is not None:
         MailingLogger.now = old_now
@@ -101,6 +108,13 @@ def resumeTime():
     if old_time is not None:
         time.time = old_time
         old_time = None
+    if old_tz is not None:
+        if old_tz is no_tz_marker:
+            del os.environ['TZ']
+        else:
+            os.environ['TZ'] = old_Tz
+        time.tzset()
+        old_tz = None
 
 old_hostname = None
 def setHostName(name):
