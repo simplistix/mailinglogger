@@ -24,4 +24,4 @@ The handlers have the following features:
 - fully documented and tested
     
 In addition, extra support is provided for configuring the
-handlers when using ZConfig, Zope 2 or Zope 3.
+handlers when using ZConfig, Zope 2 or Plone.
