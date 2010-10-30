@@ -1,0 +1,51 @@
+MailingLogger documentation
+===========================
+
+This package provides more flexible and powerful email log handling for
+python's standard logging framework. 
+
+Two log handlers are provided:
+
+:doc:`MailingLogger <mailinglogger>`
+   This mails out appropriate log entries as they are emitted.
+
+:doc:`SummarisingLogger <summarisinglogger>`
+   This mails out a summary of all appropriate log entries at the end
+   of the running python script.
+
+The only caveat for using this package is that the smtp server you
+are using must be fast. Email is sent via SMTP and, if using a
+MailingLogger, at the time the message is logged. If your SMTP
+server is slow, your application's performance may suffer.
+
+Additional support is provided if your application is based on one
+of the following frameworks:
+
+- :doc:`ZConfig <zconfig>`
+- :doc:`Zope 2 and Plone <zope2>`
+
+Code that enables easier use of this package with other frameworks
+is welcome and will be included in a future release!
+
+Full documentation can be found using the links below:
+
+.. toctree::
+   :maxdepth: 2
+
+   installation.txt
+   mailinglogger.txt
+   summarisinglogger.txt
+   subjectformatter.txt
+   zconfig.txt
+   zope2.txt
+   development.txt
+   changes.txt
+   license.txt
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

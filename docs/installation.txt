@@ -1,0 +1,15 @@
+Installation Instructions
+=========================
+
+The easyiest way to install MailingLogger is::
+
+  easy_install mailinglogger
+
+Or, if you're using `zc.buildout`, just specify ``mailinglogger`` as a
+required egg. 
+
+.. note:: 
+
+  Due to a bug in Python 2.5.0, SummarisingLogger requires a
+  any version of Python with the logging framework present
+  *other* than 2.5.0

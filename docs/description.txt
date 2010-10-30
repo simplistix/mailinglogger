@@ -1,0 +1,27 @@
+=============
+MailingLogger
+=============
+
+This package contains two handlers for the python logging
+framework that enable important log entries to be sent by email.
+
+This can either be as the entries are logged or as a summary at
+the end of the running process.
+
+The handlers have the following features:
+    
+- customisable and dynamic subject lines for emails sent
+
+- emails sent with configurable headers for easy filtering
+    
+- flood protection to ensure the number of emails sent is not
+  excessive
+
+- support for SMTP servers that require authentication
+
+- configurable log entry filtering
+
+- fully documented and tested
+    
+In addition, extra support is provided for configuring the
+handlers when using ZConfig, Zope 2 or Zope 3.

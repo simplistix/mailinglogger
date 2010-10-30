@@ -1,0 +1,132 @@
+SubjectFormatter
+================
+
+    A SubjectFormatter is a special type of logging formatter that is
+    created from the 'subject' parameter to the constuctor of a
+    MailingLogger or SummarisingLogger.
+
+    It is tailored for formatting a log record to form the subject
+    line of an email message.
+
+    So all the demonstations can make sense, we'll first "freeze time": 
+
+    >>> setTime('2007-01-01 10:00:00')
+
+    As can be seen, SubjectFormatter supports all the usual keyword
+    substitutions supported by normal Formatter objects:
+
+    >>> from mailinglogger.common import SubjectFormatter
+    >>> f = SubjectFormatter('''
+    ... %(name)r
+    ... %(levelno)r
+    ... %(levelname)r
+    ... %(pathname)r
+    ... %(filename)r
+    ... %(module)r
+    ... %(lineno)d
+    ... %(created)f
+    ... %(asctime)r
+    ... %(msecs)d
+    ... %(relativeCreated)f
+    ... %(thread)d
+    ... %(process)d
+    ... %(message)r
+    ... ''',None)
+
+    To show this in action, we can instantiate a log record and then
+    format it with our formatter:
+
+    >>> from logging import LogRecord
+    >>> r = LogRecord(name='aname', 
+    ...               level=10, 
+    ...               pathname='somepath.py', 
+    ...               lineno=123,
+    ...               msg='msgline%i\nmsgline%i',
+    ...               args=(1,2), 
+    ...               exc_info=None)
+    >>> print f.format(r)
+    <BLANKLINE>
+    'aname'
+    10
+    'DEBUG'
+    'somepath.py'
+    'somepath.py'
+    'somepath'
+    123
+    1167645600.000000
+    '2007-01-01 10:00:00,000'
+    0
+    ...
+    ...
+    ...
+    'msgline1\nmsgline2'
+    <BLANKLINE>
+
+    The example above, however, would not generate a valid email, as
+    the subject line would contain newslines. For this reason, an
+    additional keyword substitution is provided that equates to the
+    first line of any object logged:
+
+    >>> f = SubjectFormatter('%(line)r')
+
+    We can now see how this formatter represents the log record
+    generated previously:
+
+    >>> print f.format(r)
+    'msgline1'
+
+    As you can see, this only includes the first line of the message
+    logged making it ideal for use in the generation of email subject
+    lines.
+
+    Again in order to prevent multi-line subjects, any exception
+    information provided in a  logging call is not added to the end of
+    the subject line.
+
+    This can be seen by creating a log entry as it would be by the
+    python logging framework when an exception is logged:
+
+    >>> import sys
+    >>> try:
+    ...     raise RuntimeException('something bad happened')
+    ... except:
+    ...     exc_info = sys.exc_info()
+    >>> r = LogRecord(name='aname', 
+    ...               level=10, 
+    ...               pathname='somepath.py', 
+    ...               lineno=123,
+    ...               msg='bad things caught',
+    ...               args=(), 
+    ...               exc_info=exc_info)
+
+    Normally, a logging formatter would include a traceback when
+    representing this entry:
+
+    >>> from logging import Formatter
+    >>> print Formatter().format(r)
+    bad things caught
+    Traceback (most recent call last):
+      File "<doctest subjectformatter.txt[...]>", line 2, in ...
+        raise RuntimeException('something bad happened')
+    NameError: name 'RuntimeException' is not defined
+
+    However, if we use the subject formatter we previously created,
+    the log entry is formatted as follows:
+
+    >>> print f.format(r)
+    'bad things caught'
+    
+    To aid administration where the same python software runs
+    on a cluster of machines, the hostname of the machine from which
+    the email sent can also be easilly included:
+
+    >>> setHostName('localhost')
+    >>> f = SubjectFormatter('[%(hostname)s] %(line)r')
+    >>> print f.format(r)
+    [localhost] 'bad things caught'
+
+    Please check the following url for further documentation that may
+    detail new subtitution names that can be used in the string
+    supplied to the subject formatter's constructor:
+
+    http://docs.python.org/lib/node293.html

@@ -1,0 +1,575 @@
+SummarisingLogger
+=================
+
+ SummarisingLogger is a handler for the python logging framework that
+ accumulates log entries and sends a single email containing all the
+ log entries using an SMTP server when its 'close' method is called.
+
+ This close method is, by default, registered as an 'atexit' function
+ so that the summary mail will get sent regardless of whether an
+ explicit call is made to the SummarisingLogger's 'close' method.
+
+ SummaringLoggers can be very useful for batch processes that are
+ frequently run and where people would like an email summary of how
+ the batch run went.
+
+ Parameter Reference
+
+  All aspects of SummarisingLogger's behaviour are controlled by the
+  parameters passed to the constructor, these are detailed below:
+
+  fromaddr
+
+    The address from which the summary email will originate.
+
+    This must be supplied.
+
+  toaddrs
+
+    A sequence on strings containing  addresses to which the summary
+    email will be sent. 
+
+    This must be supplied.
+
+  mailhost
+
+    The SMTP server that should be used to send the summary mail. 
+  
+    This can either be a string containing the hostname of the SMTP
+    server or a tuple containing the hostname and port number of the
+    SMTP server. If only the hostname is specified, it is assumed that
+    the SMTP server is listening on port 25.
+
+    default: ('localhost',25)
+
+  username
+
+    The username to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  password
+
+    The password to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  subject 
+
+    This is a format string specifying what information will be
+    included in the subject line of the summary email.
+
+    Information on what can be included in a subject format string can
+    be found in docs/subjectformatter.txt
+
+    NB: %(levelname)s when used in the subject parameter will be the
+        highest level message handled by the SummarisingLogger.
+
+    default: 'Summary of Log Messages (%(levelname)s)'
+
+  send_empty_entries
+
+    This is a boolean parameter which specifies whether a summary
+    message will be sent even if no messages have been logged.
+
+    default: True
+
+  atexit
+
+    If True, this close method of the summarising logger is set as an
+    atexit function that runs when the currently executing python
+    script finishes.
+
+    default: True
+
+  ignore
+
+    This sequence of strings, each of which is compiled into a regular
+    expression, allows the user to set up rules for ignoring certain
+    log entries. If the body of the message logged matched any of the
+    regular expressions, the log message will be silently discarded
+    and not mailed out in the summary.
+
+    default: ()
+
+  headers
+
+    This is a dictionary containing headers and their values to be
+    added to any emails sent.
+   
+    default: {}
+
+  If you would like detailed examples of how to use SummarisingLogger,
+  please see the examples below.
+
+ Examples
+
+  In its simplest form, we can instantiate and use SummarisingLogger as
+  with any other logging handler:
+
+  >>> import logging
+  >>> from mailinglogger.SummarisingLogger import SummarisingLogger
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
+  >>> logging.getLogger('').addHandler(handler)
+
+  However, when we log a message, nothing appears to happen:
+
+  >>> logging.debug('some debugging')
+  >>> logging.info('some information')
+  >>> logging.warning('a warning')
+  >>> logging.error('my message')
+
+  This is because the messages have been recorded and will be sent as
+  a summary when the logging framework is shut down or, by default,
+  when the script that calls the logging function exits.
+
+  If we manually close our log handler, we can see the mail gets sent:
+
+  >>> handler.close()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  a warning
+  my message
+  <BLANKLINE>
+
+  The logging on script exit is done using python's 'atexit'
+  module. We can see that the handler we created above is now
+  registered with this module by having a poke at its internals:
+
+  >>> import atexit
+  >>> print atexit._exithandlers
+  [(<bound method SummarisingLogger.close of <...>, (), {})]
+
+  This list can be manually cleared at any time to remove any
+  registered 'atexit' functions:
+
+  >>> atexit._exithandlers[:] = []
+  >>> print atexit._exithandlers
+  []
+
+  In the event you wish to manually call the close method of the
+  handler or use the logging framework's shutdown functionality rather
+  than registering an atexit function, you can create a
+  SummarisingLogger and specify that no atexit function should be
+  registered: 
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             atexit=False)
+  >>> logging.getLogger('').addHandler(handler)
+
+  Now, we can see that no atexit function has been registered:
+
+  >>> print atexit._exithandlers
+  []
+
+  With this configuration, if an entry is logged, the logging
+  framework must be manually shut down for the mail to be sent:
+
+  >>> logging.error('my message')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  my message
+  <BLANKLINE>
+
+  Because the users of SummarisingLogger may not have control over
+  when or how often the logging handlers they configure are closed, a
+  SummarisingLogger will not raise exceptions and will not send
+  duplicate emails if closed more than once:
+
+  >>> handler.close()
+
+  Likewise, messages logged to the handler after it has been closed
+  will not result in errors but will also not result in emails being
+  sent:
+
+  >>> logging.error('my message')
+  
+  As with MailingLogger, from the above examples, you can see that
+  SummarisingLogger sends mail messages that are correctly formatted,
+  including Date and Message-ID headers.
+
+  You will also notice that an X-Mailer header has been added
+  specifying that MailingLogger is the sender of the mail. This can be
+  useful for filtering mail sent by MailingLogger.
+
+  The subject for the summary mail sent is controlled by the 'subject'
+  parameter to the SummarisingLogger parameter.
+
+  This can be set to a fixed value:
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             subject='My Logging Summary')
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error('a message')
+  >>> handler.close()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: My Logging Summary
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  a message
+  <BLANKLINE>
+
+  It can also be set using any of the substitution variables described
+  in docs/subjectformatter.txt, for example:
+
+  >>> setHostName('myhost.example.com')
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             subject='[%(hostname)s] %(line)s')
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error('a message')
+  >>> handler.close()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: [myhost.example.com] a message
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  a message
+  <BLANKLINE>
+
+  You'll notice that the %(line) substitution inserts the first line
+  of the whole summary mail when used with a SummarisingLogger.
+
+  You may also be wondering how you control the formatting of the
+  messages included in the summary email. This is done using the
+  standard 'setFormatter' method of python log handlers.
+
+  Here's an example:
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
+  >>> handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+  >>> logging.getLogger('').addHandler(handler)
+  
+  To show things working, some entries need to be logged:
+
+  >>> setTime('2007-01-01 10:00:00')  
+  >>> logging.warning('something happened')
+  >>> setTime('2007-01-01 12:34:56')  
+  >>> try:
+  ...   raise RuntimeError('badness')
+  ... except:
+  ...   logging.error('bad things happened',exc_info=True)
+  >>> resumeTime()
+
+  The following shows the mail that would be sent:
+
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  2007-01-01 10:00:00,000 [WARNING] something happened
+  2007-01-01 12:34:56,000 [ERROR] bad things happened
+  Traceback (most recent call last):
+    File "...", line 2, in ...
+      raise RuntimeError('badness')
+  RuntimeError: badness
+  <BLANKLINE>
+
+  Now, to continue with the examples, just like any other handler, we
+  can also set the logging level:
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
+  >>> logging.getLogger('').addHandler(handler)
+  >>> handler.setLevel(logging.CRITICAL)
+  >>> logging.error('an error')
+  >>> handler.setLevel(logging.WARNING)
+  >>> logging.warning('a warning')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (WARNING)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  a warning
+  <BLANKLINE>
+
+  It should be noted that the level used for the summary email sent is
+  the maximum level message handled by the logger:
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             subject='[%(levelname)s] summary')
+  >>> handler.setLevel(logging.WARNING)
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.critical('a message')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: [CRITICAL] summary
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  a message
+  <BLANKLINE>
+  
+  If no messages have been handled by the logger, then %(levelname)s
+  will be the string 'NOTSET':
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             subject='[%(levelname)s] summary')
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: [NOTSET] summary
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  <BLANKLINE>
+  
+  By default, the SummarisingLogger handler will always send emails
+  even if they would have been empty: 
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error(' ')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+
+  Sending empty emails is helpful for batch processes as even if no
+  activity is logged, the mail itself is an indication that the batch
+  process did at least run.
+
+  However, if you do not want empty entries to be mailed, all you need
+  to do is supply the 'send_empty_entries' parameter:
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                         send_empty_entries=False)
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error(' ')
+  >>> logging.shutdown()
+    
+  By default, as we've seen above, SummarisingLogger uses localhost
+  to send mails. If you wish to use a specific smtp server to send
+  mail, this can be done by specifying the 'mailhost' parameter to the
+  SummarisingLogger constructor:
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                         mailhost='smtp.example.com')
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error('An Error')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  An Error
+  <BLANKLINE>
+
+  If the smtp server you wish to use is running on non-standard port,
+  you can configure SummarisingLogger to use this port by specifying
+  'mailhost' as a tuple containing the smtp server's hostname and the
+  port on which it is listening:
+
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             mailhost=('smtp.example.com',2500))
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error('An Error')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 2500)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  An Error
+  <BLANKLINE>
+
+  If the smtp server you wish to use requires authentication,
+  pass the required username and password to the SummarisingLogger
+  constructor: 
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...				   username='auser',password='theirpassword')
+  >>> logging.getLogger('').addHandler(handler)
+  >>> logging.error('An Error')
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  (authenticated using username:'auser' and password:'theirpassword')
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  An Error
+  <BLANKLINE>
+
+  For performance reasons, it's recommended that you don't use SMTP
+  authentication unless you absolutely need to.
+
+  In order to ignore certain log entries you can use the 'ignore' parameter:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             ignore='^An Err')
+  >>> logging.getLogger('').addHandler(handler)
+
+  Now if the regular expression specified is matched, the log entry
+  will not be sent:
+
+  >>> logging.error('An Error')
+
+  However, other log entries are still sent:
+
+  >>> logging.error('The Error!')
+
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger ...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  The Error!
+  <BLANKLINE>
+
+  A sequence of regular expressions to ignore can also be supplied:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             ignore=('^An Err','Error!'))
+  >>> logging.getLogger('').addHandler(handler)
+
+  Now, anything matching any of the expressions will be ignored:
+
+  >>> logging.error('An Error')
+  >>> logging.error('The Error!')
+
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  Subject: Summary of Log Messages (NOTSET)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger ...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  <BLANKLINE>
+
+  If you wish to add headers for filtering purposes, you can use the
+  headers parameter:
+
+  >>> logging.getLogger('').removeHandler(handler)
+  >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+  ...                             headers={'foo':'bar','Baz':'bob'})
+  >>> logging.getLogger('').addHandler(handler)
+
+  >>> logging.error('The Error!')
+
+  >>> logging.shutdown()
+  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+  Content-Type: text/plain; charset="us-ascii"
+  MIME-Version: 1.0
+  Content-Transfer-Encoding: 7bit
+  foo: bar
+  Baz: bob
+  Subject: Summary of Log Messages (ERROR)
+  From: from@example.com
+  To: to@example.com
+  X-Mailer: MailingLogger ...
+  Date: ...
+  Message-ID: <...MailingLogger@...>
+  <BLANKLINE>
+  The Error!
+  <BLANKLINE>
+

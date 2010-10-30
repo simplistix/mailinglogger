@@ -5,21 +5,24 @@
 # See license.txt for more details.
 
 import unittest
-from shared import setUp,tearDown
 from doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
+from os.path import dirname,pardir,join
+from shared import setUp,tearDown
+
+docs_dir = join(pardir,pardir,'docs')
 
 options = REPORT_NDIFF|ELLIPSIS
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('../docs/mailinglogger.txt',
+        DocFileSuite(join(docs_dir,'mailinglogger.txt'),
                      optionflags=options,
                      setUp=setUp,
                      tearDown=tearDown),
-        DocFileSuite('../docs/summarisinglogger.txt',
+        DocFileSuite(join(docs_dir,'summarisinglogger.txt'),
                      optionflags=options,
                      setUp=setUp,
                      tearDown=tearDown),
-        DocFileSuite('../docs/subjectformatter.txt',
+        DocFileSuite(join(docs_dir,'subjectformatter.txt'),
                      optionflags=options,
                      setUp=setUp,
                      tearDown=tearDown),

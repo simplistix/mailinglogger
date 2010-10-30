@@ -1,4 +1,4 @@
-# Copyright (c) 2007 Simplistix Ltd
+# Copyright (c) 2007-2010 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -36,16 +36,7 @@ setup(
     include_package_data=True,
     extras_require=dict(
 	test_zconfig=['ZConfig'],
-	test_zope2=['Zope2'],
+	test_zope2=['Zope2 < 2.13'],
 	test_zope3=['zope.app.twisted'],
 	)
     )
-
-# to build and upload the eggs, do:
-# python setup.py sdist register upload
-# ...or...
-#  bin/buildout setup setup.py sdist register upload
-# ...on a unix box!
-
-# To check how things will show on pypi, install docutils and then:
-# bin/buildout -q setup setup.py --long-description | rst2html.py --link-stylesheet --stylesheet=http://www.python.org/styles/styles.css > dist/desc.html
