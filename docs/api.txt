@@ -1,0 +1,203 @@
+API Reference
+=============
+
+.. currentmodule:: mailinglogger
+
+.. autoclass:: MailingLogger
+
+  This is a handler for the python logging framework that
+  sends log entries as email messages using an SMTP server.
+
+  :param fromaddr:
+
+    The address from which email log notifications will originate.
+
+    This must be supplied.
+
+  :param toaddrs:
+
+    A sequence of addresses to which email log notifications will be
+    sent.
+
+    This must be supplied.
+
+  :param mailhost:
+
+    The SMTP server that should be used to send email notifications. 
+  
+    This can either be a string containing the hostname of the SMTP
+    server or a tuple containing the hostname and port number of the
+    SMTP server. If only the hostname is specified, it is assumed that
+    the SMTP server is listening on port 25.
+
+    default: ``('localhost', 25)``
+
+  :param username:
+
+    The username to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param password:
+
+    The password to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param subject: 
+
+    This is a format string specifying what information will be
+    included in the subject line of the email notification.
+
+    Information on what can be included in a subject format string can
+    be found in :ref:`subjectformatter`.
+
+    default: ``'%(line)s'``
+
+  :param send_empty_entries:
+
+    This is a boolean parameter which specifies whether empty log
+    entries will be mailed or not. 
+
+    default: ``False``
+
+  :param flood_level:
+
+    This is an integer parameter specifying the maximum number of
+    emails that can be sent in an hour that will not be considered a
+    "flood". 
+
+    When a "flood" is detected, one email is sent at the CRITICAL
+    level indicating that a flood has been detected, and no more
+    emails will be sent in the same hour.
+
+    So, this option, in effect, specifies the maximum number of
+    emails that will be sent in any particular hour of the day.
+
+    default: ``10``
+
+  :param ignore:
+
+    This sequence of strings, each of which is compiled into a regular
+    expression, allows the user to set up rules for ignoring certain
+    log entries. If the body of the message logged matched any of the
+    regular expressions, the log message will be silently discarded
+    and not mailed out.
+
+    default: ``()``
+
+  :param headers:
+
+    This is a dictionary containing headers and their values to be
+    added to any emails sent.
+   
+    default: ``{}``
+
+.. autoclass:: SummarisingLogger
+
+  SummarisingLogger is a handler for the python logging framework that
+  accumulates logged entries and sends a single email containing them
+  all using an SMTP server when :meth:`~SummarisingLogger.close` called.
+
+  :param fromaddr:
+
+    The address from which the summary email will originate.
+
+    This must be supplied.
+
+  :param toaddrs:
+
+    A sequence on strings containing  addresses to which the summary
+    email will be sent. 
+
+    This must be supplied.
+
+  :param mailhost:
+
+    The SMTP server that should be used to send the summary mail. 
+  
+    This can either be a string containing the hostname of the SMTP
+    server or a tuple containing the hostname and port number of the
+    SMTP server. If only the hostname is specified, it is assumed that
+    the SMTP server is listening on port 25.
+
+    default: ``('localhost', 25)``
+
+  :param username:
+
+    The username to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param password:
+
+    The password to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param subject:
+
+    This is a format string specifying what information will be
+    included in the subject line of the summary email.
+
+    Information on what can be included in a subject format string can
+    be found in :ref:`subjectformatter`
+
+    .. note:: 
+
+        ``%(levelname)s`` when used in the `subject` parameter will be the
+        highest level message handled by the :class:`SummarisingLogger`.
+
+    default: ``'Summary of Log Messages (%(levelname)s)'``
+
+  :param send_empty_entries:
+
+    This is a boolean parameter which specifies whether a summary
+    message will be sent even if no messages have been logged.
+
+    default: ``True``
+
+  :param atexit:
+
+    If True, the :meth:`~SummarisingLogger.close` method of the
+    summarising logger is set as an :mod:`atexit` function that runs when the
+    currently executing python script finishes.
+
+    default: ``True``
+
+  :param ignore:
+
+    This sequence of strings, each of which is compiled into a regular
+    expression, allows the user to set up rules for ignoring certain
+    log entries. If the body of the message logged matched any of the
+    regular expressions, the log message will be silently discarded
+    and not mailed out in the summary.
+
+    default: ``()``
+
+  :param headers:
+
+    This is a dictionary containing headers and their values to be
+    added to any emails sent.
+   
+    default: ``{}``
+
+  .. method:: open()
+
+    Foo, bar baz bob.
