@@ -8,8 +8,14 @@ The easyiest way to install MailingLogger is::
 Or, if you're using `zc.buildout`, just specify ``mailinglogger`` as a
 required egg. 
 
-.. note:: 
+.. topic:: Python version requirements
 
-  Due to a bug in Python 2.5.0, SummarisingLogger requires a
+  This package requires Python 2.0 or above.
+
+  Due to a bug in Python 2.5.0,
+  :class:`~mailinglogger.SummarisingLogger` requires a 
   any version of Python with the logging framework present
-  *other* than 2.5.0
+  *other* than 2.5.0.
+
+  When installing with a version of Python lower than 2.6, you may see
+  compilation errors. These can safely be ignored.
