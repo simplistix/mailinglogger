@@ -1,4 +1,4 @@
-# Copyright (c) 2007 Simplistix Ltd
+# Copyright (c) 2007-2011 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -28,6 +28,10 @@ class TestMailingLogger(TestCase):
         resumeTime()
         DummySMTP.remove()
         
+    def test_imports(self):
+        from mailinglogger.MailingLogger import MailingLogger
+        from mailinglogger import MailingLogger
+    
     def test_default_flood_limit(self):
         # set up logger
         self.handler = MailingLogger('from@example.com',('to@example.com',))

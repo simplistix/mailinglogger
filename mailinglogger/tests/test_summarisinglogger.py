@@ -1,4 +1,4 @@
-# Copyright (c) 2007 Simplistix Ltd
+# Copyright (c) 2007-2011 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -13,15 +13,22 @@ from unittest import TestSuite,makeSuite,TestCase,main
 
 class TestSummarisingLogger(TestCase):
 
+    handler = None
+    
     def setUp(self):
         DummySMTP.install(stdout=False)
         setTime()
 
     def tearDown(self):
-        self.logger.removeHandler(self.handler)
+        if self.handler:
+            self.logger.removeHandler(self.handler)
         resumeTime()
         DummySMTP.remove()
         
+    def test_imports(self):
+        from mailinglogger.SummarisingLogger import SummarisingLogger
+        from mailinglogger import SummarisingLogger
+
     def create(self,*args,**kw):
         kw['atexit']=False
         self.handler = SummarisingLogger(*args,**kw)
