@@ -200,4 +200,20 @@ API Reference
 
   .. method:: open()
 
-    Foo, bar baz bob.
+    This method creates the temporary file used by
+    :class:`SummarisingLogger` to accumulate logged messages and
+    enables it for processing of log messages.
+
+  .. method:: close()
+
+    This method closes the temporary file used by
+    :class:`SummarisingLogger` to accumulate logged messages and sends
+    any logged messages in a single email.
+
+    It also disables the :class:`SummarisingLogger`'s processing of
+    log messages.
+
+  .. method:: reopen()
+
+    This is shorthand for calling :meth:`~SummarisingLogger.close`
+    followed by :meth:`~SummarisingLogger.open`.
