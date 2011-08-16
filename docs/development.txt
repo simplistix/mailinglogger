@@ -26,7 +26,6 @@ using::
 
   $ bin/test_zconfig
   $ bin/test_zope2
-  $ bin/test_zope3
 
 Building the documentation
 --------------------------
