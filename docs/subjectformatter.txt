@@ -131,4 +131,4 @@ SubjectFormatter
     detail new subtitution names that can be used in the string
     supplied to the subject formatter's constructor:
 
-    http://docs.python.org/lib/node293.html
+    `LogRecord attributes <http://docs.python.org/library/logging.html#logrecord-attributes>`__
