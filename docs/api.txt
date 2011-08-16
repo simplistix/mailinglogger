@@ -4,6 +4,7 @@ API Reference
 .. currentmodule:: mailinglogger
 
 .. autoclass:: MailingLogger
+  :show-inheritance:
 
   This is a handler for the python logging framework that
   sends log entries as email messages using an SMTP server.
@@ -102,6 +103,7 @@ API Reference
     default: ``{}``
 
 .. autoclass:: SummarisingLogger
+  :show-inheritance:
 
   SummarisingLogger is a handler for the python logging framework that
   accumulates logged entries and sends a single email containing them
