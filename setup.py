@@ -34,9 +34,4 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     include_package_data=True,
-    extras_require=dict(
-	test_zconfig=['ZConfig'],
-	test_zope2=['Zope2 < 2.13'],
-	test_zope3=['zope.app.twisted'],
-	)
     )
