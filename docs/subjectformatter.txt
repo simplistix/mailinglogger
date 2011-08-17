@@ -121,10 +121,9 @@ To aid administration where the same python software runs
 on a cluster of machines, the hostname of the machine from which
 the message is logged can also be easilly included:
 
->>> setHostName('localhost')
 >>> f = SubjectFormatter('[%(hostname)s] %(line)r')
 >>> print f.format(record)
-[localhost] 'bad things caught'
+[host.example.com] 'bad things caught'
 
 Available LogRecord attributes
 ------------------------------

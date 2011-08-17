@@ -163,7 +163,6 @@ log entries using an SMTP server when its 'close' method is called.
   It can also be set using any of the substitution variables described
   in docs/subjectformatter.txt, for example:
 
-  >>> setHostName('myhost.example.com')
   >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
   ...                             subject='[%(hostname)s] %(line)s')
   >>> logging.getLogger('').addHandler(handler)
@@ -173,7 +172,7 @@ log entries using an SMTP server when its 'close' method is called.
   Content-Type: text/plain; charset="us-ascii"
   MIME-Version: 1.0
   Content-Transfer-Encoding: 7bit
-  Subject: [myhost.example.com] a message
+  Subject: [host.example.com] a message
   From: from@example.com
   To: to@example.com
   X-Mailer: MailingLogger...

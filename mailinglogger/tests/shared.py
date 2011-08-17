@@ -77,20 +77,6 @@ class Dummy:
     def __call__(self, *args):
         return self.value
     
-old_hostname = None
-def setHostName(name):
-    global old_hostname
-    from mailinglogger import common
-    if old_hostname is None:
-        old_hostname = common.gethostname
-    common.gethostname = Dummy(name)
-    
-def unsetHostName():
-    global old_hostname
-    from mailinglogger import common
-    if old_hostname is not None:
-        common.gethostname = old_hostname
-
 def removeHandlers():
     to_handle = [logging.getLogger()]
     for logger in logging.Logger.manager.loggerDict.values():
@@ -121,13 +107,13 @@ def setUp(test, self=None, stdout=True):
     time = test_time(2007, 1, 1, 10, delta=0)
     r = Replacer()
     r.replace('mailinglogger.MailingLogger.now', datetime.now)
+    r.replace('mailinglogger.common.gethostname', Dummy('host.example.com'))
     r.replace('time.time', time)
     r.replace('os.environ.TZ', 'GMT', strict=False)
     tzset()
 
     d['r'] = r
     d['smtp']=DummySMTP
-    d['setHostName']=setHostName
     d['datetime']=datetime
     d['time']=time
     d['removeHandlers']=removeHandlers
