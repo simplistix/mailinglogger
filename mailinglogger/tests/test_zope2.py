@@ -39,7 +39,7 @@ def test_suite():
             raise
         return unittest.TestSuite()
     return unittest.TestSuite((
-        DocFileSuite('../docs/zope2.txt',
+        DocFileSuite('../../docs/zope2.txt',
                      optionflags=options,
                      setUp=setUp,
                      tearDown=tearDown),

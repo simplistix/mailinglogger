@@ -43,7 +43,7 @@ def test_suite():
             raise
         return unittest.TestSuite()
     return unittest.TestSuite((
-        DocFileSuite('../docs/zconfig.txt',
+        DocFileSuite('../../docs/zconfig.txt',
                      optionflags=options,
                      setUp=setUp,
                      tearDown=tearDown),
