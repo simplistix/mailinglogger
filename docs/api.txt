@@ -59,7 +59,7 @@ API Reference
     included in the subject line of the email notification.
 
     Information on what can be included in a subject format string can
-    be found in :ref:`subjectformatter`.
+    be found in the :ref:`subjectformatter` documentation.
 
     default: ``'%(line)s'``
 
@@ -159,7 +159,7 @@ API Reference
     included in the subject line of the summary email.
 
     Information on what can be included in a subject format string can
-    be found in :ref:`subjectformatter`
+    be found in the :ref:`subjectformatter` documentation.
 
     .. note:: 
 
@@ -219,3 +219,20 @@ API Reference
 
     This is shorthand for calling :meth:`~SummarisingLogger.close`
     followed by :meth:`~SummarisingLogger.open`.
+
+.. autoclass:: mailinglogger.common.SubjectFormatter
+  :show-inheritance:
+
+  This is a `logging formatter`__ tailored to formatting log messages
+  to appear in the subject line of an email. For details of how these
+  differ from normal :class:`~logging.Formatter` objects, see the
+  :ref:`subjectformatter` documentation.
+
+  __ http://docs.python.org/library/logging.html#formatter-objects
+
+  .. note:: 
+
+    You should not need to manually instantiate this class as this
+    will be done by either :class:`MailingLogger` or
+    :class:`SummarisingLogger` when the `subject` parameter to their
+    constructors is processed.
