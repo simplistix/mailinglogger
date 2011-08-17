@@ -15,147 +15,147 @@ Configuration using ZConfig
 This documentation covers the configuration of mailing loggers in
 an application already using ZConfig for configuration parsing.
   
-  If that's the case, you will likely have your own existing
-  schema.xml. If you do not, here is a minimal schema that will
-  support configuration of loggers with mailing handlers and the
-  default ZConfig log handlers:
+If that's the case, you will likely have your own existing
+schema.xml. If you do not, here is a minimal schema that will
+support configuration of loggers with mailing handlers and the
+default ZConfig log handlers:
 
-  >>> f = open('schema.xml','w')
-  >>> f.write('''
-  ... <schema>
-  ...   <!-- import for log sections -->
-  ...   <import package="ZConfig.components.logger" file="logger.xml"/>
-  ...   <!-- import for default log handlers -->
-  ...   <import package="ZConfig.components.logger" file="handlers.xml"/>
-  ...   <!-- import for mailing-logger and summarising-logger handlers -->
-  ...   <import package="mailinglogger"/>
-  ...   <!-- now the logger sections -->
-  ...   <multisection name="*"
-  ...                 attribute="loggers"
-  ...                 type="logger"/>
-  ... </schema>
-  ... ''')
-  >>> f.close()
+>>> f = open('schema.xml','w')
+>>> f.write('''
+... <schema>
+...   <!-- import for log sections -->
+...   <import package="ZConfig.components.logger" file="logger.xml"/>
+...   <!-- import for default log handlers -->
+...   <import package="ZConfig.components.logger" file="handlers.xml"/>
+...   <!-- import for mailing-logger and summarising-logger handlers -->
+...   <import package="mailinglogger"/>
+...   <!-- now the logger sections -->
+...   <multisection name="*"
+...                 attribute="loggers"
+...                 type="logger"/>
+... </schema>
+... ''')
+>>> f.close()
 
-  A sample config file that implements this schema is shown below:
+A sample config file that implements this schema is shown below:
 
-  >>> f = open('my.conf','w')
-  >>> f.write('''
-  ...  <logger>
-  ...    name  mylogger
-  ...    level info
-  ...    <mailing-logger>
-  ...      level   error
-  ...      from    logging@example.com
-  ...      to      receiver@example.com
-  ...      to      support@example.com
-  ...      subject [MyApp] %(line)s
-  ...      <headers>
-  ...        filter some-customer
-  ...      </headers>
-  ...    </mailing-logger>    
-  ...  </logger>
-  ... ''')
-  >>> f.close()
+>>> f = open('my.conf','w')
+>>> f.write('''
+...  <logger>
+...    name  mylogger
+...    level info
+...    <mailing-logger>
+...      level   error
+...      from    logging@example.com
+...      to      receiver@example.com
+...      to      support@example.com
+...      subject [MyApp] %(line)s
+...      <headers>
+...        filter some-customer
+...      </headers>
+...    </mailing-logger>    
+...  </logger>
+... ''')
+>>> f.close()
 
-  To use this configuration in your application, you need to first
-  load the schema:
+To use this configuration in your application, you need to first
+load the schema:
 
-  >>> from ZConfig import loadSchema
-  >>> schema = loadSchema('schema.xml')
+>>> from ZConfig import loadSchema
+>>> schema = loadSchema('schema.xml')
 
-  You then need to load the configuration:
+You then need to load the configuration:
 
-  >>> from ZConfig import loadConfig
-  >>> config, handlers = loadConfig(schema, 'my.conf')
+>>> from ZConfig import loadConfig
+>>> config, handlers = loadConfig(schema, 'my.conf')
 
-  The configuration now contains a list of logger factories:
-  >>> config.loggers
-  [<ZConfig.components.logger.logger.LoggerFactory instance at ...>]
+The configuration now contains a list of logger factories:
+>>> config.loggers
+[<ZConfig.components.logger.logger.LoggerFactory instance at ...>]
 
-  Calling these factories will instantiate the loggers and register
-  them with the logging framework:
+Calling these factories will instantiate the loggers and register
+them with the logging framework:
 
-  >>> for logger in config.loggers:
-  ...   logger()
-  <logging.Logger instance at ...>
+>>> for logger in config.loggers:
+...   logger()
+<logging.Logger instance at ...>
 
-  As the above example shows, the factory also returns the new
-  logger, although this can safely be ignored.
+As the above example shows, the factory also returns the new
+logger, although this can safely be ignored.
 
-  Now that the configuration is loaded, any logging to the
-  appropriate logger will cause an email to get sent:
+Now that the configuration is loaded, any logging to the
+appropriate logger will cause an email to get sent:
 
-  >>> from logging import getLogger
-  >>> getLogger('mylogger').error('something bad has happened')
-  sending to ['receiver@example.com', 'support@example.com'] from 'logging@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  filter: some-customer
-  Subject: [MyApp] something bad has happened
-  From: logging@example.com
-  To: receiver@example.com, support@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  something bad has happened
+>>> from logging import getLogger
+>>> getLogger('mylogger').error('something bad has happened')
+sending to ['receiver@example.com', 'support@example.com'] from 'logging@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+filter: some-customer
+Subject: [MyApp] something bad has happened
+From: logging@example.com
+To: receiver@example.com, support@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+something bad has happened
 
-  The same schema can also be used for a configuration that uses a
-  summarising logger instead:
+The same schema can also be used for a configuration that uses a
+summarising logger instead:
 
-  >>> f = open('summarising.conf','w')
-  >>> f.write('''
-  ...  <logger>
-  ...    name summary
-  ...    <summarising-logger>
-  ...      from    logging@example.com
-  ...      to      summary@example.com
-  ...      subject Summary of Activity
-  ...      format  %(levelname)s - %(message)s
-  ...      <headers>
-  ...        filter some-customer
-  ...      </headers>
-  ...    </summarising-logger>    
-  ...  </logger>
-  ... ''')
-  >>> f.close()
-  >>> config, handlers = loadConfig(schema, 'summarising.conf')
-  >>> for logger in config.loggers:
-  ...   logger()
-  <logging.Logger instance at ...>
+>>> f = open('summarising.conf','w')
+>>> f.write('''
+...  <logger>
+...    name summary
+...    <summarising-logger>
+...      from    logging@example.com
+...      to      summary@example.com
+...      subject Summary of Activity
+...      format  %(levelname)s - %(message)s
+...      <headers>
+...        filter some-customer
+...      </headers>
+...    </summarising-logger>    
+...  </logger>
+... ''')
+>>> f.close()
+>>> config, handlers = loadConfig(schema, 'summarising.conf')
+>>> for logger in config.loggers:
+...   logger()
+<logging.Logger instance at ...>
 
-  As with all summarising loggers, no emails are sent when messages
-  are logged:
+As with all summarising loggers, no emails are sent when messages
+are logged:
 
-  >>> getLogger('summary').error('something bad happened')
+>>> getLogger('summary').error('something bad happened')
 
-  But, ZConfig's LoggerFactories have a handy method for re-opening
-  loggers and their handlers. This method can be called to flush any
-  queued messages and send a summary email:
+But, ZConfig's LoggerFactories have a handy method for re-opening
+loggers and their handlers. This method can be called to flush any
+queued messages and send a summary email:
 
-  >>> config.loggers[0].reopen()
-  sending to ['summary@example.com'] from 'logging@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  filter: some-customer
-  Subject: Summary of Activity
-  From: logging@example.com
-  To: summary@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: ...
-  <BLANKLINE>
-  ERROR - something bad happened
-  <BLANKLINE>
+>>> config.loggers[0].reopen()
+sending to ['summary@example.com'] from 'logging@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+filter: some-customer
+Subject: Summary of Activity
+From: logging@example.com
+To: summary@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: ...
+<BLANKLINE>
+ERROR - something bad happened
+<BLANKLINE>
 
-  One drawback of using ZConfig's logger section type is that you
-  cannot use it to configure the root logger. In order to do this,
-  you will need to come up with your own section type.
+One drawback of using ZConfig's logger section type is that you
+cannot use it to configure the root logger. In order to do this,
+you will need to come up with your own section type.
 
-  Reference
+Reference
 
     A full description of the possible keys and defaults for the
     mailing-logger and summarising-logger sections are given below:
