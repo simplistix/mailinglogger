@@ -1,9 +1,20 @@
 SummarisingLogger
 =================
 
- SummarisingLogger is a handler for the python logging framework that
- accumulates log entries and sends a single email containing all the
- log entries using an SMTP server when its 'close' method is called.
+.. note:: 
+
+  Throughout the examples below, mail messages sent using
+  :mod:`smtplib` are printed to the screen so we can see what's going on:
+
+  >>> import smtplib
+  >>> server = smtplib.SMTP('localhost')
+  >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
+  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+  The message
+
+SummarisingLogger is a handler for the python logging framework that
+accumulates log entries and sends a single email containing all the
+log entries using an SMTP server when its 'close' method is called.
 
  This close method is, by default, registered as an 'atexit' function
  so that the summary mail will get sent regardless of whether an

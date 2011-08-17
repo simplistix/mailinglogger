@@ -1,8 +1,19 @@
 Configuration for Zope 2 and Plone
 ==================================
 
-  This documentation covers the configuration of mailing loggers 
-  when using Zope 2.
+.. note:: 
+
+  Throughout the examples below, mail messages sent using
+  :mod:`smtplib` are printed to the screen so we can see what's going on:
+
+  >>> import smtplib
+  >>> server = smtplib.SMTP('localhost')
+  >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
+  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+  The message
+
+This documentation covers the configuration of mailing loggers 
+when using Zope 2.
   
   Both log handlers provided in the mailinglogger package work with
   Zope 2 and are easilly configured by adding a section to the

@@ -1,8 +1,19 @@
 Configuration using ZConfig 
 ===========================
 
-  This documentation covers the configuration of mailing loggers in
-  an application already using ZConfig for configuration parsing.
+.. note:: 
+
+  Throughout the examples below, mail messages sent using
+  :mod:`smtplib` are printed to the screen so we can see what's going on:
+
+  >>> import smtplib
+  >>> server = smtplib.SMTP('localhost')
+  >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
+  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+  The message
+
+This documentation covers the configuration of mailing loggers in
+an application already using ZConfig for configuration parsing.
   
   If that's the case, you will likely have your own existing
   schema.xml. If you do not, here is a minimal schema that will
