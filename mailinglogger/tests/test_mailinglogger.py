@@ -5,28 +5,23 @@
 # See license.txt for more details.
 
 import logging
+import time
 
 from mailinglogger.common import RegexConversion
 from mailinglogger.MailingLogger import MailingLogger
-from shared import DummySMTP,setTime,resumeTime
+from shared import DummySMTP, setUp, tearDown
 from unittest import TestSuite,makeSuite,TestCase,main
 
 class TestMailingLogger(TestCase):
 
-    handler = None
-    
     def getLogger(self):
         return logging.getLogger('')
     
     def setUp(self):
-        DummySMTP.install(stdout=False)
-        setTime()
+        setUp(None, self, stdout=False)
 
     def tearDown(self):
-        if self.handler:
-            self.getLogger().removeHandler(self.handler)
-        resumeTime()
-        DummySMTP.remove()
+        tearDown(None,self)
         
     def test_imports(self):
         from mailinglogger.MailingLogger import MailingLogger
@@ -51,7 +46,7 @@ class TestMailingLogger(TestCase):
         logger = self.getLogger()
         logger.addHandler(self.handler)
         # make it 11pm
-        setTime('2007-03-15 23:00:00')
+        self.datetime.set(2007,3,15,23)
         # paranoid check
         self.assertEqual(len(DummySMTP.sent),0)
         # log until flood protection kicked in
@@ -63,7 +58,7 @@ class TestMailingLogger(TestCase):
         logger.critical('message3')
         self.assertEqual(len(DummySMTP.sent),2)
         # advance time past midnight
-        setTime('2007-03-15 00:00:00')
+        self.datetime.set(2007,3,15)
         # log again
         logger.critical('message4')
         # check we are emitted now!
@@ -80,8 +75,6 @@ class TestMailingLogger(TestCase):
                                     )
         logger = self.getLogger()
         logger.addHandler(self.handler)
-        # make it 11pm
-        setTime('2007-03-15 23:00:00')
         # paranoid check
         self.assertEqual(len(DummySMTP.sent),0)
 
@@ -128,11 +121,10 @@ class TestMailingLogger(TestCase):
                                      subject="%(asctime)s")
         logger = self.getLogger()
         logger.addHandler(self.handler)
-        setTime('2007-03-15 23:00:00')
         logger.critical('message')
         self.assertEqual(len(DummySMTP.sent),1)
         m = DummySMTP.sent[0][3]
-        self.failUnless('Subject: 2007-03-15 23:00:00,000' in m)
+        self.failUnless('Subject: 2007-01-01 10:00:00,000' in m, m)
 
     def test_non_string_error_messages_dont_break_logging(self):
         self.handler = MailingLogger('from@example.com',('to@example.com',),)

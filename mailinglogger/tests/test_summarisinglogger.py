@@ -8,21 +8,16 @@ import logging
 
 from mailinglogger.common import RegexConversion
 from mailinglogger.SummarisingLogger import SummarisingLogger
-from shared import DummySMTP,setTime,resumeTime
+from shared import DummySMTP, removeHandlers
 from unittest import TestSuite,makeSuite,TestCase,main
 
 class TestSummarisingLogger(TestCase):
 
-    handler = None
-    
     def setUp(self):
+        removeHandlers()
         DummySMTP.install(stdout=False)
-        setTime()
 
     def tearDown(self):
-        if self.handler:
-            self.logger.removeHandler(self.handler)
-        resumeTime()
         DummySMTP.remove()
         
     def test_imports(self):

@@ -1,12 +1,10 @@
+from testfixtures import Replacer, test_datetime, test_time
+from time import tzset
+
 import atexit
-import datetime
 import logging
 import os
 import smtplib
-import time
-
-from mailinglogger.MailingLogger import MailingLogger
-from mailinglogger.SummarisingLogger import SummarisingLogger
 
 class DummySMTP:
 
@@ -79,43 +77,6 @@ class Dummy:
     def __call__(self, *args):
         return self.value
     
-old_time = None
-old_now = None
-old_tz = None
-no_tz_marker = object()
-
-def setTime(ts='2007-01-01 10:00:00'):
-    global old_time, old_now, old_tz
-    from mailinglogger import MailingLogger
-    if old_now is None:
-        old_now = MailingLogger.now
-    if old_time is None:
-        old_time = time.time
-    if old_tz is None:
-        old_tz = os.environ.get('TZ', no_tz_marker)
-    os.environ['TZ'] = 'GMT'
-    time.tzset()
-    t = datetime.datetime(*time.strptime(ts,"%Y-%m-%d %H:%M:%S")[0:6])
-    MailingLogger.now = Dummy(t)
-    time.time = Dummy(time.mktime(t.timetuple()))
-
-def resumeTime():
-    global old_time, old_now, old_tz
-    from mailinglogger import MailingLogger
-    if old_now is not None:
-        MailingLogger.now = old_now
-        old_now = None
-    if old_time is not None:
-        time.time = old_time
-        old_time = None
-    if old_tz is not None:
-        if old_tz is no_tz_marker:
-            del os.environ['TZ']
-        else:
-            os.environ['TZ'] = old_Tz
-        time.tzset()
-        old_tz = None
-
 old_hostname = None
 def setHostName(name):
     global old_hostname
@@ -147,20 +108,40 @@ def removeHandlers():
     if hl:
         hl[:]=[]
     
-def setUp(test):
+def setUp(test, self=None, stdout=True):
+    if self is None:
+        d = test.globs
+    else:
+        d = self.__dict__
+        
     removeHandlers()
-    DummySMTP.install()
-    test.globs['smtp']=DummySMTP
-    test.globs['setHostName']=setHostName
-    test.globs['setTime']=setTime
-    test.globs['resumeTime']=resumeTime
-    test.globs['removeHandlers']=removeHandlers
+    DummySMTP.install(stdout=stdout)
     
-def tearDown(test):
+    datetime = test_datetime(2007, 1, 1, 10, delta=0)
+    time = test_time(2007, 1, 1, 10, delta=0)
+    r = Replacer()
+    r.replace('mailinglogger.MailingLogger.now', datetime.now)
+    r.replace('time.time', time)
+    r.replace('os.environ.TZ', 'GMT', strict=False)
+    tzset()
+
+    d['r'] = r
+    d['smtp']=DummySMTP
+    d['setHostName']=setHostName
+    d['datetime']=datetime
+    d['time']=time
+    d['removeHandlers']=removeHandlers
+    
+def tearDown(test, self=None):
+    if self is None:
+        d = test.globs
+    else:
+        d = self.__dict__
+    # restore stuff we've mocked out
+    d['r'].restore()
+    tzset()    
     # make sure we have no dummy smtp
     DummySMTP.remove()
-    # just in case ;-)
-    resumeTime()
     # make sure we haven't registered any atexit funcs
     atexit._exithandlers[:] = []
     

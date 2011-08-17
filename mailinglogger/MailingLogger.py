@@ -17,7 +17,6 @@ from logging import LogRecord, CRITICAL
 from mailinglogger.common import SubjectFormatter
 from mailinglogger.common import process_ignore
 
-now = datetime.datetime.now
 
 this_dir = os.path.dirname(__file__)
 x_mailer = 'MailingLogger '+open(os.path.join(this_dir,'version.txt')).read().strip()
@@ -25,6 +24,8 @@ flood_template = open(os.path.join(this_dir,'flood_template.txt')).read()
 
 class MailingLogger(SMTPHandler):
 
+    now = datetime.datetime.now
+    
     def __init__(self,
                  fromaddr,
                  toaddrs,
@@ -40,7 +41,7 @@ class MailingLogger(SMTPHandler):
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
         self.flood_level = flood_level
-        self.hour = now().hour
+        self.hour = self.now().hour
         self.sent = 0
         self.username = username
         self.password = password
@@ -61,7 +62,7 @@ class MailingLogger(SMTPHandler):
             if criterion(msg):
                 return
 
-        current_time = now()
+        current_time = self.now()
         current_hour = current_time.hour
         if current_hour != self.hour:
             self.hour = current_hour

@@ -187,14 +187,13 @@ SummarisingLogger
   
   To show things working, some entries need to be logged:
 
-  >>> setTime('2007-01-01 10:00:00')  
+  >>> time.set(2007, 1, 1, 10)  
   >>> logging.warning('something happened')
-  >>> setTime('2007-01-01 12:34:56')  
+  >>> time.set(2007, 1, 1, 12, 34, 56)  
   >>> try:
   ...   raise RuntimeError('badness')
   ... except:
   ...   logging.error('bad things happened',exc_info=True)
-  >>> resumeTime()
 
   The following shows the mail that would be sent:
 

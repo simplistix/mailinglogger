@@ -10,10 +10,6 @@ SubjectFormatter
     It is tailored for formatting a log record to form the subject
     line of an email message.
 
-    So all the demonstations can make sense, we'll first "freeze time": 
-
-    >>> setTime('2007-01-01 10:00:00')
-
     As can be seen, SubjectFormatter supports all the usual keyword
     substitutions supported by normal Formatter objects:
 
@@ -39,14 +35,14 @@ SubjectFormatter
     format it with our formatter:
 
     >>> from logging import LogRecord
-    >>> r = LogRecord(name='aname', 
+    >>> record = LogRecord(name='aname', 
     ...               level=10, 
     ...               pathname='somepath.py', 
     ...               lineno=123,
     ...               msg='msgline%i\nmsgline%i',
     ...               args=(1,2), 
     ...               exc_info=None)
-    >>> print f.format(r)
+    >>> print f.format(record)
     <BLANKLINE>
     'aname'
     10
@@ -74,7 +70,7 @@ SubjectFormatter
     We can now see how this formatter represents the log record
     generated previously:
 
-    >>> print f.format(r)
+    >>> print f.format(record)
     'msgline1'
 
     As you can see, this only includes the first line of the message
@@ -93,7 +89,7 @@ SubjectFormatter
     ...     raise RuntimeException('something bad happened')
     ... except:
     ...     exc_info = sys.exc_info()
-    >>> r = LogRecord(name='aname', 
+    >>> record = LogRecord(name='aname', 
     ...               level=10, 
     ...               pathname='somepath.py', 
     ...               lineno=123,
@@ -105,7 +101,7 @@ SubjectFormatter
     representing this entry:
 
     >>> from logging import Formatter
-    >>> print Formatter().format(r)
+    >>> print Formatter().format(record)
     bad things caught
     Traceback (most recent call last):
       File "<doctest subjectformatter.txt[...]>", line 2, in ...
@@ -115,7 +111,7 @@ SubjectFormatter
     However, if we use the subject formatter we previously created,
     the log entry is formatted as follows:
 
-    >>> print f.format(r)
+    >>> print f.format(record)
     'bad things caught'
     
     To aid administration where the same python software runs
@@ -124,7 +120,7 @@ SubjectFormatter
 
     >>> setHostName('localhost')
     >>> f = SubjectFormatter('[%(hostname)s] %(line)r')
-    >>> print f.format(r)
+    >>> print f.format(record)
     [localhost] 'bad things caught'
 
     Please check the following url for further documentation that may

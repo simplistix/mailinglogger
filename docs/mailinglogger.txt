@@ -127,8 +127,6 @@ Examples
 
   To help show what happens, we'll 'stop time':
 
-  >>> setTime('2007-01-01 10:00:00')
-
   Now we log a message as normal:
 
   >>> logging.error('An Error')
@@ -179,7 +177,8 @@ Examples
   However, once the clock has ticked over to a new hour, messages
   logged will once again be mailed:
   
-  >>> setTime('2007-01-01 11:00:00')
+  >>> datetime.set(2007, 1, 1, 11)
+  >>> time.set(2007, 1, 1, 11)
 
   >>> logging.error('Yet Another Error')
   sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
@@ -194,11 +193,6 @@ Examples
   Message-ID: <...MailingLogger@...>
   <BLANKLINE>
   Yet Another Error
-
-  Now that we've demonstrated how the email flood protection works, we
-  can 'start time' again:
-
-  >>> resumeTime()
 
   By default, as we've seen above, MailingLogger uses the local host
   to send mails. If you wish to use a specific smtp server to send
