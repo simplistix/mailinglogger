@@ -36,12 +36,12 @@ Full documentation can be found using the links below:
    :maxdepth: 2
 
    installation.txt
+   api.txt
    mailinglogger.txt
    summarisinglogger.txt
    subjectformatter.txt
    zconfig.txt
    zope2.txt
-   api.txt
    development.txt
    changes.txt
    license.txt
