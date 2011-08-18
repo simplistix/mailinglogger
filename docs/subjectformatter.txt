@@ -132,7 +132,7 @@ The `LogRecord attributes`__ documentation gives full details of all
 of these attributes, but the following table shows the ones added by 
 :class:`~mailinglogger.common.SubjectFormatter`:
 
-__ <http://docs.python.org/library/logging.html#logrecord-attributes>`
+__ http://docs.python.org/library/logging.html#logrecord-attributes
 
 +----------------+------------------+----------------------------------+
 | Attribute name | Format           | Description                      |
