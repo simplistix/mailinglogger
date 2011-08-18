@@ -121,7 +121,7 @@ formatted, including ``Date`` and ``Message-ID`` headers.
 You will also notice that an ``X-Mailer`` header has been added
 specifying that :mod:`mailinglogger` is the sender of the mail. This
 can be useful for filtering mail sent by :class:`SummarisingLogger` ,
-however the support for adding `extra headers <Adding extra headers>`_
+however the support for adding :ref:`extra headers <sum_extra_headers>`
 may be more useful.
 
 Avoiding the :mod:`atexit` handler
@@ -491,6 +491,8 @@ Date: ...
 Message-ID: <...MailingLogger@...>
 <BLANKLINE>
 <BLANKLINE>
+
+.. _sum_extra_headers:
 
 Adding extra headers
 --------------------

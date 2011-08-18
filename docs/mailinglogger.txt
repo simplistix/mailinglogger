@@ -58,7 +58,7 @@ mail messages that are correctly formatted, including ``Date`` and
 You will also notice that an ``X-Mailer`` header has been added
 specifying that :mod:`mailinglogger` is the sender of the mail. This can be
 useful for filtering mail sent by :class:`MailingLogger`, however the
-support for adding `extra headers <Adding extra headers>`_ may be
+support for adding :ref:`extra headers <mail_extra_headers>` may be
 more useful.
 
 Now, to continue with the examples, just like any other handler, we
@@ -377,6 +377,8 @@ Now, anything matching any of the expressions will be ignored:
 
 >>> logging.error('An Error')
 >>> logging.error('The Error!')
+
+.. _mail_extra_headers:
 
 Adding extra headers
 --------------------
