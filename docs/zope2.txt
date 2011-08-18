@@ -35,32 +35,37 @@ MailingLogger
 
 Here's a sample zope.conf for using a MailingLogger in Zope 2:
 
->>> config_file = os.path.join(INSTANCE_HOME,'etc','zope.conf')
->>> f = open(config_file,'w')
->>> f.write('''
-...  instancehome INSTANCE_HOME
-...  # ..the rest of your zope.conf goes here...
-...  
-...  %import mailinglogger
-...  <eventlog>
-...    level info
-...    <mailing-logger>
-...      level   info
-...      from    logging@example.com
-...      to      support@example.com
-...      subject [Zope] %(line)s
-...      <headers>
-...        filter some-customer
-...      </headers>
-...    </mailing-logger>    
-...  </eventlog>
-... '''.replace('INSTANCE_HOME',INSTANCE_HOME))
->>> f.close()
+.. topic:: zope.conf
+  :class: write-file
+
+  ::
+
+    instancehome INSTANCE_HOME
+    # ..the rest of your zope.conf goes here...
+    
+    %import mailinglogger
+    <eventlog>
+      level info
+      <mailing-logger>
+        level   info
+        from    logging@example.com
+        to      support@example.com
+        subject [Zope] %(line)s
+        <headers>
+          filter some-customer
+        </headers>
+      </mailing-logger>
+    </eventlog>
+
+.. invisible-code-block: python
+
+  tempdir.write('etc/zope.conf',
+                tempdir.read('zope.conf').replace('INSTANCE_HOME',tempdir.path))
 
 Zope loads this configuration with the following code:
 
 >>> import Zope2
->>> starter = Zope2.configure(config_file)
+>>> starter = Zope2.configure(os.path.join(INSTANCE_HOME, 'etc', 'zope.conf'))
 >>> starter.setupConfiguredLoggers()
 
 Now, when we log a message, the MailingLogger handler is used:
@@ -93,32 +98,37 @@ want a summarising logger for a running zope server.
 However, here's a sample zope.conf for using a SummarisingLogger
 in Zope 2: 
 
->>> config_file = os.path.join(INSTANCE_HOME,'etc','zope.conf')
->>> f = open(config_file,'w')
->>> f.write('''
-...  instancehome INSTANCE_HOME
-...  # ..the rest of your zope.conf goes here...
-...  
-...  %import mailinglogger
-...  <eventlog>
-...    level info
-...    <summarising-logger>
-...      level   info
-...      from    logging@example.com
-...      to      support@example.com
-...      subject Summary of Zope Activity
-...      <headers>
-...        filter some-customer
-...      </headers>
-...    </summarising-logger>    
-...  </eventlog>
-... '''.replace('INSTANCE_HOME',INSTANCE_HOME))
->>> f.close()
+.. topic:: zope.conf
+  :class: write-file
+
+  ::
+
+    instancehome INSTANCE_HOME
+    # ..the rest of your zope.conf goes here...
+    
+    %import mailinglogger
+    <eventlog>
+      level info
+      <summarising-logger>
+        level   info
+        from    logging@example.com
+        to      support@example.com
+        subject Summary of Zope Activity
+        <headers>
+          filter some-customer
+        </headers>
+      </summarising-logger>    
+    </eventlog>
+
+.. invisible-code-block: python
+
+  tempdir.write('etc/zope.conf',
+                tempdir.read('zope.conf').replace('INSTANCE_HOME',tempdir.path))
 
 Zope loads this configuration with the following code:
 
 >>> import Zope2
->>> starter = Zope2.configure(config_file)
+>>> starter = Zope2.configure(os.path.join(INSTANCE_HOME, 'etc', 'zope.conf'))
 >>> starter.setupConfiguredLoggers()
 
 Now, when we log a message, the SummarisingLogger handler is used:

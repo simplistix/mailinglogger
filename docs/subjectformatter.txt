@@ -107,8 +107,7 @@ representing this entry:
 >>> print Formatter().format(record)
 bad things caught
 Traceback (most recent call last):
-  File "<doctest subjectformatter.txt[...]>", line 2, in ...
-    raise RuntimeException('something bad happened')
+  File "<doctest subjectformatter.txt[0]>", line 2, in <module>
 NameError: name 'RuntimeException' is not defined
 
 However, if we use the subject formatter we previously created,

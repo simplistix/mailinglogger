@@ -13,6 +13,7 @@ import unittest
 from mailinglogger.common import RegexConversion
 from mailinglogger.MailingLogger import MailingLogger
 from mailinglogger.SummarisingLogger import SummarisingLogger
+from testfixtures import TempDirectory
 from shared import setUp as shared_setUp
 from shared import tearDown as shared_tearDown
 from tempfile import mkdtemp
@@ -25,17 +26,18 @@ from doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
 
 def setUp(test):
     shared_setUp(test)
-    dir = test.globs['dir'] = mkdtemp()
-    os.mkdir(os.path.join(dir,'etc'))
-    test.globs['startdir'] = os.getcwd()
+    tempdir = test.globs['tempdir'] = TempDirectory()
+    tempdir.makedir('etc')
     test.globs['os'] = os
-    test.globs['INSTANCE_HOME'] = dir
-    os.chdir(dir) 
+    test.globs['INSTANCE_HOME'] = tempdir.path
+    test.globs['startdir'] = os.getcwd()
+    os.chdir(tempdir.path)
+
     
 def tearDown(test):
-    shared_tearDown(test)
     os.chdir(test.globs['startdir'])
-    shutil.rmtree(test.globs['dir'])
+    shared_tearDown(test)
+    test.globs['tempdir'].cleanup()
 
 class Tests(unittest.TestCase):
 

@@ -222,8 +222,7 @@ Message-ID: <...MailingLogger@...>
 2007-01-01 10:00:00,000 [WARNING] something happened
 2007-01-01 12:34:56,000 [ERROR] bad things happened
 Traceback (most recent call last):
-File "...", line 2, in ...
-raise RuntimeError('badness')
+...
 RuntimeError: badness
 <BLANKLINE>
 

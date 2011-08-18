@@ -20,43 +20,45 @@ schema.xml. If you do not, here is a minimal schema that will
 support configuration of loggers with mailing handlers and the
 default ZConfig log handlers:
 
->>> f = open('schema.xml','w')
->>> f.write('''
-... <schema>
-...   <!-- import for log sections -->
-...   <import package="ZConfig.components.logger" file="logger.xml"/>
-...   <!-- import for default log handlers -->
-...   <import package="ZConfig.components.logger" file="handlers.xml"/>
-...   <!-- import for mailing-logger and summarising-logger handlers -->
-...   <import package="mailinglogger"/>
-...   <!-- now the logger sections -->
-...   <multisection name="*"
-...                 attribute="loggers"
-...                 type="logger"/>
-... </schema>
-... ''')
->>> f.close()
+.. topic:: schema.xml
+  :class: write-file
+
+  ::
+
+    <schema>
+      <!-- import for log sections -->
+      <import package="ZConfig.components.logger" file="logger.xml"/>
+      <!-- import for default log handlers -->
+      <import package="ZConfig.components.logger" file="handlers.xml"/>
+      <!-- import for mailing-logger and summarising-logger handlers -->
+      <import package="mailinglogger"/>
+      <!-- now the logger sections -->
+      <multisection name="*"
+                    attribute="loggers"
+                    type="logger"/>
+    </schema>
 
 A sample config file that implements this schema is shown below:
 
->>> f = open('my.conf','w')
->>> f.write('''
-...  <logger>
-...    name  mylogger
-...    level info
-...    <mailing-logger>
-...      level   error
-...      from    logging@example.com
-...      to      receiver@example.com
-...      to      support@example.com
-...      subject [MyApp] %(line)s
-...      <headers>
-...        filter some-customer
-...      </headers>
-...    </mailing-logger>    
-...  </logger>
-... ''')
->>> f.close()
+.. topic:: my.conf
+  :class: write-file
+
+  ::
+
+     <logger>
+       name  mylogger
+       level info
+       <mailing-logger>
+         level   error
+         from    logging@example.com
+         to      receiver@example.com
+         to      support@example.com
+         subject [MyApp] %(line)s
+         <headers>
+           filter some-customer
+         </headers>
+       </mailing-logger>    
+     </logger>
 
 To use this configuration in your application, you need to first
 load the schema:
@@ -77,7 +79,7 @@ Calling these factories will instantiate the loggers and register
 them with the logging framework:
 
 >>> for logger in config.loggers:
-...   logger()
+...     logger()
 <logging.Logger instance at ...>
 
 As the above example shows, the factory also returns the new
@@ -105,25 +107,27 @@ something bad has happened
 The same schema can also be used for a configuration that uses a
 summarising logger instead:
 
->>> f = open('summarising.conf','w')
->>> f.write('''
-...  <logger>
-...    name summary
-...    <summarising-logger>
-...      from    logging@example.com
-...      to      summary@example.com
-...      subject Summary of Activity
-...      format  %(levelname)s - %(message)s
-...      <headers>
-...        filter some-customer
-...      </headers>
-...    </summarising-logger>    
-...  </logger>
-... ''')
->>> f.close()
+.. topic:: summarising.conf
+  :class: write-file
+
+  ::
+
+     <logger>
+       name summary
+       <summarising-logger>
+         from    logging@example.com
+         to      summary@example.com
+         subject Summary of Activity
+         format  %(levelname)s - %(message)s
+         <headers>
+           filter some-customer
+         </headers>
+       </summarising-logger>    
+     </logger>
+
 >>> config, handlers = loadConfig(schema, 'summarising.conf')
 >>> for logger in config.loggers:
-...   logger()
+...     logger()
 <logging.Logger instance at ...>
 
 As with all summarising loggers, no emails are sent when messages

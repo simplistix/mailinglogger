@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2010 Simplistix Ltd
+# Copyright (c) 2007-2011 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -7,8 +7,12 @@
 import os
 import unittest
 
-from zconfig import setUp,tearDown,Tests
-from doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
+from doctest import REPORT_NDIFF, ELLIPSIS
+from mailinglogger.tests.test_docs import docs_dir
+from manuel import doctest, codeblock
+from manuel.testing import TestSuite
+from testfixtures.manuel import Files
+from zconfig import setUp, tearDown, Tests
 
 class Zope2Tests(Tests):
 
@@ -23,7 +27,7 @@ class Zope2Tests(Tests):
 instancehome %s
 %%import mailinglogger
 <eventlog>
-''' % self.globs['dir']
+''' % self.globs['INSTANCE_HOME']
 
     def getConfigPostfix(self):
         return '\n</eventlog>'
@@ -38,11 +42,15 @@ def test_suite():
         if os.environ.get('mailinglogger_env')=='zope2':
             raise
         return unittest.TestSuite()
+    m =  doctest.Manuel(optionflags=REPORT_NDIFF|ELLIPSIS)
+    m += codeblock.Manuel()
+    m += Files('tempdir')
     return unittest.TestSuite((
-        DocFileSuite('../../docs/zope2.txt',
-                     optionflags=options,
-                     setUp=setUp,
-                     tearDown=tearDown),
+        TestSuite(m,
+                  os.path.join(docs_dir, 'zope2.txt'),
+                  setUp=setUp,
+                  tearDown=tearDown
+                  ),
         unittest.makeSuite(Zope2Tests),
         ))
 
