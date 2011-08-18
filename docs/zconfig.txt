@@ -159,7 +159,10 @@ One drawback of using ZConfig's logger section type is that you
 cannot use it to configure the root logger. In order to do this,
 you will need to come up with your own section type.
 
+.. _zconfig_reference:
+
 Reference
+---------
 
     A full description of the possible keys and defaults for the
     mailing-logger and summarising-logger sections are given below:

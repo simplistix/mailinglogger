@@ -12,6 +12,8 @@ Configuration for Zope 2 and Plone
   sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
   The message
 
+.. currentmodule:: mailinglogger
+
 This documentation covers the configuration of mailing loggers 
 when using Zope 2.
 
@@ -20,20 +22,20 @@ Zope 2 and are easilly configured by adding a section to the
 eventlog section of zope.conf. 
 
 To add a mailing logger to your zope instance, you need to import
-the mailinglogger package and add an appropriate handler to the
-eventlog section.
+the :mod:`mailinglogger` package and add an appropriate handler to the
+``eventlog`` section.
 
 The examples below show this for both types of handler provided by
-the mailinglogger package.
+the :mod:`mailinglogger` package.
 
 A full description of the possible keys and defaults for the
-mailing-logger and summarising-logger sections are given in the
-reference section of zconfig.txt in the docs directory of the
-package. 
+``mailing-logger`` and ``summarising-logger`` sections are given in
+the :ref:`ZConfig reference section <zconfig_reference>`. 
 
 MailingLogger
+-------------
 
-Here's a sample zope.conf for using a MailingLogger in Zope 2:
+Here's a sample ``zope.conf`` for using a :class:`MailingLogger` in Zope 2:
 
 .. topic:: zope.conf
   :class: write-file
@@ -68,7 +70,8 @@ Zope loads this configuration with the following code:
 >>> starter = Zope2.configure(os.path.join(INSTANCE_HOME, 'etc', 'zope.conf'))
 >>> starter.setupConfiguredLoggers()
 
-Now, when we log a message, the MailingLogger handler is used:
+Now, when we log a message to the ``event`` logger, the
+:class:`MailingLogger` handler is used:
 
 >>> from logging import getLogger
 >>> getLogger('event').info('something happened')
@@ -86,17 +89,19 @@ Message-ID: <...MailingLogger@...>
 <BLANKLINE>
 something happened
 
-To keep our examples working cleanly, we now remove the handler
-we set up above: 
->>> removeHandlers()
+.. To keep our examples working cleanly, we now remove the handler
+   we set up above: 
+
+   >>> removeHandlers()
 
 SummarisingLogger
+-----------------
 
 This log handler has limited use in a Zope context. You wouldn't
 want a summarising logger for a running zope server. 
 
-However, here's a sample zope.conf for using a SummarisingLogger
-in Zope 2: 
+However, here's a sample ``zope.conf`` for using a
+:class:`SummarisingLogger` in Zope 2: 
 
 .. topic:: zope.conf
   :class: write-file
@@ -131,7 +136,8 @@ Zope loads this configuration with the following code:
 >>> starter = Zope2.configure(os.path.join(INSTANCE_HOME, 'etc', 'zope.conf'))
 >>> starter.setupConfiguredLoggers()
 
-Now, when we log a message, the SummarisingLogger handler is used:
+Now, when we log a message, the :class:`SummarisingLogger` handler is
+used:
 
 >>> from logging import getLogger
 >>> getLogger('event').info('something happened')
