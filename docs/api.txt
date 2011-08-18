@@ -59,7 +59,7 @@ API Reference
     included in the subject line of the email notification.
 
     Information on what can be included in a subject format string can
-    be found in the :ref:`subjectformatter` documentation.
+    be found in the :doc:`subjectformatter` documentation.
 
     default: ``'%(line)s'``
 
@@ -159,7 +159,7 @@ API Reference
     included in the subject line of the summary email.
 
     Information on what can be included in a subject format string can
-    be found in the :ref:`subjectformatter` documentation.
+    be found in the :doc:`subjectformatter` documentation.
 
     .. note:: 
 
@@ -226,7 +226,7 @@ API Reference
   This is a `logging formatter`__ tailored to formatting log messages
   to appear in the subject line of an email. For details of how these
   differ from normal :class:`~logging.Formatter` objects, see the
-  :ref:`subjectformatter` documentation.
+  :doc:`subjectformatter` documentation.
 
   __ http://docs.python.org/library/logging.html#formatter-objects
 

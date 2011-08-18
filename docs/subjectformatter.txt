@@ -1,5 +1,3 @@
-.. _subjectformatter:
-
 .. currentmodule:: mailinglogger
 
 SubjectFormatter

@@ -112,7 +112,7 @@ Message-ID: <...MailingLogger@...>
 my 13 message
 
 Full details of how the subject line can be formatted can be found in
-the :ref:`subjectformatter` documentation.
+the :doc:`subjectformatter` documentation.
 
 Sending empty emails
 --------------------

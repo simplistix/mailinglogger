@@ -206,7 +206,7 @@ a message
 <BLANKLINE>
 
 It can also be set using any of the substitution variables described
-in the :ref:`subjectformatter` documentation, for example:
+in the :doc:`subjectformatter` documentation, for example:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             subject='[%(hostname)s] %(levelname)s - %(line)s')
