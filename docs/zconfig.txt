@@ -12,13 +12,64 @@ Configuration using ZConfig
   sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
   The message
 
+.. currentmodule:: mailinglogger
+
 This documentation covers the configuration of mailing loggers in
-an application already using ZConfig for configuration parsing.
+using the :mod:`ZConfig` package for configuration.
   
-If that's the case, you will likely have your own existing
-schema.xml. If you do not, here is a minimal schema that will
-support configuration of loggers with mailing handlers and the
-default ZConfig log handlers:
+The latest releases of ZConfig provides a great way to
+configure the python logging framework. Here's an example that
+configures a :class:`MailingLogger`:
+
+>>> from ZConfig import configureLoggers
+>>> configureLoggers('''
+...  %import mailinglogger
+...  <logger>
+...    level info
+...    <mailing-logger>
+...      level   error
+...      from    logging@example.com
+...      to      receiver@example.com
+...      to      support@example.com
+...      subject [MyApp] %(line)s
+...      <headers>
+...        filter some-customer
+...      </headers>
+...    </mailing-logger>    
+...  </logger>
+... ''') 
+
+Now that the configuration is loaded, any logging to the
+appropriate logger will cause an email to get sent:
+
+>>> import logging
+>>> logging.error('something bad has happened')
+sending to ['receiver@example.com', 'support@example.com'] from 'logging@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+filter: some-customer
+Subject: [MyApp] something bad has happened
+From: logging@example.com
+To: receiver@example.com, support@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+something bad has happened
+
+.. To keep our examples working cleanly, we now remove the handler
+   we set up above: 
+
+   >>> removeHandlers()
+
+Using your own schema
+---------------------
+
+If your application already uses :mod:`ZConfig`, you will likely have
+your own existing ``schema.xml``. If you do not, here is a minimal
+schema that will support configuration of loggers with mailing
+handlers and the default :mod:`ZConfig` log handlers:
 
 .. topic:: schema.xml
   :class: write-file
@@ -38,7 +89,11 @@ default ZConfig log handlers:
                     type="logger"/>
     </schema>
 
-A sample config file that implements this schema is shown below:
+MailingLogger
+-------------
+
+A sample config file that implements this schema using a
+:class:`MailingLogger` is shown below:
 
 .. topic:: my.conf
   :class: write-file
@@ -72,6 +127,7 @@ You then need to load the configuration:
 >>> config, handlers = loadConfig(schema, 'my.conf')
 
 The configuration now contains a list of logger factories:
+
 >>> config.loggers
 [<ZConfig.components.logger.logger.LoggerFactory instance at ...>]
 
@@ -104,8 +160,11 @@ Message-ID: <...MailingLogger@...>
 <BLANKLINE>
 something bad has happened
 
+SummarisingLogger
+-----------------
+
 The same schema can also be used for a configuration that uses a
-summarising logger instead:
+:class:`SummarisingLogger` instead:
 
 .. topic:: summarising.conf
   :class: write-file
@@ -125,6 +184,9 @@ summarising logger instead:
        </summarising-logger>    
      </logger>
 
+You then need to load the configuration, using the same schema as
+before:
+
 >>> config, handlers = loadConfig(schema, 'summarising.conf')
 >>> for logger in config.loggers:
 ...     logger()
@@ -135,7 +197,7 @@ are logged:
 
 >>> getLogger('summary').error('something bad happened')
 
-But, ZConfig's LoggerFactories have a handy method for re-opening
+But, :mod:`ZConfig`'s LoggerFactories have a handy method for re-opening
 loggers and their handlers. This method can be called to flush any
 queued messages and send a summary email:
 
@@ -155,204 +217,201 @@ Message-ID: ...
 ERROR - something bad happened
 <BLANKLINE>
 
-One drawback of using ZConfig's logger section type is that you
-cannot use it to configure the root logger. In order to do this,
-you will need to come up with your own section type.
-
 .. _zconfig_reference:
 
 Reference
 ---------
 
-    A full description of the possible keys and defaults for the
-    mailing-logger and summarising-logger sections are given below:
+A full description of the possible keys and defaults for the
+``mailing-logger`` and ``summarising-logger`` sections are given below:
 
-    mailing-logger:
+mailing-logger
+~~~~~~~~~~~~~~
 
-      dateformat
+.. describe:: dateformat
 
-        The date format to use in log entries. This will be used
-        wherever the %(asctime)s substitution is used.
+  The date format to use in log entries. This will be used
+  wherever the ``%(asctime)s`` substitution is used.
 
-        default: %Y-%m-%dT%H:%M:%S
+  default: ``%Y-%m-%dT%H:%M:%S``
 
-      level
+.. describe:: level
 
-        The level at or above which an email log notification will be
-        sent.
+  The level at or above which an email log notification will be
+  sent.
 
-        This can either be a numeric level or one of the textual level
-        identifiers.
+  This can either be a numeric level or one of the textual level
+  identifiers.
 
-        default: 0 
+  default: ``0``
 
-      from
+.. describe:: from
 
-        The address from which email log notifications will originate.
+  The address from which email log notifications will originate.
 
-        This must be set.
+  This must be set.
 
-      to
+.. describe:: to
 
-        The address to which email log notifications will be sent.
+  The address to which email log notifications will be sent.
 
-        At least one 'to' line must be included, but multiple lines
-        can be included if email log notifications should be sent to
-        multiple addresses.
+  At least one `to` line must be included, but multiple lines
+  can be included if email log notifications should be sent to
+  multiple addresses.
 
-      smtp-server 
+.. describe:: smtp-server 
 
-        The SMTP server that should be used to send email
-        notifications. This can include a port number, 
-        eg: mail.example.com:2525 
+  The SMTP server that should be used to send email
+  notifications. This can include a port number, 
+  eg: ``mail.example.com:2525`` 
 
-        default: localhost
+  default: ``localhost``
 
-      subject 
+.. describe:: subject 
 
-        This is a format string specifying what information will be
-        included in the subject line of the email notification.
+  This is a format string specifying what information will be
+  included in the subject line of the email notification.
 
-        Information on what can be included in a subject format string can
-        be found in docs/subjectformatter.txt
+  Information on what can be included in a subject format string can
+  be found in the :doc:`subjectformatter` documentation.
 
-        default: [%(hostname)s] %(levelname)s - %(line)s
+  default: ``[%(hostname)s] %(levelname)s - %(line)s``
 
-      format 
+.. describe:: format 
 
-        This is a format string specifying what information will be
-        included in each message that is logged.
+  This is a format string specifying what information will be
+  included in each message that is logged.
 
-        Information on what can be included in a format string can be
-        found at:
+  Information on what can be included in a format string can be
+  found in the `python core documentation`__.
 
-        http://docs.python.org/lib/node293.html
+  __ http://docs.python.org/library/logging.html#logrecord-attributes
 
-        default: %(message)s
+  default: ``%(message)s``
 
-      send-empty-entries
+.. describe::  send-empty-entries
 
-        This is a boolean value which specifies whether empty log
-        entries will be mailed or not.
+  This is a boolean value which specifies whether empty log
+  entries will be mailed or not.
 
-        default: no
+  default: ``no``
 
-      flood-level
+.. describe:: flood-level
 
-        This is an integer value specifying the maximum number of
-        emails that can be sent in an hour that will not be considered
-        a "flood".
+  This is an integer value specifying the maximum number of
+  emails that can be sent in an hour that will not be considered
+  a "flood".
 
-        When a "flood" is detected, one email is sent at the CRITICAL
-        level indicating that a flood has been detected, and no more
-        emails will be sent in the same hour.
+  When a "flood" is detected, one email is sent at the ``CRITICAL``
+  level indicating that a flood has been detected, and no more
+  emails will be sent in the same hour.
 
-        So, this option, in effect, specifies the maximum number of
-        emails that will be sent in any particular hour of the day.
+  So, this option, in effect, specifies the maximum number of
+  emails that will be sent in any particular hour of the day.
 
-        default: 10
+  default: ``10``
 
-      ignore
+.. describe::  ignore
 
-        A regular expression for entries to be silently discarded
+  A regular expression for entries to be silently discarded
 
-        You can specify one or more regular expressions that are checked 
-        against when a log entry is being handled. If the log entry message
-        matches at least one of the regular expressions it will be discarded
-        silently.
+  You can specify one or more regular expressions that are checked 
+  against when a log entry is being handled. If the log entry message
+  matches at least one of the regular expressions it will be discarded
+  silently.
 
-        default: unset
+  default: ``unset``
 
-    summarising-logger:
+summarising-logger
+~~~~~~~~~~~~~~~~~~
 
-      dateformat
+.. describe:: dateformat
 
-        The date format to use in log entries. This will be used
-        wherever the %(asctime)s substitution is used.
+  The date format to use in log entries. This will be used
+  wherever the ``%(asctime)s`` substitution is used.
 
-        default: %Y-%m-%dT%H:%M:%S
+  default: ``%Y-%m-%dT%H:%M:%S``
 
-      level
+.. describe:: level
 
-        The level at or above which a logged message will be stored
-        and sent as part of the summary email.
+  The level at or above which a logged message will be stored
+  and sent as part of the summary email.
 
-        This can either be a numeric level or one of the textual level
-        identifiers.
+  This can either be a numeric level or one of the textual level
+  identifiers.
 
-        default: 0
+  default: ``0``
 
-      from
+.. describe:: from
 
-        The address from which the summary email will originate.
+  The address from which the summary email will originate.
 
-        This must be set.
+  This must be set.
 
-      to
+.. describe:: to
 
-        The addresses to which the summary email will be sent.
+  The addresses to which the summary email will be sent.
 
-        At least one 'to' line must be included, but multiple lines
-        can be included if email log notifications should be sent to
-        multiple addresses.
+  At least one `to` line must be included, but multiple lines
+  can be included if email log notifications should be sent to
+  multiple addresses.
 
-      smtp-server 
+.. describe:: smtp-server 
 
-        The SMTP server that should be used to send send the summary
-        mail. This can include a port number, 
-        eg: mail.example.com:2525 
+  The SMTP server that should be used to send the summary
+  mail. This can include a port number, 
+  eg: ``mail.example.com:2525``
 
-        default: localhost
+  default: ``localhost``
 
-      subject 
+.. describe:: subject 
 
-        This is a format string specifying what information will be
-        included in the subject line of the summary email.
+  This is a format string specifying what information will be
+  included in the subject line of the summary email.
 
-        Information on what can be included in a subject format string can
-        be found in docs/subjectformatter.txt
+  Information on what can be included in a subject format string can
+  be found in the :doc:`subjectformatter` documentation.
 
-        default: 'Summary of Log Messages'
+  default: ``Summary of Log Messages``
 
-      format 
+.. describe:: format 
 
-        This is a format string specifying what information will be
-        included in each message that is logged.
+  This is a format string specifying what information will be
+  included in each message that is logged.
 
-        Information on what can be included in a format string can be
-        found at:
+  Information on what can be included in a format string can be
+  found in the `python core documentation`__.
 
-        http://docs.python.org/lib/node293.html
+  __ http://docs.python.org/library/logging.html#logrecord-attributes
 
-        default: %(asctime)s - %(levelname)s - %(message)s
+  default: ``%(asctime)s - %(levelname)s - %(message)s``
 
-      send-empty-entries
+.. describe::  send-empty-entries
 
-        This is a boolean value which specifies whether empty summary
-        emails will be mailed or not.
+   This is a boolean value which specifies whether empty summary
+   emails will be mailed or not.
 
-        default: yes
+   default: ``yes``
 
+.. describe::  ignore
 
-      ignore
+  A regular expression for entries to be silently discarded
 
-        A regular expression for entries to be silently discarded
+  You can specify one or more regular expressions that are checked 
+  against when a log entry is being handled. If the log entry message
+  matches at least one of the regular expressions it will be discarded
+  silently.
 
-        You can specify one or more regular expressions that are checked 
-        against when a log entry is being handled. If the log entry message
-        matches at least one of the regular expressions it will be discarded
-        silently.
+  default: ``unset``
 
-        default: unset
+.. describe:: atexit
 
-      atexit
+  If ``True``, this close method of the summarising logger is set as
+  an :mod:`atexit` function that runs when the currently executing
+  python script finishes.
 
-        If True, this close method of the summarising logger is set as
-        an atexit function that runs when the currently executing
-        python script finishes.
+  This results in a summary email being sent once the script
+  terminates.
 
-        This results in a summary email being sent once the script
-        terminates.
-
-        default: True
+  default: ``True``
 
