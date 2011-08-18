@@ -15,329 +15,395 @@ MailingLogger
 .. currentmodule:: mailinglogger
 
 :class:`MailingLogger` is a handler for the python logging framework that
-sends log entries as email messages using an SMTP server.
+sends log entries as email messages using an SMTP server. It is
+configured as any other :mod:`logging` handler would be, full details
+of which can be found in the `Python core documentation`__. For the
+examples below, we'll stick to manually configuring the logging
+elements.
+ 
+__ http://docs.python.org/howto/logging.html#configuring-logging
 
-If you would like detailed examples of how to use MailingLogger,
-please see the examples below.
+A :class:`MailingLogger` is instantiated as follows:
 
-Examples
+>>> from mailinglogger.MailingLogger import MailingLogger
+>>> handler = MailingLogger('from@example.com',('to@example.com',))
 
-  In its simplest form, we can instantiate and use MailingLogger as
-  with any other logging handler:
+It can then be added as a handler for any logger as follows:
 
-  >>> import logging
-  >>> from mailinglogger.MailingLogger import MailingLogger
-  >>> handler = MailingLogger('from@example.com',('to@example.com',))
-  >>> logging.getLogger('').addHandler(handler)
-  >>> logging.error('my message')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: my message
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  my message
+>>> import logging
+>>> logger = logging.getLogger()
+>>> logger.addHandler(handler)
 
-  From the above example, you can see that MailingLogger sends mail
-  messages that are correctly formatted, including Date and Message-ID
-  headers.
+Now, when that logger receives a message, an email containing the
+message will be sent:
 
-  You will also notice that an X-Mailer header has been added
-  specifying that MailingLogger is the sender of the mail. This can be
-  useful for filtering mail sent by MailingLogger.
+>>> logging.error('my message')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: my message
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+my message
 
-  Now, to continue with the examples, just like any other handler, we
-  can also set the logging level: 
+From the above example, you can see that :class:`MailingLogger` sends
+mail messages that are correctly formatted, including ``Date`` and
+``Message-ID`` headers.
 
-  >>> handler.setLevel(logging.CRITICAL)
-  >>> logging.error('my message')
-  >>> handler.setLevel(logging.WARNING)
-  >>> logging.warning('my message')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: my message
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  my message
+You will also notice that an ``X-Mailer`` header has been added
+specifying that :mod:`mailinglogger` is the sender of the mail. This can be
+useful for filtering mail sent by :class:`MailingLogger`, however the
+support for adding `extra headers <Adding extra headers>`_ may be
+more useful.
 
-  As you can see from the above examples, the subject line of the
-  email sent is, by default, the first line of the message logged.
+Now, to continue with the examples, just like any other handler, we
+can also set the logging level, and messages logged below this level
+will not result in emails being sent: 
 
-  This can be changed by supplying the 'subject' parameter when
-  instantiating the handler object:
+>>> handler.setLevel(logging.CRITICAL)
+>>> logging.error('my message')
+>>> handler.setLevel(logging.WARNING)
+>>> logging.warning('my message')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: my message
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+my message
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                         subject='[MyLogger] %(line)s')
-  >>> logging.getLogger('').addHandler(handler)
-  >>> logging.error('my %i message',13)
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: [MyLogger] my 13 message
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  my 13 message
+Controlling the subject line
+----------------------------
 
-  Also, by default, the MailingLogger handler will not send emails if
-  they would have been empty:
+As you can see from the above examples, the subject line of the
+email sent is, by default, the first line of the message logged.
+This can be changed by supplying the `subject` parameter when
+instantiating the handler object:
 
-  >>> logging.error(' ')
+.. invisible-code-block: python
 
-  However, if you want empty entries to be mailed anyway, all you need
-  to do is supply the 'send_empty_entries' parameter:
+  logging.getLogger('').removeHandler(handler)
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                         send_empty_entries=True)
-  >>> logging.getLogger('').addHandler(handler)
-  >>> logging.error(' ')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: 
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  <BLANKLINE>
-    
-  Now, one problem that may be encountered with a logger that sends
-  emails is that if you inadvertantly log a large number of entries
-  that would result in mail being sent, you may cause problems with
-  MTAs, mailbox quotas and the like.
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                         subject='[MyLogger] %(line)s')
+>>> logger.addHandler(handler)
+>>> logging.error('my %i message',13)
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [MyLogger] my 13 message
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+my 13 message
 
-  To prevent this, MailingLogger allows a limit on the number of
-  entries sent per hour to be specified. By default, this is set to 10
-  entries per hour. This can be overridden by passing the flood_level
-  option to the MailingLogger constructor:
+Full details of how the subject line can be formatted can be found in
+the :ref:`subjectformatter` documentation.
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                         flood_level=1)
-  >>> logging.getLogger('').addHandler(handler)
+Sending empty emails
+--------------------
 
-  To help show what happens, we'll 'stop time':
+By default, the :class:`MailingLogger` handler will not send emails if
+they would have been empty:
 
-  Now we log a message as normal:
+>>> logging.error(' ')
 
-  >>> logging.error('An Error')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: An Error
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: Mon, 01 Jan 2007 10:00:00 -0000
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  An Error
+However, if you want empty entries to be mailed anyway, all you need
+to do is supply the `send_empty_entries` parameter:
 
-  Once the flood level has been reached, a final warning message is
-  sent:
+.. invisible-code-block: python
 
-  >>> logging.error('Another Error')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: Too Many Log Entries
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: Mon, 01 Jan 2007 10:00:00 -0000
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  Too Many Log Entries
-  <BLANKLINE>
-  More than 1 entries have been logged that would have resulted in
-  emails being sent.
-  <BLANKLINE>
-  No further emails will be sent for log entries generated between
-  10:00:00 and 11:00:00
-  <BLANKLINE>
-  Please consult any other configured logs, such as a File Logger,
-  that may contain important entries that have not been emailed.
-  <BLANKLINE>
+  logging.getLogger('').removeHandler(handler)
 
-  Any further messages logged will not result in an email being sent:
-
-  >>> logging.error('Yet Another Error')
-
-  However, once the clock has ticked over to a new hour, messages
-  logged will once again be mailed:
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                         send_empty_entries=True)
+>>> logger.addHandler(handler)
+>>> logging.error(' ')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: 
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+<BLANKLINE>
   
-  >>> datetime.set(2007, 1, 1, 11)
-  >>> time.set(2007, 1, 1, 11)
+Limiting the number of emails sent
+----------------------------------
 
-  >>> logging.error('Yet Another Error')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: Yet Another Error
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: Mon, 01 Jan 2007 11:00:00 -0000
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  Yet Another Error
+Now, one problem that may be encountered with a logger that sends
+emails is that if you inadvertantly log a large number of entries
+that would result in mail being sent, you may cause problems with
+MTAs, mailbox quotas and the like.
 
-  By default, as we've seen above, MailingLogger uses the local host
-  to send mails. If you wish to use a specific smtp server to send
-  mail, this can be done by specifying the 'mailhost' parameter to the
-  MailingLogger constructor:
+To prevent this, :class:`MailingLogger` allows a limit on the number of
+entries sent per hour to be specified. By default, this is set to 10
+entries per hour. This can be overridden by passing the `flood_level`
+option to the :class:`MailingLogger` constructor:
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                         mailhost='smtp.example.com')
-  >>> logging.getLogger('').addHandler(handler)
-  >>> logging.error('An Error')
-  sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: An Error
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  An Error
+.. invisible-code-block: python
 
-  If the smtp server you wish to use is running on non-standard port,
-  you can configure MailingLogger to use this port by specifying
-  'mailhost' as a tuple containing the smtp server's hostname and the
-  port on which it is listening:
+  logging.getLogger('').removeHandler(handler)
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                         mailhost=('smtp.example.com',2500))
-  >>> logging.getLogger('').addHandler(handler)
-  >>> logging.error('An Error')
-  sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 2500)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: An Error
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  An Error
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                         flood_level=1)
+>>> logger.addHandler(handler)
 
-  If the smtp server you wish to use requires authentication,
-  pass the required username and password to the MailingLogger
-  constructor: 
+With this setup, we can log at most one message:
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                         username='auser',password='theirpassword')
-  >>> logging.getLogger('').addHandler(handler)
-  >>> logging.error('An Error')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  (authenticated using username:'auser' and password:'theirpassword')
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: An Error
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  An Error
+>>> logging.error('An Error')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: An Error
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: Mon, 01 Jan 2007 10:00:00 -0000
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+An Error
+
+Now that the flood level has been reached, a final warning message is
+sent if any more messages are logged:
+
+>>> logging.error('Another Error')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Too Many Log Entries
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: Mon, 01 Jan 2007 10:00:00 -0000
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+Too Many Log Entries
+<BLANKLINE>
+More than 1 entries have been logged that would have resulted in
+emails being sent.
+<BLANKLINE>
+No further emails will be sent for log entries generated between
+10:00:00 and 11:00:00
+<BLANKLINE>
+Please consult any other configured logs, such as a File Logger,
+that may contain important entries that have not been emailed.
+<BLANKLINE>
+
+Any further messages logged will not result in an email being sent:
+
+>>> logging.error('Yet Another Error')
+
+..  However, once the clock has ticked over to a new hour, messages
+    logged will once again be mailed:
+
+    >>> datetime.set(2007, 1, 1, 11)
+    >>> time.set(2007, 1, 1, 11)
+
+    >>> logging.error('Yet Another Error')
+    sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+    Content-Type: text/plain; charset="us-ascii"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: 7bit
+    Subject: Yet Another Error
+    From: from@example.com
+    To: to@example.com
+    X-Mailer: MailingLogger...
+    Date: Mon, 01 Jan 2007 11:00:00 -0000
+    Message-ID: <...MailingLogger@...>
+    <BLANKLINE>
+    Yet Another Error
+
+Specifying the host to send email through
+-----------------------------------------
+
+By default, as we've seen above, :class:`MailingLogger` uses the local host
+to send mails. If you wish to use a specific smtp server to send
+mail, this can be done by specifying the `mailhost` parameter to the
+:class:`MailingLogger` constructor:
+
+.. invisible-code-block: python
+
+  logging.getLogger('').removeHandler(handler)
+
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                         mailhost='smtp.example.com')
+>>> logger.addHandler(handler)
+>>> logging.error('An Error')
+sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: An Error
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+An Error
+
+If the smtp server you wish to use is running on non-standard port,
+you can configure :class:`MailingLogger` to use this port by specifying
+`mailhost` as a tuple containing the smtp server's hostname and the
+port on which it is listening:
+
+.. invisible-code-block: python
+
+  logging.getLogger('').removeHandler(handler)
+
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                         mailhost=('smtp.example.com',2500))
+>>> logger.addHandler(handler)
+>>> logging.error('An Error')
+sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 2500)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: An Error
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+An Error
+
+If the smtp server you wish to use requires authentication,
+pass the required username and password to the :class:`MailingLogger`
+constructor: 
+
+.. invisible-code-block: python
+
+  logging.getLogger('').removeHandler(handler)
+
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                         username='auser',password='theirpassword')
+>>> logger.addHandler(handler)
+>>> logging.error('An Error')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+(authenticated using username:'auser' and password:'theirpassword')
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: An Error
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+An Error
+
+.. warning::
 
   For performance reasons, it's recommended that you don't use SMTP
   authentication unless you absolutely need to.
 
-  In order to ignore certain log entries you can use the 'ignore' parameter:
+Ignoring certain log messages
+-----------------------------
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                          ignore='^An Err')
-  >>> logging.getLogger('').addHandler(handler)
+.. warning::
 
-  Now if the regular expression specified is matched, the log entry
-  will not be sent:
+  .. deprecated:: 3.4.0
 
-  >>> logging.error('An Error')
+  This method of ignoring log messages will go away in some future
+  version, `filter objects`__ should be used instead.
 
-  However, other log entries are still sent:
+  __ http://docs.python.org/library/logging.html#filter-objects
 
-  >>> logging.error('The Error!')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  Subject: The Error!
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  The Error!
+In order to ignore certain log entries you can use the `ignore` parameter:
 
-  A sequence of regular expressions to ignore can also be supplied:
+.. invisible-code-block: python
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('fromz@example.com',('toz@example.com',),
-  ...                          ignore=('^An Err','Error!'))
-  >>> logging.getLogger('').addHandler(handler)
+  logging.getLogger('').removeHandler(handler)
 
-  Now, anything matching any of the expressions will be ignored:
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                          ignore='^An Err')
+>>> logger.addHandler(handler)
 
-  >>> logging.error('An Error')
-  >>> logging.error('The Error!')
+Now if the regular expression specified is matched, the log entry
+will not be sent:
 
-  If you wish to add headers for filtering purposes, you can use the
-  headers parameter:
+>>> logging.error('An Error')
 
-  >>> logging.getLogger('').removeHandler(handler)
-  >>> handler = MailingLogger('from@example.com',('to@example.com',),
-  ...                             headers={'foo':'bar','Baz':'bob'})
-  >>> logging.getLogger('').addHandler(handler)
+However, other log entries are still sent:
 
-  >>> logging.error('The Error!')
-  sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-  Content-Type: text/plain; charset="us-ascii"
-  MIME-Version: 1.0
-  Content-Transfer-Encoding: 7bit
-  foo: bar
-  Baz: bob
-  Subject: The Error!
-  From: from@example.com
-  To: to@example.com
-  X-Mailer: MailingLogger ...
-  Date: ...
-  Message-ID: <...MailingLogger@...>
-  <BLANKLINE>
-  The Error!
+>>> logging.error('The Error!')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: The Error!
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+The Error!
 
+A sequence of regular expressions to ignore can also be supplied:
+
+.. invisible-code-block: python
+
+  logging.getLogger('').removeHandler(handler)
+
+>>> handler = MailingLogger('fromz@example.com',('toz@example.com',),
+...                          ignore=('^An Err','Error!'))
+>>> logger.addHandler(handler)
+
+Now, anything matching any of the expressions will be ignored:
+
+>>> logging.error('An Error')
+>>> logging.error('The Error!')
+
+Adding extra headers
+--------------------
+
+If you wish to add headers for filtering purposes, you can use the
+headers parameter:
+
+>>> logging.getLogger('').removeHandler(handler)
+>>> handler = MailingLogger('from@example.com',('to@example.com',),
+...                             headers={'foo':'bar','Baz':'bob'})
+>>> logger.addHandler(handler)
+
+Now, when a log message results in an email being send, the email will
+be sent with the configured headers:
+
+>>> logging.error('The Error!')
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+foo: bar
+Baz: bob
+Subject: The Error!
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger ...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+The Error!
