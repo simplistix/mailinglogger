@@ -12,30 +12,38 @@ SummarisingLogger
   sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
   The message
 
-SummarisingLogger is a handler for the python logging framework that
-accumulates log entries and sends a single email containing all the
-log entries using an SMTP server when its 'close' method is called.
+.. currentmodule:: mailinglogger
 
-This close method is, by default, registered as an 'atexit' function
-so that the summary mail will get sent regardless of whether an
-explicit call is made to the SummarisingLogger's 'close' method.
+:class:`SummarisingLogger` is a handler for the python logging
+framework that accumulates log entries and sends a single email
+containing all the log entries using an SMTP server when its
+:meth:`~SummarisingLogger.close` method is called.
+This :meth:`~SummarisingLogger.close` method is, by default,
+registered as an :mod:`atexit` function so that the summary mail will
+get sent regardless of whether an explicit call is made to the
+:meth:`SummarisingLogger.close` method. 
 
-SummaringLoggers can be very useful for batch processes that are
-frequently run and where people would like an email summary of how
-the batch run went.
+:class:`SummarisingLogger` handlers can be very useful for batch
+processes that are frequently run and where people would like an email
+summary of how the batch run went.
+They are configured as any other :mod:`logging` handler would be, full
+details of which can be found in the `Python core
+documentation`__. For the examples below, we'll stick to manually
+configuring the logging elements.
 
-If you would like detailed examples of how to use SummarisingLogger,
-please see the examples below.
+__ http://docs.python.org/howto/logging.html#configuring-logging
 
-Examples
-
-In its simplest form, we can instantiate and use SummarisingLogger as
-with any other logging handler:
+A :class:`SummarisingLogger` is instantiated as follows:
 
 >>> import logging
 >>> from mailinglogger.SummarisingLogger import SummarisingLogger
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
->>> logging.getLogger('').addHandler(handler)
+
+It can then be added as a handler for any logger as follows:
+
+>>> import logging
+>>> logger = logging.getLogger()
+>>> logger.addHandler(handler)
 
 However, when we log a message, nothing appears to happen:
 
@@ -66,7 +74,7 @@ a warning
 my message
 <BLANKLINE>
 
-The logging on script exit is done using python's 'atexit'
+The logging on script exit is done using python's :mod:`atexit`
 module. We can see that the handler we created above is now
 registered with this module by having a poke at its internals:
 
@@ -75,23 +83,65 @@ registered with this module by having a poke at its internals:
 [(<bound method SummarisingLogger.close of <...>, (), {})]
 
 This list can be manually cleared at any time to remove any
-registered 'atexit' functions:
+registered :mod:`atexit` functions:
 
 >>> atexit._exithandlers[:] = []
 >>> print atexit._exithandlers
 []
 
-In the event you wish to manually call the close method of the
-handler or use the logging framework's shutdown functionality rather
-than registering an atexit function, you can create a
-SummarisingLogger and specify that no atexit function should be
-registered: 
+Now, to continue with the examples, just like any other handler, we
+can also set the logging level, which will filter out messages logged
+below the level set:
+
+>>> handler = SummarisingLogger('from@example.com',('to@example.com',))
+>>> logger.addHandler(handler)
+>>> handler.setLevel(logging.CRITICAL)
+>>> logging.error('an error')
+>>> handler.setLevel(logging.WARNING)
+>>> logging.warning('a warning')
+>>> handler.close()
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Summary of Log Messages (WARNING)
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+a warning
+<BLANKLINE>
+
+As with :class:`MailingLogger`, you can see from the above examples
+that :class:`SummarisingLogger` sends mail messages that are correctly
+formatted, including ``Date`` and ``Message-ID`` headers.
+
+You will also notice that an ``X-Mailer`` header has been added
+specifying that :mod:`mailinglogger` is the sender of the mail. This
+can be useful for filtering mail sent by :class:`SummarisingLogger` ,
+however the support for adding `extra headers <Adding extra headers>`_
+may be more useful.
+
+Avoiding the :mod:`atexit` handler
+----------------------------------
+
+.. 
+  >>> atexit._exithandlers[:] = []
+
+In the event you wish to manually call the
+:meth:`~SummarisingLogger.close` method of the handler or use the
+logging framework's :func:`~logging.shutdown` functionality rather 
+than registering an :mod:`atexit` function, you can create a
+:class:`SummarisingLogger` and specify that no :mod:`atexit` function
+should be registered: 
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             atexit=False)
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 
-Now, we can see that no atexit function has been registered:
+Now, we can see that no :mod:`atexit` function has been registered:
 
 >>> print atexit._exithandlers
 []
@@ -115,10 +165,10 @@ Message-ID: <...MailingLogger@...>
 my message
 <BLANKLINE>
 
-Because the users of SummarisingLogger may not have control over
-when or how often the logging handlers they configure are closed, a
-SummarisingLogger will not raise exceptions and will not send
-duplicate emails if closed more than once:
+Because the users of :class:`SummarisingLogger` may not have control
+over when or how often the logging handlers they configure are closed,
+a :class:`SummarisingLogger` will not raise exceptions and will not
+send duplicate emails if closed more than once:
 
 >>> handler.close()
 
@@ -128,22 +178,17 @@ sent:
 
 >>> logging.error('my message')
 
-As with MailingLogger, from the above examples, you can see that
-SummarisingLogger sends mail messages that are correctly formatted,
-including Date and Message-ID headers.
+Controlling the subject line
+----------------------------
 
-You will also notice that an X-Mailer header has been added
-specifying that MailingLogger is the sender of the mail. This can be
-useful for filtering mail sent by MailingLogger.
-
-The subject for the summary mail sent is controlled by the 'subject'
-parameter to the SummarisingLogger parameter.
+The subject for the summary mail sent is controlled by the `subject`
+parameter to the :class:`SummarisingLogger` parameter.
 
 This can be set to a fixed value:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             subject='My Logging Summary')
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 >>> logging.error('a message')
 >>> handler.close()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
@@ -161,18 +206,20 @@ a message
 <BLANKLINE>
 
 It can also be set using any of the substitution variables described
-in docs/subjectformatter.txt, for example:
+in the :ref:`subjectformatter` documentation, for example:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
-...                             subject='[%(hostname)s] %(line)s')
->>> logging.getLogger('').addHandler(handler)
->>> logging.error('a message')
+...                             subject='[%(hostname)s] %(levelname)s - %(line)s')
+>>> logger.setLevel(logging.INFO)
+>>> logger.addHandler(handler)
+>>> logging.info('a message')
+>>> logging.error('an error')
 >>> handler.close()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [host.example.com] a message
+Subject: [host.example.com] ERROR - a message
 From: from@example.com
 To: to@example.com
 X-Mailer: MailingLogger...
@@ -180,26 +227,63 @@ Date: ...
 Message-ID: <...MailingLogger@...>
 <BLANKLINE>
 a message
+an error
 <BLANKLINE>
 
-You'll notice that the %(line) substitution inserts the first line
-of the whole summary mail when used with a SummarisingLogger.
+You'll notice that the ``%(line)`` substitution inserts the first line
+of the whole summary mail when used with a :class:`SummarisingLogger`.
+
+You'll also notice that the ``%(levelname)`` substitution inserts the
+name of the highest level logged while the :class:`SummarisingLogger`
+was active.
+
+If no messages have been handled by the logger, then ``%(levelname)s``
+will be the string ``NOTSET``:
+
+>>> handler = SummarisingLogger('from@example.com',('to@example.com',),
+...                             subject='[%(levelname)s] summary')
+>>> logger.addHandler(handler)
+>>> logging.shutdown()
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [NOTSET] summary
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+<BLANKLINE>
+
+Formatting messages in the body of the summary email
+----------------------------------------------------
 
 You may also be wondering how you control the formatting of the
 messages included in the summary email. This is done using the
-standard 'setFormatter' method of python log handlers.
+standard :meth:`~logging.Handler.setFormatter` method of python log
+handlers.
 
 Here's an example:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
 >>> handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 
-To show things working, some entries need to be logged:
+To show things working, some entries need to be logged. Here's one at
+``2007-01-01 10:00:00``:
 
->>> time.set(2007, 1, 1, 10)  
+.. 
+  >>> time.set(2007, 1, 1, 10)  
+
 >>> logging.warning('something happened')
->>> time.set(2007, 1, 1, 12, 34, 56)  
+
+Here's another at ``2007-01-01 12:34:56``:
+
+.. 
+  >>> time.set(2007, 1, 1, 12, 34, 56)  
+
 >>> try:
 ...   raise RuntimeError('badness')
 ... except:
@@ -226,78 +310,14 @@ Traceback (most recent call last):
 RuntimeError: badness
 <BLANKLINE>
 
-Now, to continue with the examples, just like any other handler, we
-can also set the logging level:
+Sending empty emails
+--------------------
 
->>> handler = SummarisingLogger('from@example.com',('to@example.com',))
->>> logging.getLogger('').addHandler(handler)
->>> handler.setLevel(logging.CRITICAL)
->>> logging.error('an error')
->>> handler.setLevel(logging.WARNING)
->>> logging.warning('a warning')
->>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (WARNING)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-a warning
-<BLANKLINE>
-
-It should be noted that the level used for the summary email sent is
-the maximum level message handled by the logger:
-
->>> handler = SummarisingLogger('from@example.com',('to@example.com',),
-...                             subject='[%(levelname)s] summary')
->>> handler.setLevel(logging.WARNING)
->>> logging.getLogger('').addHandler(handler)
->>> logging.critical('a message')
->>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [CRITICAL] summary
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-a message
-<BLANKLINE>
-
-If no messages have been handled by the logger, then %(levelname)s
-will be the string 'NOTSET':
-
->>> handler = SummarisingLogger('from@example.com',('to@example.com',),
-...                             subject='[%(levelname)s] summary')
->>> logging.getLogger('').addHandler(handler)
->>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [NOTSET] summary
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-<BLANKLINE>
-
-By default, the SummarisingLogger handler will always send emails
+By default, the :class:`SummarisingLogger` handler will always send emails
 even if they would have been empty: 
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 >>> logging.error(' ')
 >>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
@@ -319,22 +339,25 @@ activity is logged, the mail itself is an indication that the batch
 process did at least run.
 
 However, if you do not want empty entries to be mailed, all you need
-to do is supply the 'send_empty_entries' parameter:
+to do is supply the `send_empty_entries` parameter:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                         send_empty_entries=False)
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 >>> logging.error(' ')
 >>> logging.shutdown()
 
-By default, as we've seen above, SummarisingLogger uses localhost
+Specifying the host to send email through
+-----------------------------------------
+
+By default, as we've seen above, :class:`SummarisingLogger` uses localhost
 to send mails. If you wish to use a specific smtp server to send
-mail, this can be done by specifying the 'mailhost' parameter to the
-SummarisingLogger constructor:
+mail, this can be done by specifying the `mailhost` parameter to the
+:class:`SummarisingLogger` constructor:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                         mailhost='smtp.example.com')
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 25)
@@ -352,13 +375,13 @@ An Error
 <BLANKLINE>
 
 If the smtp server you wish to use is running on non-standard port,
-you can configure SummarisingLogger to use this port by specifying
-'mailhost' as a tuple containing the smtp server's hostname and the
+you can configure :class:`SummarisingLogger` to use this port by specifying
+`mailhost` as a tuple containing the smtp server's hostname and the
 port on which it is listening:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             mailhost=('smtp.example.com',2500))
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 2500)
@@ -376,13 +399,12 @@ An Error
 <BLANKLINE>
 
 If the smtp server you wish to use requires authentication,
-pass the required username and password to the SummarisingLogger
+pass the required username and password to the :class:`SummarisingLogger`
 constructor: 
 
->>> logging.getLogger('').removeHandler(handler)
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...				   username='auser',password='theirpassword')
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
@@ -400,15 +422,28 @@ Message-ID: <...MailingLogger@...>
 An Error
 <BLANKLINE>
 
-For performance reasons, it's recommended that you don't use SMTP
-authentication unless you absolutely need to.
+.. warning::
 
-In order to ignore certain log entries you can use the 'ignore' parameter:
+  For performance reasons, it's recommended that you don't use SMTP
+  authentication unless you absolutely need to.
 
->>> logging.getLogger('').removeHandler(handler)
+Ignoring certain log messages
+-----------------------------
+
+.. warning::
+
+  .. deprecated:: 3.4.0
+
+  This method of ignoring log messages will go away in some future
+  version, `filter objects`__ should be used instead.
+
+  __ http://docs.python.org/library/logging.html#filter-objects
+
+In order to ignore certain log entries you can use the `ignore` parameter:
+
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             ignore='^An Err')
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 
 Now if the regular expression specified is matched, the log entry
 will not be sent:
@@ -418,7 +453,6 @@ will not be sent:
 However, other log entries are still sent:
 
 >>> logging.error('The Error!')
-
 >>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
 Content-Type: text/plain; charset="us-ascii"
@@ -436,16 +470,14 @@ The Error!
 
 A sequence of regular expressions to ignore can also be supplied:
 
->>> logging.getLogger('').removeHandler(handler)
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             ignore=('^An Err','Error!'))
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
 
 Now, anything matching any of the expressions will be ignored:
 
 >>> logging.error('An Error')
 >>> logging.error('The Error!')
-
 >>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
 Content-Type: text/plain; charset="us-ascii"
@@ -460,16 +492,20 @@ Message-ID: <...MailingLogger@...>
 <BLANKLINE>
 <BLANKLINE>
 
+Adding extra headers
+--------------------
+
 If you wish to add headers for filtering purposes, you can use the
 headers parameter:
 
->>> logging.getLogger('').removeHandler(handler)
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             headers={'foo':'bar','Baz':'bob'})
->>> logging.getLogger('').addHandler(handler)
+>>> logger.addHandler(handler)
+
+Now, when a log message results in an email being send, the email will
+be sent with the configured headers:
 
 >>> logging.error('The Error!')
-
 >>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
 Content-Type: text/plain; charset="us-ascii"
