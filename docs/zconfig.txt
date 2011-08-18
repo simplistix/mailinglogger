@@ -313,6 +313,15 @@ mailing-logger
 
 .. describe::  ignore
 
+  .. warning::
+
+    .. deprecated:: 3.4.0
+
+    This method of ignoring log messages will go away in some future
+    version, `filter objects`__ should be used instead.
+
+    __ http://docs.python.org/library/logging.html#filter-objects
+
   A regular expression for entries to be silently discarded
 
   You can specify one or more regular expressions that are checked 
@@ -394,6 +403,15 @@ summarising-logger
    default: ``yes``
 
 .. describe::  ignore
+
+  .. warning::
+
+    .. deprecated:: 3.4.0
+
+    This method of ignoring log messages will go away in some future
+    version, `filter objects`__ should be used instead.
+
+    __ http://docs.python.org/library/logging.html#filter-objects
 
   A regular expression for entries to be silently discarded
 

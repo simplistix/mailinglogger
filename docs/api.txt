@@ -87,6 +87,15 @@ API Reference
 
   :param ignore:
 
+    .. warning::
+
+      .. deprecated:: 3.4.0
+
+      This method of ignoring log messages will go away in some future
+      version, `filter objects`__ should be used instead.
+
+      __ http://docs.python.org/library/logging.html#filter-objects
+
     This sequence of strings, each of which is compiled into a regular
     expression, allows the user to set up rules for ignoring certain
     log entries. If the body of the message logged matched any of the
@@ -184,6 +193,15 @@ API Reference
     default: ``True``
 
   :param ignore:
+
+    .. warning::
+
+      .. deprecated:: 3.4.0
+
+      This method of ignoring log messages will go away in some future
+      version, `filter objects`__ should be used instead.
+
+      __ http://docs.python.org/library/logging.html#filter-objects
 
     This sequence of strings, each of which is compiled into a regular
     expression, allows the user to set up rules for ignoring certain
