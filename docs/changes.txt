@@ -1,12 +1,18 @@
 Changes
 =======
 
-3.4.0 (xx xxx xxxx)
+3.4.0 (17 Aug 2011)
 -------------------
 
-- Convert documentation to use Sphinx
+- Convert documentation to use Sphinx.
 
-- Drop support for "Zope 3"
+- Convert tests to use `testfixures`__ and `manuel`__.
+
+  __ http://packages.python.org/testfixtures/
+
+  __ http://packages.python.org/manuel/
+
+- Drop support for "Zope 3".
 
 3.3.3 (2 Jun 2010)
 ------------------
