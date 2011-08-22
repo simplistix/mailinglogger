@@ -1,6 +1,11 @@
 Changes
 =======
 
+3.4.1 (22 Aug 2011)
+-------------------
+
+- Fix distribution to include missing files lost through move to Git.
+
 3.4.0 (17 Aug 2011)
 -------------------
 
