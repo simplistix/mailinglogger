@@ -94,6 +94,7 @@ class MailingLogger(SMTPHandler):
             email['From']=self.fromaddr
             email['To']=', '.join(self.toaddrs)
             email['X-Mailer']=x_mailer
+            email['X-Log-Level']=record.levelname
             email['Date']=formatdate()
             email['Message-ID']=make_msgid('MailingLogger')
             smtp = smtplib.SMTP(self.mailhost, self.mailport)

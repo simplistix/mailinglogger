@@ -46,6 +46,7 @@ Subject: my message
 From: from@example.com
 To: to@example.com
 X-Mailer: MailingLogger...
+X-Log-Level: ERROR
 Date: ...
 Message-ID: <...MailingLogger@...>
 <BLANKLINE>
@@ -56,10 +57,12 @@ mail messages that are correctly formatted, including ``Date`` and
 ``Message-ID`` headers.
 
 You will also notice that an ``X-Mailer`` header has been added
-specifying that :mod:`mailinglogger` is the sender of the mail. This can be
-useful for filtering mail sent by :class:`MailingLogger`, however the
-support for adding :ref:`extra headers <mail_extra_headers>` may be
-more useful.
+specifying that :mod:`mailinglogger` is the sender of the mail.
+An ``X-Log-Level`` header has also been added indicating the level of
+the message that was logged. These can be useful for filtering mail
+sent by :class:`MailingLogger`. If you wish to filter mail by
+environment or other configuration data, the support for adding
+:ref:`extra headers <mail_extra_headers>` may be useful.
 
 Now, to continue with the examples, just like any other handler, we
 can also set the logging level, and messages logged below this level

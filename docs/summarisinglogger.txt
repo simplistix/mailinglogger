@@ -108,6 +108,7 @@ Subject: Summary of Log Messages (WARNING)
 From: from@example.com
 To: to@example.com
 X-Mailer: MailingLogger...
+X-Log-Level: WARNING
 Date: ...
 Message-ID: <...MailingLogger@...>
 <BLANKLINE>
@@ -117,12 +118,14 @@ a warning
 As with :class:`MailingLogger`, you can see from the above examples
 that :class:`SummarisingLogger` sends mail messages that are correctly
 formatted, including ``Date`` and ``Message-ID`` headers.
-
 You will also notice that an ``X-Mailer`` header has been added
-specifying that :mod:`mailinglogger` is the sender of the mail. This
-can be useful for filtering mail sent by :class:`SummarisingLogger` ,
-however the support for adding :ref:`extra headers <sum_extra_headers>`
-may be more useful.
+specifying that :mod:`mailinglogger` is the sender of the mail.
+An ``X-Log-Level`` header has also been added indicating the highest
+level message that has been handled by the :class:`SummarisingLogger`.
+These headers can be useful for filtering mail
+sent by :class:`MailingLogger`. If you wish to filter mail by
+environment or other configuration data, the support for adding
+:ref:`extra headers <mail_extra_headers>` may be useful.
 
 Avoiding the :mod:`atexit` handler
 ----------------------------------
@@ -223,6 +226,7 @@ Subject: [host.example.com] ERROR - a message
 From: from@example.com
 To: to@example.com
 X-Mailer: MailingLogger...
+X-Log-Level: ERROR
 Date: ...
 Message-ID: <...MailingLogger@...>
 <BLANKLINE>
