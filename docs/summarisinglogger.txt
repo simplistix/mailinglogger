@@ -314,6 +314,8 @@ Traceback (most recent call last):
 RuntimeError: badness
 <BLANKLINE>
 
+.. _record-and-send-different:
+
 Recording and sending at different levels
 -----------------------------------------
 

@@ -3,6 +3,14 @@ Changes
 
 .. currentmodule:: mailinglogger
 
+3.6.0 (24 Nov 2011)
+-------------------
+
+- Add support for including messages logged at a lower level in a
+  summary email but only triggering the sending of that email when a
+  message at a higher level is logged when using
+  :ref:`SummarisingLogger <record-and-send-different>`.
+
 3.5.0 (23 Sep 2011)
 -------------------
 
