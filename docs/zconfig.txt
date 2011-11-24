@@ -243,7 +243,7 @@ mailing-logger
   This can either be a numeric level or one of the textual level
   identifiers.
 
-  default: ``0``
+  default: ``info``
 
 .. describe:: from
 
@@ -349,7 +349,7 @@ summarising-logger
   This can either be a numeric level or one of the textual level
   identifiers.
 
-  default: ``0``
+  default: ``info``
 
 .. describe:: from
 
