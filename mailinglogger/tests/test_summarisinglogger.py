@@ -30,12 +30,12 @@ class TestSummarisingLogger(TestCase):
         self.logger = logging.getLogger('')
         self.logger.addHandler(self.handler)
         
-    def test_send_empty(self):
+    def test_do_send_empty(self):
         self.create('from@example.com',('to@example.com',))
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent),1)
         
-    def test_send_empty(self):
+    def test_dont_send_empty(self):
         self.create('from@example.com',('to@example.com',),
                     send_empty_entries=False)
         logging.shutdown()
@@ -48,6 +48,24 @@ class TestSummarisingLogger(TestCase):
         self.logger.critical('This Line Contains rubbish.')
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent),0)
+        
+    def test_send_level_filters(self):
+        self.create('from@example.com',('to@example.com',),
+                    send_level=logging.CRITICAL)
+        self.logger.warning('This line will not be sent')
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent),0)
+        
+    def test_send_level_includes_lower_level(self):
+        self.create('from@example.com',('to@example.com',),
+                    send_level=logging.CRITICAL)
+        self.logger.warning('a warning')
+        self.logger.critical('something critical')
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent),1)
+        message_text = DummySMTP.sent[0][3]
+        self.assertTrue('a warning' in message_text)
+        self.assertTrue('something critical' in message_text)
         
 def test_suite():
     return TestSuite((

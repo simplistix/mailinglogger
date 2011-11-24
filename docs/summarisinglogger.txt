@@ -314,6 +314,37 @@ Traceback (most recent call last):
 RuntimeError: badness
 <BLANKLINE>
 
+Recording and sending at different levels
+-----------------------------------------
+
+In some circumstances, you may want to send a summary email when a
+certain log level is reached but, when the summary is sent, you want
+the summary to include logging at a lower level. To do this, you would
+pass a ``send_level`` to the :class:`SummarisingLogger` constructor:
+
+>>> handler = SummarisingLogger('from@example.com', ('to@example.com',), 
+...                             send_level=logging.ERROR)
+>>> handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+>>> logger.addHandler(handler)
+>>> logging.info('An info message')
+>>> logging.error('Something bad happened')
+>>> logging.shutdown()
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Summary of Log Messages (ERROR)
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+X-Log-Level: ERROR
+Date: Mon, 01 Jan 2007 12:34:56 -0000
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+2007-01-01 12:34:56,000 [INFO] An info message
+2007-01-01 12:34:56,000 [ERROR] Something bad happened
+<BLANKLINE>
+
 Sending empty emails
 --------------------
 

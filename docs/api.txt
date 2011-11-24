@@ -218,6 +218,16 @@ API Reference
    
     default: ``{}``
 
+  :param send_level:
+
+    If supplied, the summary email will not be sent unless a message
+    has been logged that is at or above the level specified.
+   
+    If not supplied, the summary email will be sent if a message has
+    been logged at or above the level set on the handler.
+   
+    default: None
+
   .. method:: open()
 
     This method creates the temporary file used by

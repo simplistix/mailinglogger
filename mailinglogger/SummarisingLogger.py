@@ -26,7 +26,8 @@ class SummarisingLogger(FileHandler):
                  username=None,
                  password=None,
                  ignore=(),
-                 headers=None):
+                 headers=None,
+                 send_level=None):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(fromaddr,
                                     toaddrs,
@@ -39,6 +40,7 @@ class SummarisingLogger(FileHandler):
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.ignore = process_ignore(ignore)
+        self.send_level=send_level
         self.open()
         # register our close method
         if atexit:
@@ -75,17 +77,18 @@ class SummarisingLogger(FileHandler):
         f.close()
         os.close(self.fd)
         os.remove(self.filename)
-        self.mailer.handle(
-            LogRecord(
-                name = 'Summary',
-                level = self.maxlevelno,
-                pathname = '',
-                lineno = 0,
-                msg = summary,
-                args = (),
-                exc_info = None
+        if self.send_level is None or self.maxlevelno >= self.send_level:
+            self.mailer.handle(
+                LogRecord(
+                    name = 'Summary',
+                    level = self.maxlevelno,
+                    pathname = '',
+                    lineno = 0,
+                    msg = summary,
+                    args = (),
+                    exc_info = None
+                    )
                 )
-            )
         self.closed = True
             
     def reopen(self):
