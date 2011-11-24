@@ -196,6 +196,7 @@ class Tests(unittest.TestCase):
     password    password
     ignore      ^MyError(.*)
     ignore      Foobar
+    send_level  error
     <headers>
     foo bar
     Baz bob
@@ -210,6 +211,7 @@ class Tests(unittest.TestCase):
                         normal_format='%(levelname)s - %(message)s',
                         date_format='%H:%M:%S on %Y-%m-%d',
                         ignore=('^MyError(.*)','Foobar'),
+                        send_level=logging.ERROR,
                         )
         # check mailer stored as attribure of summariser
         self._checkHandler(l.handlers[0].mailer,
@@ -258,6 +260,7 @@ class Tests(unittest.TestCase):
                         normal_format='%(asctime)s - %(levelname)s - %(message)s',
                         date_format='%Y-%m-%dT%H:%M:%S',
                         ignore=[],
+                        send_level=logging.INFO,
                         )
         # check mailer stored as attribure of summariser
         self._checkHandler(l.handlers[0].mailer,

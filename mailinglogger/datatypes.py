@@ -48,7 +48,9 @@ class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
                                  self.section.username,
                                  self.section.password,
                                  self.section.ignore,
-                                 self.headers())
+                                 self.headers(),
+                                 self.section.send_level,
+                                 )
 
 _log_format_variables = {
     'name': '',

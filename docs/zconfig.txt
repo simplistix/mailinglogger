@@ -433,3 +433,10 @@ summarising-logger
 
   default: ``True``
 
+.. describe:: send_level
+
+  The summary email will not be sent unless a message
+  has been logged that is at or above the level specified.
+
+  default: ``info``
+
