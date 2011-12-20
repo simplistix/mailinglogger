@@ -5,6 +5,7 @@
 # See license.txt for more details.
 
 import logging
+import os
 
 from mailinglogger.common import RegexConversion
 from mailinglogger.SummarisingLogger import SummarisingLogger
@@ -66,6 +67,13 @@ class TestSummarisingLogger(TestCase):
         message_text = DummySMTP.sent[0][3]
         self.assertTrue('a warning' in message_text)
         self.assertTrue('something critical' in message_text)
+
+    def test_tmpfile_goes_away(self):
+        self.create('from@example.com',('to@example.com',))
+        os.remove(self.handler.filename)
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent),1)
+        
         
 def test_suite():
     return TestSuite((

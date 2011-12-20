@@ -72,11 +72,11 @@ class SummarisingLogger(FileHandler):
         if self.closed:
             return
         FileHandler.close(self)
-        f = open(self.filename)
+        f = os.fdopen(self.fd)
         summary = f.read()
         f.close()
-        os.close(self.fd)
-        os.remove(self.filename)
+        if os.path.exists(self.filename):
+            os.remove(self.filename)
         if self.send_level is None or self.maxlevelno >= self.send_level:
             self.mailer.handle(
                 LogRecord(
