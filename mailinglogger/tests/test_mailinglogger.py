@@ -133,6 +133,16 @@ class TestMailingLogger(TestCase):
         logger.critical(object())
         self.assertEqual(len(DummySMTP.sent),1)
 
+    def test_template(self):
+        self.handler = MailingLogger('from@example.com',('to@example.com',),
+                                     template="<before>%s<after>")
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical('message')
+        m = DummySMTP.sent[0][3]
+        self.failUnless('Subject: message' in m, m)
+        self.failUnless('<before>message<after>' in m, m)
+
 def test_suite():
     return TestSuite((
         makeSuite(TestMailingLogger),

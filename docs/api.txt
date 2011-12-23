@@ -111,6 +111,13 @@ API Reference
    
     default: ``{}``
 
+  :param template:
+
+    A string template to use to wrap the body of emails sent.
+    Should contain exactly one ``%s``.
+   
+    default: ``None``
+
 .. autoclass:: SummarisingLogger
   :show-inheritance:
 
@@ -227,6 +234,13 @@ API Reference
     been logged at or above the level set on the handler.
    
     default: None
+
+  :param template:
+
+    A string template to use to wrap the body of the summary email.
+    Should contain exactly one ``%s``.
+   
+    default: ``None``
 
   .. method:: open()
 

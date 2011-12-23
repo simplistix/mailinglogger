@@ -74,6 +74,15 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent),1)
         
+    def test_template(self):
+        self.create('from@example.com',('to@example.com',),
+                    template='<before>%s<after>')
+        logging.critical('message')
+        logging.shutdown()
+        m = DummySMTP.sent[0][3]
+        self.failUnless('Subject: Summary of Log Messages (CRITICAL)' in m, m)
+        self.failUnless('<before>message\n<after>' in m, repr(m))
+        
         
 def test_suite():
     return TestSuite((
