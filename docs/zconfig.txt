@@ -136,7 +136,7 @@ them with the logging framework:
 
 >>> for logger in config.loggers:
 ...     logger()
-<logging.Logger instance at ...>
+<logging.Logger...>
 
 As the above example shows, the factory also returns the new
 logger, although this can safely be ignored.
@@ -190,7 +190,7 @@ before:
 >>> config, handlers = loadConfig(schema, 'summarising.conf')
 >>> for logger in config.loggers:
 ...     logger()
-<logging.Logger instance at ...>
+<logging.Logger...>
 
 As with all summarising loggers, no emails are sent when messages
 are logged:
