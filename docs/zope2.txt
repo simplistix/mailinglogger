@@ -1,135 +1,162 @@
 Configuration for Zope 2 and Plone
 ==================================
 
-  This documentation covers the configuration of mailing loggers 
-  when using Zope 2.
-  
-  Both log handlers provided in the mailinglogger package work with
-  Zope 2 and are easilly configured by adding a section to the
-  eventlog section of zope.conf. 
+.. note:: 
 
-  To add a mailing logger to your zope instance, you need to import
-  the mailinglogger package and add an appropriate handler to the
-  eventlog section.
+  Throughout the examples below, mail messages sent using
+  :mod:`smtplib` are printed to the screen so we can see what's going on:
 
-  The examples below show this for both types of handler provided by
-  the mailinglogger package.
+  >>> import smtplib
+  >>> server = smtplib.SMTP('localhost')
+  >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
+  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+  The message
 
-  A full description of the possible keys and defaults for the
-  mailing-logger and summarising-logger sections are given in the
-  reference section of zconfig.txt in the docs directory of the
-  package. 
+.. currentmodule:: mailinglogger
 
-  MailingLogger
+This documentation covers the configuration of mailing loggers 
+when using Zope 2.
 
-    Here's a sample zope.conf for using a MailingLogger in Zope 2:
+Both log handlers provided in the mailinglogger package work with
+Zope 2 and are easilly configured by adding a section to the
+eventlog section of zope.conf. 
 
-    >>> config_file = os.path.join(INSTANCE_HOME,'etc','zope.conf')
-    >>> f = open(config_file,'w')
-    >>> f.write('''
-    ...  instancehome INSTANCE_HOME
-    ...  # ..the rest of your zope.conf goes here...
-    ...  
-    ...  %import mailinglogger
-    ...  <eventlog>
-    ...    level info
-    ...    <mailing-logger>
-    ...      level   info
-    ...      from    logging@example.com
-    ...      to      support@example.com
-    ...      subject [Zope] %(line)s
-    ...      <headers>
-    ...        filter some-customer
-    ...      </headers>
-    ...    </mailing-logger>    
-    ...  </eventlog>
-    ... '''.replace('INSTANCE_HOME',INSTANCE_HOME))
-    >>> f.close()
+To add a mailing logger to your zope instance, you need to import
+the :mod:`mailinglogger` package and add an appropriate handler to the
+``eventlog`` section.
 
-    Zope loads this configuration with the following code:
+The examples below show this for both types of handler provided by
+the :mod:`mailinglogger` package.
 
-    >>> import Zope2
-    >>> starter = Zope2.configure(config_file)
-    >>> starter.setupConfiguredLoggers()
+A full description of the possible keys and defaults for the
+``mailing-logger`` and ``summarising-logger`` sections are given in
+the :ref:`ZConfig reference section <zconfig_reference>`. 
+
+MailingLogger
+-------------
+
+Here's a sample ``zope.conf`` for using a :class:`MailingLogger` in Zope 2:
+
+.. topic:: zope.conf
+  :class: write-file
+
+  ::
+
+    instancehome INSTANCE_HOME
+    # ..the rest of your zope.conf goes here...
     
-    Now, when we log a message, the MailingLogger handler is used:
+    %import mailinglogger
+    <eventlog>
+      level info
+      <mailing-logger>
+        level   info
+        from    logging@example.com
+        to      support@example.com
+        subject [Zope] %(line)s
+        <headers>
+          filter some-customer
+        </headers>
+      </mailing-logger>
+    </eventlog>
 
-    >>> from logging import getLogger
-    >>> getLogger('event').info('something happened')
-    sending to ['support@example.com'] from 'logging@example.com' using ('localhost', 25)
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    filter: some-customer
-    Subject: [Zope] something happened
-    From: logging@example.com
-    To: support@example.com
-    X-Mailer: MailingLogger...
-    Date: ...
-    Message-ID: <...MailingLogger@...>
-    <BLANKLINE>
-    something happened
+.. invisible-code-block: python
 
-    To keep our examples working cleanly, we now remove the handler
-    we set up above: 
-    >>> removeHandlers()
+  tempdir.write('etc/zope.conf',
+                tempdir.read('zope.conf').replace('INSTANCE_HOME',tempdir.path))
 
-  SummarisingLogger
+Zope loads this configuration with the following code:
 
-    This log handler has limited use in a Zope context. You wouldn't
-    want a summarising logger for a running zope server. 
+>>> import Zope2
+>>> starter = Zope2.configure(os.path.join(INSTANCE_HOME, 'etc', 'zope.conf'))
+>>> starter.setupConfiguredLoggers()
 
-    However, here's a sample zope.conf for using a SummarisingLogger
-    in Zope 2: 
+Now, when we log a message to the ``event`` logger, the
+:class:`MailingLogger` handler is used:
 
-    >>> config_file = os.path.join(INSTANCE_HOME,'etc','zope.conf')
-    >>> f = open(config_file,'w')
-    >>> f.write('''
-    ...  instancehome INSTANCE_HOME
-    ...  # ..the rest of your zope.conf goes here...
-    ...  
-    ...  %import mailinglogger
-    ...  <eventlog>
-    ...    level info
-    ...    <summarising-logger>
-    ...      level   info
-    ...      from    logging@example.com
-    ...      to      support@example.com
-    ...      subject Summary of Zope Activity
-    ...      <headers>
-    ...        filter some-customer
-    ...      </headers>
-    ...    </summarising-logger>    
-    ...  </eventlog>
-    ... '''.replace('INSTANCE_HOME',INSTANCE_HOME))
-    >>> f.close()
+>>> from logging import getLogger
+>>> getLogger('event').info('something happened')
+sending to ['support@example.com'] from 'logging@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+filter: some-customer
+Subject: [Zope] something happened
+From: logging@example.com
+To: support@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+something happened
 
-    Zope loads this configuration with the following code:
+.. To keep our examples working cleanly, we now remove the handler
+   we set up above: 
 
-    >>> import Zope2
-    >>> starter = Zope2.configure(config_file)
-    >>> starter.setupConfiguredLoggers()
+   >>> removeHandlers()
+
+SummarisingLogger
+-----------------
+
+This log handler has limited use in a Zope context. You wouldn't
+want a summarising logger for a running zope server. 
+
+However, here's a sample ``zope.conf`` for using a
+:class:`SummarisingLogger` in Zope 2: 
+
+.. topic:: zope.conf
+  :class: write-file
+
+  ::
+
+    instancehome INSTANCE_HOME
+    # ..the rest of your zope.conf goes here...
     
-    Now, when we log a message, the SummarisingLogger handler is used:
+    %import mailinglogger
+    <eventlog>
+      level info
+      <summarising-logger>
+        level   info
+        from    logging@example.com
+        to      support@example.com
+        subject Summary of Zope Activity
+        <headers>
+          filter some-customer
+        </headers>
+      </summarising-logger>    
+    </eventlog>
 
-    >>> from logging import getLogger
-    >>> getLogger('event').info('something happened')
+.. invisible-code-block: python
 
-    We can see this by shutting down the logging framework:
+  tempdir.write('etc/zope.conf',
+                tempdir.read('zope.conf').replace('INSTANCE_HOME',tempdir.path))
 
-    >>> from logging import shutdown
-    >>> shutdown()
-    sending to ['support@example.com'] from 'logging@example.com' using ('localhost', 25)
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
-    Content-Transfer-Encoding: 7bit
-    filter: some-customer
-    Subject: Summary of Zope Activity
-    From: logging@example.com
-    To: support@example.com
-    X-Mailer: MailingLogger...
-    Date: ...
-    Message-ID: <...MailingLogger@...>
-    <BLANKLINE>
-    ... - INFO - something happened
-    <BLANKLINE>
+Zope loads this configuration with the following code:
+
+>>> import Zope2
+>>> starter = Zope2.configure(os.path.join(INSTANCE_HOME, 'etc', 'zope.conf'))
+>>> starter.setupConfiguredLoggers()
+
+Now, when we log a message, the :class:`SummarisingLogger` handler is
+used:
+
+>>> from logging import getLogger
+>>> getLogger('event').info('something happened')
+
+We can see this by shutting down the logging framework:
+
+>>> from logging import shutdown
+>>> shutdown()
+sending to ['support@example.com'] from 'logging@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+filter: some-customer
+Subject: Summary of Zope Activity
+From: logging@example.com
+To: support@example.com
+X-Mailer: MailingLogger...
+Date: ...
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+... - INFO - something happened
+<BLANKLINE>

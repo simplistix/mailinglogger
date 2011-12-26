@@ -1,0 +1,280 @@
+API Reference
+=============
+
+.. currentmodule:: mailinglogger
+
+.. autoclass:: MailingLogger
+  :show-inheritance:
+
+  This is a handler for the python logging framework that
+  sends log entries as email messages using an SMTP server.
+
+  :param fromaddr:
+
+    The address from which email log notifications will originate.
+
+    This must be supplied.
+
+  :param toaddrs:
+
+    A sequence of addresses to which email log notifications will be
+    sent.
+
+    This must be supplied.
+
+  :param mailhost:
+
+    The SMTP server that should be used to send email notifications. 
+  
+    This can either be a string containing the hostname of the SMTP
+    server or a tuple containing the hostname and port number of the
+    SMTP server. If only the hostname is specified, it is assumed that
+    the SMTP server is listening on port 25.
+
+    default: ``('localhost', 25)``
+
+  :param username:
+
+    The username to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param password:
+
+    The password to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param subject: 
+
+    This is a format string specifying what information will be
+    included in the subject line of the email notification.
+
+    Information on what can be included in a subject format string can
+    be found in the :doc:`subjectformatter` documentation.
+
+    default: ``'%(line)s'``
+
+  :param send_empty_entries:
+
+    This is a boolean parameter which specifies whether empty log
+    entries will be mailed or not. 
+
+    default: ``False``
+
+  :param flood_level:
+
+    This is an integer parameter specifying the maximum number of
+    emails that can be sent in an hour that will not be considered a
+    "flood". 
+
+    When a "flood" is detected, one email is sent at the CRITICAL
+    level indicating that a flood has been detected, and no more
+    emails will be sent in the same hour.
+
+    So, this option, in effect, specifies the maximum number of
+    emails that will be sent in any particular hour of the day.
+
+    default: ``10``
+
+  :param ignore:
+
+    .. warning::
+
+      .. deprecated:: 3.4.0
+
+      This method of ignoring log messages will go away in some future
+      version, `filter objects`__ should be used instead.
+
+      __ http://docs.python.org/library/logging.html#filter-objects
+
+    This sequence of strings, each of which is compiled into a regular
+    expression, allows the user to set up rules for ignoring certain
+    log entries. If the body of the message logged matched any of the
+    regular expressions, the log message will be silently discarded
+    and not mailed out.
+
+    default: ``()``
+
+  :param headers:
+
+    This is a dictionary containing headers and their values to be
+    added to any emails sent.
+   
+    default: ``{}``
+
+  :param template:
+
+    A string template to use to wrap the body of emails sent.
+    Should contain exactly one ``%s``.
+   
+    default: ``None``
+
+.. autoclass:: SummarisingLogger
+  :show-inheritance:
+
+  SummarisingLogger is a handler for the python logging framework that
+  accumulates logged entries and sends a single email containing them
+  all using an SMTP server when :meth:`~SummarisingLogger.close` called.
+
+  :param fromaddr:
+
+    The address from which the summary email will originate.
+
+    This must be supplied.
+
+  :param toaddrs:
+
+    A sequence on strings containing  addresses to which the summary
+    email will be sent. 
+
+    This must be supplied.
+
+  :param mailhost:
+
+    The SMTP server that should be used to send the summary mail. 
+  
+    This can either be a string containing the hostname of the SMTP
+    server or a tuple containing the hostname and port number of the
+    SMTP server. If only the hostname is specified, it is assumed that
+    the SMTP server is listening on port 25.
+
+    default: ``('localhost', 25)``
+
+  :param username:
+
+    The username to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param password:
+
+    The password to use for SMTP authentication.
+
+    If both username and password are supplied then SMTP login will
+    be performed before any email is sent. Otherwise, no SMTP
+    authentication will be performed. For performance reasons, it's
+    recommended that you don't use SMTP authentication unless you
+    absolutely need to.
+
+  :param subject:
+
+    This is a format string specifying what information will be
+    included in the subject line of the summary email.
+
+    Information on what can be included in a subject format string can
+    be found in the :doc:`subjectformatter` documentation.
+
+    .. note:: 
+
+        ``%(levelname)s`` when used in the `subject` parameter will be the
+        highest level message handled by the :class:`SummarisingLogger`.
+
+    default: ``'Summary of Log Messages (%(levelname)s)'``
+
+  :param send_empty_entries:
+
+    This is a boolean parameter which specifies whether a summary
+    message will be sent even if no messages have been logged.
+
+    default: ``True``
+
+  :param atexit:
+
+    If True, the :meth:`~SummarisingLogger.close` method of the
+    summarising logger is set as an :mod:`atexit` function that runs when the
+    currently executing python script finishes.
+
+    default: ``True``
+
+  :param ignore:
+
+    .. warning::
+
+      .. deprecated:: 3.4.0
+
+      This method of ignoring log messages will go away in some future
+      version, `filter objects`__ should be used instead.
+
+      __ http://docs.python.org/library/logging.html#filter-objects
+
+    This sequence of strings, each of which is compiled into a regular
+    expression, allows the user to set up rules for ignoring certain
+    log entries. If the body of the message logged matched any of the
+    regular expressions, the log message will be silently discarded
+    and not mailed out in the summary.
+
+    default: ``()``
+
+  :param headers:
+
+    This is a dictionary containing headers and their values to be
+    added to any emails sent.
+   
+    default: ``{}``
+
+  :param send_level:
+
+    If supplied, the summary email will not be sent unless a message
+    has been logged that is at or above the level specified.
+   
+    If not supplied, the summary email will be sent if a message has
+    been logged at or above the level set on the handler.
+   
+    default: None
+
+  :param template:
+
+    A string template to use to wrap the body of the summary email.
+    Should contain exactly one ``%s``.
+   
+    default: ``None``
+
+  .. method:: open()
+
+    This method creates the temporary file used by
+    :class:`SummarisingLogger` to accumulate logged messages and
+    enables it for processing of log messages.
+
+  .. method:: close()
+
+    This method closes the temporary file used by
+    :class:`SummarisingLogger` to accumulate logged messages and sends
+    any logged messages in a single email.
+
+    It also disables the :class:`SummarisingLogger`'s processing of
+    log messages.
+
+  .. method:: reopen()
+
+    This is shorthand for calling :meth:`~SummarisingLogger.close`
+    followed by :meth:`~SummarisingLogger.open`.
+
+.. autoclass:: mailinglogger.common.SubjectFormatter
+  :show-inheritance:
+
+  This is a `logging formatter`__ tailored to formatting log messages
+  to appear in the subject line of an email. For details of how these
+  differ from normal :class:`~logging.Formatter` objects, see the
+  :doc:`subjectformatter` documentation.
+
+  __ http://docs.python.org/library/logging.html#formatter-objects
+
+  .. note:: 
+
+    You should not need to manually instantiate this class as this
+    will be done by either :class:`MailingLogger` or
+    :class:`SummarisingLogger` when the `subject` parameter to their
+    constructors is processed.

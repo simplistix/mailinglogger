@@ -16,7 +16,7 @@ setup(
     author_email='chris@simplistix.co.uk',
     license='MIT',
     description="Enhanced emailing handlers for the python logging package.",
-    long_description=open(os.path.join(this_dir,'mailinglogger','docs','description.txt')).read(),
+    long_description=open(os.path.join(this_dir,'docs','description.txt')).read(),
     url='http://www.simplistix.co.uk/software/python/mailinglogger',
     keywords="logging email",
     classifiers=[
@@ -34,9 +34,4 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     include_package_data=True,
-    extras_require=dict(
-	test_zconfig=['ZConfig'],
-	test_zope2=['Zope2 < 2.13'],
-	test_zope3=['zope.app.twisted'],
-	)
     )

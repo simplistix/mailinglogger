@@ -1,4 +1,4 @@
-# Copyright (c) 2004-2005 Simplistix Ltd
+# Copyright (c) 2004-2011 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -26,7 +26,9 @@ class SummarisingLogger(FileHandler):
                  username=None,
                  password=None,
                  ignore=(),
-                 headers=None):
+                 headers=None,
+                 send_level=None,
+                 template=None):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(fromaddr,
                                     toaddrs,
@@ -35,10 +37,12 @@ class SummarisingLogger(FileHandler):
                                     send_empty_entries,
                                     username=username,
                                     password=password,
-                                    headers=headers)
+                                    headers=headers,
+                                    template=template)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.ignore = process_ignore(ignore)
+        self.send_level=send_level
         self.open()
         # register our close method
         if atexit:
@@ -70,22 +74,23 @@ class SummarisingLogger(FileHandler):
         if self.closed:
             return
         FileHandler.close(self)
-        f = open(self.filename)
+        f = os.fdopen(self.fd)
         summary = f.read()
         f.close()
-        os.close(self.fd)
-        os.remove(self.filename)
-        self.mailer.handle(
-            LogRecord(
-                name = 'Summary',
-                level = self.maxlevelno,
-                pathname = '',
-                lineno = 0,
-                msg = summary,
-                args = (),
-                exc_info = None
+        if os.path.exists(self.filename):
+            os.remove(self.filename)
+        if self.send_level is None or self.maxlevelno >= self.send_level:
+            self.mailer.handle(
+                LogRecord(
+                    name = 'Summary',
+                    level = self.maxlevelno,
+                    pathname = '',
+                    lineno = 0,
+                    msg = summary,
+                    args = (),
+                    exc_info = None
+                    )
                 )
-            )
         self.closed = True
             
     def reopen(self):

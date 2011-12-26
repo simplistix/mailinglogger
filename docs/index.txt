@@ -13,12 +13,15 @@ Two log handlers are provided:
    This mails out a summary of all appropriate log entries at the end
    of the running python script.
 
-The only caveat for using this package is that the smtp server you
-are using must be fast. Email is sent via SMTP and, if using a
-MailingLogger, at the time the message is logged. If your SMTP
-server is slow, your application's performance may suffer.
+.. warning::
 
-Additional support is provided if your application is based on one
+  The only caveat for using this package is that the SMTP server you
+  are using must be fast. Email is sent via SMTP and, if using a
+  :class:`~mailinglogger.MailingLogger`, at the time the message is
+  logged. If your SMTP server is slow, your application's performance
+  may suffer.
+
+Additional support is provided if your application uses one
 of the following frameworks:
 
 - :doc:`ZConfig <zconfig>`
@@ -33,6 +36,7 @@ Full documentation can be found using the links below:
    :maxdepth: 2
 
    installation.txt
+   api.txt
    mailinglogger.txt
    summarisinglogger.txt
    subjectformatter.txt

@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2010 Simplistix Ltd
+# Copyright (c) 2007-2011 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -7,8 +7,12 @@
 import os
 import unittest
 
-from zconfig import setUp,tearDown,Tests
-from doctest import DocFileSuite, REPORT_NDIFF,ELLIPSIS
+from doctest import REPORT_NDIFF, ELLIPSIS
+from mailinglogger.tests.test_docs import docs_dir
+from manuel import doctest, codeblock
+from manuel.testing import TestSuite
+from testfixtures.manuel import Files
+from zconfig import setUp, tearDown, Tests
 
 schema_text = '''
 <schema>
@@ -33,7 +37,6 @@ class ZConfigTests(Tests):
     def getConfigPostfix(self):
         return '\n</eventlog>'
     
-options = REPORT_NDIFF|ELLIPSIS
 def test_suite():
     try:
         import ZConfig
@@ -42,11 +45,15 @@ def test_suite():
         if os.environ.get('mailinglogger_env')=='zconfig':
             raise
         return unittest.TestSuite()
+    m =  doctest.Manuel(optionflags=REPORT_NDIFF|ELLIPSIS)
+    m += codeblock.Manuel()
+    m += Files('tempdir')
     return unittest.TestSuite((
-        DocFileSuite('../docs/zconfig.txt',
-                     optionflags=options,
-                     setUp=setUp,
-                     tearDown=tearDown),
+        TestSuite(m,
+                  os.path.join(docs_dir, 'zconfig.txt'),
+                  setUp=setUp,
+                  tearDown=tearDown
+                  ),
         unittest.makeSuite(ZConfigTests),
         ))
 

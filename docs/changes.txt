@@ -1,17 +1,52 @@
 Changes
 =======
 
-3.4.0 (xx xxx xxxx)
+.. currentmodule:: mailinglogger
+
+3.6.1 (20 Dec 2011)
 -------------------
 
-- Convert documentation to use Sphinx
+- Handle the situation where the temporary file used by a
+  :class:`SummarisingLogger` is deleted from underneath it.
 
-- Drop support for "Zope 3"
+3.6.0 (24 Nov 2011)
+-------------------
+
+- Add support for including messages logged at a lower level in a
+  summary email but only triggering the sending of that email when a
+  message at a higher level is logged when using
+  :ref:`SummarisingLogger <record-and-send-different>`.
+
+3.5.0 (23 Sep 2011)
+-------------------
+
+- Add ``X-Log-Level`` header to emails sent. For
+  :class:`MailingLogger`, this is the level of the log message being
+  emailed. For :class:`SummarisingLogger` this is the highest level of
+  any of the messages handled.
+
+3.4.1 (22 Aug 2011)
+-------------------
+
+- Fix distribution to include missing files lost through move to Git.
+
+3.4.0 (17 Aug 2011)
+-------------------
+
+- Convert documentation to use Sphinx.
+
+- Convert tests to use `testfixures`__ and `manuel`__.
+
+  __ http://packages.python.org/testfixtures/
+
+  __ http://packages.python.org/manuel/
+
+- Drop support for "Zope 3".
 
 3.3.3 (2 Jun 2010)
 ------------------
 
-- Let the tests also pass on in non GMT timezones.
+- Let the tests also pass in non GMT timezones.
 
 Thanks to Christian Zagrodnick for these changes.
 

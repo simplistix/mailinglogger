@@ -41,7 +41,10 @@
          datatype=".subject_log_format"/>
     <key name="format" default="%(asctime)s - %(levelname)s - %(message)s"
          datatype="ZConfig.components.logger.handlers.log_format"/>
-
+    <key name="send_level"
+         datatype="ZConfig.components.logger.datatypes.logging_level"
+         default="info"/>
+      
   </sectiontype>
 
 </component>

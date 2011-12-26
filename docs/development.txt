@@ -14,6 +14,11 @@ All development requires that you run the buildout::
   $ python bootstrap.py
   $ bin/buildout
 
+.. note:: 
+
+ The tests will only pass fully on Python 2.6, although MailingLogger
+ works fine with versions of Python above 2.0.
+
 Running the tests
 -----------------
 
@@ -26,7 +31,6 @@ using::
 
   $ bin/test_zconfig
   $ bin/test_zope2
-  $ bin/test_zope3
 
 Building the documentation
 --------------------------
