@@ -18,6 +18,7 @@
     <multikey name="ignore" required="no" datatype="mailinglogger.common.RegexConversion"/>
     <section name="*" attribute="headers" type="headers"/>
     <key name="template" required="no"/>
+    <key name="charset" required="no" default="utf-8"/>
   </sectiontype>
 
   <sectiontype name="mailing-logger" 

@@ -74,6 +74,27 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent),1)
         
+    def test_default_charset(self):
+        self.create('from@example.com', ('to@example.com',), )
+        self.logger.critical(u"accentu\u00E9")
+        logging.shutdown()
+        m = DummySMTP.sent[0][3]
+        # lovely, utf-8 encoded goodness
+        self.failUnless('Subject: Summary of Log Messages (CRITICAL)' in m, m)
+        self.failUnless('Content-Type: text/plain; charset="utf-8"' in m, m)
+        self.failUnless('\nYWNjZW50dcOp' in m, m)
+
+    def test_specified_charset(self):
+        self.create('from@example.com', ('to@example.com',),
+                    charset='iso-8859-1')
+        self.logger.critical(u"accentu\u00E9")
+        logging.shutdown()
+        m = DummySMTP.sent[0][3]
+        # lovely, latin-1 encoded goodness
+        self.failUnless('\naccentu=E9' in m, m)
+        self.failUnless('Content-Type: text/plain; charset="iso-8859-1"' in m, m)
+        self.failUnless('Subject: Summary of Log Messages (CRITICAL)' in m, m)
+
     def test_template(self):
         self.create('from@example.com',('to@example.com',),
                     template='<before>%s<after>')

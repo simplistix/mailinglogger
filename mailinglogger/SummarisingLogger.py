@@ -28,7 +28,8 @@ class SummarisingLogger(FileHandler):
                  ignore=(),
                  headers=None,
                  send_level=None,
-                 template=None):
+                 template=None,
+                 charset='utf-8'):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(fromaddr,
                                     toaddrs,
@@ -38,11 +39,13 @@ class SummarisingLogger(FileHandler):
                                     username=username,
                                     password=password,
                                     headers=headers,
-                                    template=template)
+                                    template=template,
+                                    charset=charset)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.ignore = process_ignore(ignore)
         self.send_level=send_level
+        self.charset = charset
         self.open()
         # register our close method
         if atexit:
@@ -51,7 +54,7 @@ class SummarisingLogger(FileHandler):
     def open(self):
         # create a temp file logger to store log entries
         self.fd, self.filename = mkstemp()
-        FileHandler.__init__(self,self.filename,'w')
+        FileHandler.__init__(self, self.filename, 'w', encoding=self.charset)
         self.closed = False
         
     def setLevel(self,lvl):
@@ -75,8 +78,14 @@ class SummarisingLogger(FileHandler):
             return
         FileHandler.close(self)
         f = os.fdopen(self.fd)
-        summary = f.read()
+        summary = f.read().decode(self.charset)
         f.close()
+        # try and encode in ascii, to keep emails simpler:
+        try:
+            summary = summary.encode('ascii')
+        except UnicodeEncodeError:
+            # unicode it is then
+            pass
         if os.path.exists(self.filename):
             os.remove(self.filename)
         if self.send_level is None or self.maxlevelno >= self.send_level:

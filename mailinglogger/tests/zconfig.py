@@ -128,6 +128,7 @@ class Tests(unittest.TestCase):
     Baz bob
     </headers>
     template <before>%s</after>
+    charset     latin-1
   </mailing-logger>    
         ''')
         # check resulting logger
@@ -149,6 +150,7 @@ class Tests(unittest.TestCase):
                     ignore=('^MyError(.*)','Foobar'),
                     headers={'foo':'bar','baz':'bob'},
                     template='<before>%s</after>',
+                    charset='latin-1',
                     )
 
     def test_minimal_config_mailinglogger(self):
@@ -178,6 +180,7 @@ class Tests(unittest.TestCase):
                     ignore=[],
                     headers={},
                     template=None,
+                    charset='utf-8',
                     )
 
     def test_all_keys_summarisinglogger(self):
@@ -205,6 +208,7 @@ class Tests(unittest.TestCase):
     Baz bob
     </headers>
     template <before>%s</after>
+    charset     latin-1
   </summarising-logger>    
         ''')
         # check resulting logger
@@ -216,6 +220,7 @@ class Tests(unittest.TestCase):
                         date_format='%H:%M:%S on %Y-%m-%d',
                         ignore=('^MyError(.*)','Foobar'),
                         send_level=logging.ERROR,
+                        charset='latin-1'
                         )
         # check mailer stored as attribure of summariser
         self._checkHandler(l.handlers[0].mailer,
@@ -240,6 +245,7 @@ class Tests(unittest.TestCase):
                            ignore=[],
                            headers={'foo':'bar','baz':'bob'},
                            template='<before>%s</after>',
+                           charset='latin-1',
                            )
 
         # Test the ignore setting, which should never be passed to the mailer
@@ -266,6 +272,7 @@ class Tests(unittest.TestCase):
                         date_format='%Y-%m-%dT%H:%M:%S',
                         ignore=[],
                         send_level=logging.INFO,
+                        charset='utf-8',
                         )
         # check mailer stored as attribure of summariser
         self._checkHandler(l.handlers[0].mailer,
@@ -284,6 +291,7 @@ class Tests(unittest.TestCase):
                            ignore=[],
                            headers={},
                            template=None,
+                           charset='utf-8',
                            )
         # check atexit
         self.assertEqual(atexit._exithandlers,[(l.handlers[0].close,(),{})])

@@ -338,6 +338,18 @@ mailing-logger
    
     default: ``None``
 
+.. describe:: charset
+
+    The charset passed to :class:`~email.mime.text.MIMEText` when the
+    message logged is a :class:`unicode` instance.
+   
+    default: ``utf-8``
+
+    ..  note:: This parameter is *only* used when a :class:`unicode`
+               object is logged. The default will amost always
+               suffice, do not pass this parameter unless you really
+               need to.
+
 summarising-logger
 ~~~~~~~~~~~~~~~~~~
 
@@ -453,4 +465,22 @@ summarising-logger
     Should contain exactly one ``%s``.
    
     default: ``None``
+
+.. describe:: charset
+
+    This string value has two uses. 
+
+    Firstly, it is used to encode the messages logged to the summary
+    and then decode the whole summary back to unicode when the summary
+    is sent.
+
+    Secondlly, if that unicode message cannot be encoded as ``ascii``,
+    it is passed to the :class:`~email.mime.text.MIMEText` used to
+    produce the summary email.
+   
+    default: ``utf-8``
+
+    ..note:: This default will amost always suffice, do not pass this
+             parameter unless you really need to.
+
 

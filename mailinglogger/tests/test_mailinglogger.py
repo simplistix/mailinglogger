@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2011 Simplistix Ltd
+# Copyright (c) 2007-2012 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -7,6 +7,7 @@
 import logging
 import time
 
+from email.charset import Charset
 from mailinglogger.common import RegexConversion
 from mailinglogger.MailingLogger import MailingLogger
 from shared import DummySMTP, setUp, tearDown
@@ -142,6 +143,31 @@ class TestMailingLogger(TestCase):
         m = DummySMTP.sent[0][3]
         self.failUnless('Subject: message' in m, m)
         self.failUnless('<before>message<after>' in m, m)
+
+    def test_default_charset(self):
+        self.handler = MailingLogger('from@example.com', ('to@example.com',), )
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical(u"accentu\u00E9")
+        m = DummySMTP.sent[0][3]
+        # lovely, utf-8 encoded goodness
+        self.failUnless('Subject: =?utf-8?b?YWNjZW50dcOp?=' in m, m)
+        self.failUnless('Content-Type: text/plain; charset="utf-8"' in m, m)
+        self.failUnless('\nYWNjZW50dcOp' in m, m)
+
+    def test_specified_charset(self):
+        self.handler = MailingLogger('from@example.com', ('to@example.com',),
+                                     charset='iso-8859-1')
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical(u"accentu\u00E9")
+        m = DummySMTP.sent[0][3]
+        # lovely, latin-1 encoded goodness
+        self.failUnless('\naccentu=E9' in m, m)
+        self.failUnless('Content-Type: text/plain; charset="iso-8859-1"' in m, m)
+        # no idea why MIMEText doesn't use iso-8859-1 here, best not to
+        # argue...
+        self.failUnless('Subject: =?utf-8?b?YWNjZW50dcOp?=' in m, m)
 
 def test_suite():
     return TestSuite((
