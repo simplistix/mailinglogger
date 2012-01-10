@@ -127,6 +127,7 @@ class Tests(unittest.TestCase):
     foo bar
     Baz bob
     </headers>
+    template <before>%s</after>
   </mailing-logger>    
         ''')
         # check resulting logger
@@ -147,6 +148,7 @@ class Tests(unittest.TestCase):
                     password='password',
                     ignore=('^MyError(.*)','Foobar'),
                     headers={'foo':'bar','baz':'bob'},
+                    template='<before>%s</after>',
                     )
 
     def test_minimal_config_mailinglogger(self):
@@ -175,6 +177,7 @@ class Tests(unittest.TestCase):
                     password=None,
                     ignore=[],
                     headers={},
+                    template=None,
                     )
 
     def test_all_keys_summarisinglogger(self):
@@ -201,6 +204,7 @@ class Tests(unittest.TestCase):
     foo bar
     Baz bob
     </headers>
+    template <before>%s</after>
   </summarising-logger>    
         ''')
         # check resulting logger
@@ -235,6 +239,7 @@ class Tests(unittest.TestCase):
                            password='password',
                            ignore=[],
                            headers={'foo':'bar','baz':'bob'},
+                           template='<before>%s</after>',
                            )
 
         # Test the ignore setting, which should never be passed to the mailer
@@ -277,7 +282,8 @@ class Tests(unittest.TestCase):
                            username=None,
                            password=None,
                            ignore=[],
-                           headers={}
+                           headers={},
+                           template=None,
                            )
         # check atexit
         self.assertEqual(atexit._exithandlers,[(l.handlers[0].close,(),{})])

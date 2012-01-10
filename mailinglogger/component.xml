@@ -17,6 +17,7 @@
     <key name="password" required="no"/>
     <multikey name="ignore" required="no" datatype="mailinglogger.common.RegexConversion"/>
     <section name="*" attribute="headers" type="headers"/>
+    <key name="template" required="no"/>
   </sectiontype>
 
   <sectiontype name="mailing-logger" 

@@ -331,6 +331,13 @@ mailing-logger
 
   default: ``unset``
 
+.. describe:: template
+
+    A string template to use to wrap the body of the summary email.
+    Should contain exactly one ``%s``.
+   
+    default: ``None``
+
 summarising-logger
 ~~~~~~~~~~~~~~~~~~
 
@@ -439,4 +446,11 @@ summarising-logger
   has been logged that is at or above the level specified.
 
   default: ``info``
+
+.. describe:: template
+
+    A string template to use to wrap the body of the summary email.
+    Should contain exactly one ``%s``.
+   
+    default: ``None``
 
