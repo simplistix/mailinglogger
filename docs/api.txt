@@ -268,8 +268,8 @@ API Reference
    
     default: ``utf-8``
 
-    ..note:: This default will amost always suffice, do not pass this
-             parameter unless you really need to.
+    .. note:: This default will amost always suffice, do not pass this
+              parameter unless you really need to.
 
   .. method:: open()
 
