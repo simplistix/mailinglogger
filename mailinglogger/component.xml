@@ -19,6 +19,7 @@
     <section name="*" attribute="headers" type="headers"/>
     <key name="template" required="no"/>
     <key name="charset" required="no" default="utf-8"/>
+    <key name="content_type" required="no" default="text/plain"/>
   </sectiontype>
 
   <sectiontype name="mailing-logger" 

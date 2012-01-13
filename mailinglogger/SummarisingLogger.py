@@ -29,7 +29,8 @@ class SummarisingLogger(FileHandler):
                  headers=None,
                  send_level=None,
                  template=None,
-                 charset='utf-8'):
+                 charset='utf-8',
+                 content_type='text/plain'):
         # create the "real" mailinglogger
         self.mailer = MailingLogger(fromaddr,
                                     toaddrs,
@@ -40,7 +41,8 @@ class SummarisingLogger(FileHandler):
                                     password=password,
                                     headers=headers,
                                     template=template,
-                                    charset=charset)
+                                    charset=charset,
+                                    content_type=content_type)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.ignore = process_ignore(ignore)

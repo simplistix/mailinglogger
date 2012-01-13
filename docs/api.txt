@@ -130,6 +130,13 @@ API Reference
                suffice, do not pass this parameter unless you really
                need to.
 
+  :param content_type:
+
+    The content type to use when setting the ``Content-Type`` header
+    on any email sent. Only content types of ``text/`` are supported.
+   
+    default: ``text/plain``
+
 .. autoclass:: SummarisingLogger
   :show-inheritance:
 
@@ -270,6 +277,13 @@ API Reference
 
     .. note:: This default will amost always suffice, do not pass this
               parameter unless you really need to.
+
+  :param content_type:
+
+    The content type to use when setting the ``Content-Type`` header
+    on any email sent. Only content types of ``text/`` are supported.
+   
+    default: ``text/plain``
 
   .. method:: open()
 

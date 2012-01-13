@@ -104,7 +104,15 @@ class TestSummarisingLogger(TestCase):
         self.failUnless('Subject: Summary of Log Messages (CRITICAL)' in m, m)
         self.failUnless('<before>message\n<after>' in m, repr(m))
         
-        
+    def test_specified_content_type(self):
+        self.create('from@example.com', ('to@example.com',),
+                    content_type='foo/bar')
+        self.logger.critical(u"message")
+        logging.shutdown()
+        m = DummySMTP.sent[0][3]
+        # NB: we drop the 'foo'
+        self.failUnless('Content-Type: text/bar' in m, m)
+
 def test_suite():
     return TestSuite((
         makeSuite(TestSummarisingLogger),

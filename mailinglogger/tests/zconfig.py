@@ -129,6 +129,7 @@ class Tests(unittest.TestCase):
     </headers>
     template <before>%s</after>
     charset     latin-1
+    content_type text/html 
   </mailing-logger>    
         ''')
         # check resulting logger
@@ -151,6 +152,7 @@ class Tests(unittest.TestCase):
                     headers={'foo':'bar','baz':'bob'},
                     template='<before>%s</after>',
                     charset='latin-1',
+                    content_type='text/html'
                     )
 
     def test_minimal_config_mailinglogger(self):
@@ -181,6 +183,7 @@ class Tests(unittest.TestCase):
                     headers={},
                     template=None,
                     charset='utf-8',
+                    content_type='text/plain'
                     )
 
     def test_all_keys_summarisinglogger(self):
@@ -209,6 +212,7 @@ class Tests(unittest.TestCase):
     </headers>
     template <before>%s</after>
     charset     latin-1
+    content_type text/html
   </summarising-logger>    
         ''')
         # check resulting logger
@@ -246,6 +250,7 @@ class Tests(unittest.TestCase):
                            headers={'foo':'bar','baz':'bob'},
                            template='<before>%s</after>',
                            charset='latin-1',
+                           content_type='text/html',
                            )
 
         # Test the ignore setting, which should never be passed to the mailer
@@ -292,6 +297,7 @@ class Tests(unittest.TestCase):
                            headers={},
                            template=None,
                            charset='utf-8',
+                           content_type='text/plain'
                            )
         # check atexit
         self.assertEqual(atexit._exithandlers,[(l.handlers[0].close,(),{})])

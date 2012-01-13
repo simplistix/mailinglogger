@@ -38,7 +38,8 @@ class MailingLogger(SMTPHandler):
                  ignore=(),
                  headers=None,
                  template=None,
-                 charset='utf-8'):
+                 charset='utf-8',
+                 content_type='text/plain'):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
@@ -51,6 +52,7 @@ class MailingLogger(SMTPHandler):
         self.headers = headers or {}
         self.template = template
         self.charset = charset
+        self.content_type = content_type
         if not self.mailport:
             self.mailport = smtplib.SMTP_PORT
 
@@ -93,10 +95,11 @@ class MailingLogger(SMTPHandler):
             msg = self.format(record)
             if self.template is not None:
                 msg = self.template % msg
+            subtype = self.content_type.split('/')[-1]
             if isinstance(msg, unicode):
-                email = MIMEText(msg, 'plain', self.charset)
+                email = MIMEText(msg, subtype, self.charset)
             else:
-                email = MIMEText(msg)
+                email = MIMEText(msg, subtype)
                 
             for header,value in self.headers.items():
                 email[header]=value

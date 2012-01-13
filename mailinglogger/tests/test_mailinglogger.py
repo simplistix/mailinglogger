@@ -169,6 +169,16 @@ class TestMailingLogger(TestCase):
         # argue...
         self.failUnless('Subject: =?utf-8?b?YWNjZW50dcOp?=' in m, m)
 
+    def test_specified_content_type(self):
+        self.handler = MailingLogger('from@example.com', ('to@example.com',),
+                                     content_type='foo/bar')
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical(u"message")
+        m = DummySMTP.sent[0][3]
+        # NB: we drop the 'foo'
+        self.failUnless('Content-Type: text/bar' in m, m)
+
 def test_suite():
     return TestSuite((
         makeSuite(TestMailingLogger),

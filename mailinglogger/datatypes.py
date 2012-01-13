@@ -36,7 +36,8 @@ class MailingLoggerHandlerFactory(HandlerFactory):
                              self.section.ignore,
                              self.headers(),
                              self.section.template,
-                             self.section.charset)
+                             self.section.charset,
+                             self.section.content_type)
 
 class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
@@ -53,7 +54,8 @@ class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
                                  self.headers(),
                                  self.section.send_level,
                                  self.section.template,
-                                 self.section.charset
+                                 self.section.charset,
+                                 self.section.content_type
                                  )
 
 _log_format_variables = {
