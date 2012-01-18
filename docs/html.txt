@@ -1,0 +1,139 @@
+Sending HTML Emails
+===================
+
+.. note:: 
+
+  Throughout the examples below, mail messages sent using
+  :mod:`smtplib` are printed to the screen so we can see what's going on:
+
+  >>> import smtplib
+  >>> server = smtplib.SMTP('localhost')
+  >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
+  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+  The message
+
+.. currentmodule:: mailinglogger
+
+Love it or loath it, HTML email is now common and the formatting
+opportunities it provides can be used to highlight important parts of
+messages. :mod:`mailinglogger` provides no pre-canned configuration of
+this but below is an example of how to configure a
+:class:`SummarisingLogger` such that important log rows stand out from
+the summary.
+
+To start with, we'll need a template for the summary email that
+includes any headers or footers requires, along with setting up any
+CSS to be used in the mail message:
+
+.. code-block:: python
+
+  template = """<html><head><style>
+      tt {
+        padding: 0;
+        margin: 0;
+        color: #444444;
+      }
+      tt.WARNING {
+        color: #CC6600
+      }
+      tt.ERROR {
+        color: #990000
+      }
+      tt.CRITICAL {
+        color: #990000
+      }
+      </style></head>
+      <body><pre>%s</pre></body></html>
+  """
+
+To format each message logged as HTML, we need an appropriate
+formatter:
+
+.. code-block:: python
+
+  import logging
+
+  formatter = logging.Formatter(
+      '<tt class="%(levelname)s">%(asctime)s %(levelname)-8s %(message)s</tt>',
+      '%Y-%m-%d %H:%M:%S'
+      )
+
+Be careful with the HTML and CSS used in both the template and the
+formatter. In particular, keep the CSS as simple as
+possible as CSS support varies across email clients. The above
+template and formatter are known to generate emails that 
+work with both Thunderbird and Outlook and allow plain-text replies to
+those emails to be made without lots of annoying whitespace being
+inserted.
+
+The :class:`SummarisingLogger` can now be configured as normal, but making
+sure we use the template and formatter specified above, and setting
+the ``content_type`` of the email sent to ``text/html``:
+
+.. code-block:: python
+
+   from mailinglogger import SummarisingLogger
+
+   handler = SummarisingLogger('from@example.com',['to@example.com'],
+                               template=template,
+                               content_type='text/html')
+   handler.setFormatter(formatter)
+
+One other thing that needs doing is the addition of a filter to the
+handler to make sure that messages containing things that might be
+interpretted as HTML are correctly quoted. :class:`~common.HTMLFilter`
+is just such a filter:
+
+.. code-block:: python
+
+   from mailinglogger.common import HTMLFilter
+
+   handler.addFilter(HTMLFilter())
+
+Now the handler can be added to a logger and used as normal:
+
+>>> logger.addHandler(handler)
+>>> logger.setLevel(logging.INFO)
+>>> logger.info('An info message')
+>>> logger.warning('Malformed html: <a href=">foo &&')
+>>> logger.error('An error')
+>>> logging.critical('Something critical')
+
+Now when the summary is sent, you can see that it is a correctly
+formatted HTML message:
+
+>>> logging.shutdown()
+sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+Content-Type: text/html; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Summary of Log Messages (CRITICAL)
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger ...
+X-Log-Level: CRITICAL
+Date: Mon, 01 Jan 2007 10:00:00 -0000
+Message-ID: ...
+<BLANKLINE>
+<html><head><style>
+    tt {
+      padding: 0;
+      margin: 0;
+      color: #444444;
+    }
+    tt.WARNING {
+      color: #CC6600
+    }
+    tt.ERROR {
+      color: #990000
+    }
+    tt.CRITICAL {
+      color: #990000
+    }
+    </style></head>
+    <body><pre><tt class="INFO">2007-01-01 10:00:00 INFO     An info message</tt>
+<tt class="WARNING">2007-01-01 10:00:00 WARNING  Malformed html: &lt;a href="&gt;foo &amp;&amp;</tt>
+<tt class="ERROR">2007-01-01 10:00:00 ERROR    An error</tt>
+<tt class="CRITICAL">2007-01-01 10:00:00 CRITICAL Something critical</tt>
+</pre></body></html>
+<BLANKLINE>

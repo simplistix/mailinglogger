@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2008 Simplistix Ltd
+# Copyright (c) 2007-2012 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -6,6 +6,7 @@
 
 import re
 
+from cgi import escape
 from logging import Formatter
 from socket import gethostname
 
@@ -20,7 +21,14 @@ class SubjectFormatter(Formatter):
         if self._fmt.find("%(hostname)") >= 0:
             record.hostname = gethostname()
         return self._fmt % record.__dict__
-    
+
+class HTMLFilter(object):
+
+    def filter(self, record):
+        record.msg = escape(record.getMessage())
+        record.args = ()
+        return True 
+
 class RegexConversion:
 
     def __init__(self, regex):

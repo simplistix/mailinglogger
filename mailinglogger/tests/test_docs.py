@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2011 Simplistix Ltd
+# Copyright (c) 2007-2012 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -22,6 +22,7 @@ def test_suite():
         join(docs_dir, 'mailinglogger.txt'),
         join(docs_dir, 'summarisinglogger.txt'),
         join(docs_dir, 'subjectformatter.txt'),
+        join(docs_dir, 'html.txt'),
         setUp = setUp,
         tearDown = tearDown,
         )

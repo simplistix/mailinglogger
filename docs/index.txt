@@ -42,6 +42,7 @@ Full documentation can be found using the links below:
    subjectformatter.txt
    zconfig.txt
    zope2.txt
+   html.txt
    development.txt
    changes.txt
    license.txt
