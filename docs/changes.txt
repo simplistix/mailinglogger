@@ -3,6 +3,16 @@ Changes
 
 .. currentmodule:: mailinglogger
 
+3.7.0 (18 Jan 2012)
+-------------------
+
+- Added the ability to wrap the body of emails sent in a template.
+
+- Added documentation and tools for the sending of HTML emails.
+
+- Fixed a bug that resulted in a unicode error when sending emails
+  after a unicode message was logged.
+
 3.6.1 (20 Dec 2011)
 -------------------
 
