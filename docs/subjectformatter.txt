@@ -140,6 +140,6 @@ __ http://docs.python.org/library/logging.html#logrecord-attributes
 | line           | ``%(line)s``     | The first line of the message    |
 |                |                  | that was logged.                 |
 +----------------+------------------+----------------------------------+
-| hostname       | ``%(hostname)f`` | The hostname of the machine from |
+| hostname       | ``%(hostname)s`` | The hostname of the machine from |
 |                |                  | which the message is logged.     |
 +----------------+------------------+----------------------------------+
