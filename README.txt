@@ -34,7 +34,7 @@ If you get the following exception:
 you should add the optional `secure` configuration to the mailing-logger:
 
     secure [keyfile[, certfile]
- 
+
 
 Licensing
 =========
