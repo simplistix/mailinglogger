@@ -8,7 +8,6 @@
 import datetime
 import os
 import smtplib
-import socket
 
 from email.Utils import formatdate, make_msgid
 from email.MIMEText import MIMEText
@@ -35,6 +34,7 @@ class MailingLogger(SMTPHandler):
                  flood_level=10,
                  username=None,
                  password=None,
+                 secure=None,
                  ignore=(),
                  headers=None,
                  template=None,
@@ -48,6 +48,7 @@ class MailingLogger(SMTPHandler):
         self.sent = 0
         self.username = username
         self.password = password
+        self.secure = secure
         self.ignore = process_ignore(ignore)
         self.headers = headers or {}
         self.template = template
@@ -112,6 +113,14 @@ class MailingLogger(SMTPHandler):
             email['Message-ID']=make_msgid('MailingLogger')
             smtp = smtplib.SMTP(self.mailhost, self.mailport)
             if self.username and self.password:
+                if self.secure is not None:
+                    # there is a secure option in zope.conf
+                    if self.secure:
+                        secure = [item for item in self.secure.split(' ') if item]
+                        smtp.starttls(*secure)
+                    else:
+                        # secure without options
+                        smtp.starttls()
                 smtp.login(self.username,self.password)
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()

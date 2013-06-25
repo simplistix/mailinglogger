@@ -15,6 +15,7 @@
     <key name="smtp-server" default="localhost" datatype="inet-address"/>
     <key name="username" required="no"/>
     <key name="password" required="no"/>
+    <key name="secure" required="no"/>
     <multikey name="ignore" required="no" datatype="mailinglogger.common.RegexConversion"/>
     <section name="*" attribute="headers" type="headers"/>
     <key name="template" required="no"/>
