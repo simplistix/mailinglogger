@@ -114,7 +114,7 @@ class MailingLogger(SMTPHandler):
             smtp = smtplib.SMTP(self.mailhost, self.mailport)
             if self.username and self.password:
                 if self.secure is not None:
-                    # there is a secure option in zope.conf
+                    # there is a secure option
                     if self.secure:
                         secure = [item for item in self.secure.split(' ') if item]
                         smtp.starttls(*secure)
