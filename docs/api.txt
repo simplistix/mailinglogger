@@ -53,6 +53,21 @@ API Reference
     recommended that you don't use SMTP authentication unless you
     absolutely need to.
 
+  :param secure:
+
+    Optional TLS support.
+
+    This is an optional configuration for SMTP servers that
+    requires TLS support.
+
+    If need to use SMTP authentication with TLS support you
+    have to add the secure option, plus the optional keyfile 
+    and certfile. If the optional keyfile and certfile are 
+    provided, these are passed to the socket module’s ssl() 
+    function.
+
+    usage: ``secure [keyfile[, certfile]]``
+
   :param subject: 
 
     This is a format string specifying what information will be
@@ -187,6 +202,21 @@ API Reference
     authentication will be performed. For performance reasons, it's
     recommended that you don't use SMTP authentication unless you
     absolutely need to.
+
+  :param secure:
+
+    Optional TLS support.
+
+    This is an optional configuration for SMTP servers that
+    requires TLS support.
+
+    If need to use SMTP authentication with TLS support you
+    have to add the secure option, plus the optional keyfile 
+    and certfile. If the optional keyfile and certfile are 
+    provided, these are passed to the socket module’s ssl() 
+    function.
+
+    usage: ``secure [keyfile[, certfile]]``
 
   :param subject:
 

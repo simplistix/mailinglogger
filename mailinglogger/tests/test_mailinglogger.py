@@ -28,6 +28,38 @@ class TestMailingLogger(TestCase):
         from mailinglogger.MailingLogger import MailingLogger
         from mailinglogger import MailingLogger
     
+    def test_tls_secure_option_1(self):
+        # set up logger
+        self.handler = MailingLogger('from@example.com',('to@example.com',), username='x', password='y', secure='')
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical('message')
+        self.assertEqual(len(DummySMTP.sent),1)
+
+    def test_tls_secure_option_2(self):
+        # set up logger
+        self.handler = MailingLogger('from@example.com',('to@example.com',), username='x', password='y', secure='keyfile')
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical('message')
+        self.assertEqual(len(DummySMTP.sent),1)
+
+    def test_tls_secure_option_3(self):
+        # set up logger
+        self.handler = MailingLogger('from@example.com',('to@example.com',), username='x', password='y', secure='keyfile certfile')
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical('message')
+        self.assertEqual(len(DummySMTP.sent),1)
+
+    def test_tls_secure_option_exception(self):
+        # set up logger
+        self.handler = MailingLogger('from@example.com',('to@example.com',), username='x', password='y', secure='keyfile certfile other')
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical('message')
+        self.assertEqual(len(DummySMTP.sent),0)
+
     def test_default_flood_limit(self):
         # set up logger
         self.handler = MailingLogger('from@example.com',('to@example.com',))

@@ -66,6 +66,9 @@ class DummySMTP:
                 self.password
                 ))
         
+    def starttls(self, keyfile=None, certfile=None):
+        pass
+
     def quit(self):
         pass
 

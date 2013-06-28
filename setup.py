@@ -9,6 +9,8 @@ from setuptools import setup, find_packages
 
 this_dir = os.path.dirname(__file__)
 
+tests_require = ['manuel', 'testfixtures']
+
 setup(
     name='mailinglogger',
     version=file(os.path.join(this_dir,'mailinglogger','version.txt')).read().strip(),
@@ -32,6 +34,10 @@ setup(
     'Topic :: System :: Logging',
     ],    
     packages=find_packages(),
+    tests_require=tests_require,
+    extras_require = {
+                      'test': tests_require,
+                     },
     zip_safe=False,
     include_package_data=True,
     )
