@@ -1,8 +1,0 @@
-CHANGES.txt
-===========
-
-On the https://github.com/redomino/mailinglogger fork you'll get:
-
-* fixed tests (added test requirements)
-
-* TLS support
