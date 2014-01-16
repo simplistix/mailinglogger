@@ -26,12 +26,6 @@ Once you have a buildout, the tests can be run as follows::
 
   $ bin/test
 
-In addition, tests for the supported application frameworks can be run
-using::
-
-  $ bin/test_zconfig
-  $ bin/test_zope2
-
 Building the documentation
 --------------------------
 

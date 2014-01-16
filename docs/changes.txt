@@ -3,6 +3,13 @@ Changes
 
 .. currentmodule:: mailinglogger
 
+4.0.0 (XX Jan 2014)
+-------------------
+
+- Drop Zope and Plone support
+
+- Drop ZConfig support
+
 3.7.0 (18 Jan 2012)
 -------------------
 

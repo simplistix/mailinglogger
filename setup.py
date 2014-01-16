@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2010 Simplistix Ltd
+# Copyright (c) 2007-2014 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -21,9 +21,6 @@ setup(
     keywords="logging email",
     classifiers=[
     'Development Status :: 6 - Mature',
-    'Framework :: Plone',
-    'Framework :: Zope2',
-    'Framework :: Zope3',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
     'License :: OSI Approved :: MIT License',
