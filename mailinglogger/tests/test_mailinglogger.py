@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2012 Simplistix Ltd
+# Copyright (c) 2007-2014 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -8,7 +8,6 @@ import logging
 import time
 
 from email.charset import Charset
-from mailinglogger.common import RegexConversion
 from mailinglogger.MailingLogger import MailingLogger
 from shared import DummySMTP, setUp, tearDown
 from unittest import TestSuite,makeSuite,TestCase,main
@@ -64,39 +63,6 @@ class TestMailingLogger(TestCase):
         logger.critical('message4')
         # check we are emitted now!
         self.assertEqual(len(DummySMTP.sent),3)
-
-    def test_ignore(self):
-        ignored = [ RegexConversion('^bad start')
-                  , RegexConversion('(.*)Some String')
-                  , RegexConversion('(.*)http:(.*)\/view')
-                  ]
-        self.handler = MailingLogger( 'from@example.com'
-                                    , ('to@example.com',)
-                                    , ignore=ignored
-                                    )
-        logger = self.getLogger()
-        logger.addHandler(self.handler)
-        # paranoid check
-        self.assertEqual(len(DummySMTP.sent),0)
-
-        # Now test a few variations
-        logger.critical('This Line Contains Some String.')
-        self.assertEqual(len(DummySMTP.sent),0)
-
-        logger.critical('bad starts and terrible endings')
-        self.assertEqual(len(DummySMTP.sent),0)
-
-        logger.critical('NotFoundError: http://my.site.com/some/path/view')
-        self.assertEqual(len(DummySMTP.sent),0)
-
-        # Interpolations are also ignored
-        logger.critical('NotFoundError: %s',
-                        'http://my.site.com/some/path/view')
-        self.assertEqual(len(DummySMTP.sent),0)
-
-        # Non-matching stuff still gets through
-        logger.critical('message1')
-        self.assertEqual(len(DummySMTP.sent),1)
 
     def test_headers_supplied_get_added_to_those_generated(self):
         # set up logger

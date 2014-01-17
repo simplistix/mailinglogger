@@ -1,10 +1,8 @@
-# Copyright (c) 2007-2012 Simplistix Ltd
+# Copyright (c) 2007-2014 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
-
-import re
 
 from cgi import escape
 from logging import Formatter
@@ -28,21 +26,3 @@ class HTMLFilter(object):
         record.msg = escape(record.getMessage())
         record.args = ()
         return True 
-
-class RegexConversion:
-
-    def __init__(self, regex):
-        self._rx = re.compile(regex)
-
-    def __call__(self, value):
-        return bool(self._rx.search(value))
-
-def process_ignore(ignore):
-    if isinstance(ignore,basestring):
-        ignore = [ignore]
-    result = []
-    for i in ignore:
-        if not isinstance(i,RegexConversion):
-            i = RegexConversion(i)
-        result.append(i)
-    return result

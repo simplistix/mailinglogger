@@ -1,4 +1,4 @@
-# Copyright (c) 2004-2007 Simplistix Ltd
+# Copyright (c) 2004-2014 Simplistix Ltd
 # Copyright (c) 2001-2003 New Information Paradigms Ltd
 #
 # This Software is released under the MIT License:
@@ -15,8 +15,6 @@ from email.MIMEText import MIMEText
 from logging.handlers import SMTPHandler
 from logging import LogRecord, CRITICAL
 from mailinglogger.common import SubjectFormatter
-from mailinglogger.common import process_ignore
-
 
 this_dir = os.path.dirname(__file__)
 x_mailer = 'MailingLogger '+open(os.path.join(this_dir,'version.txt')).read().strip()
@@ -35,7 +33,6 @@ class MailingLogger(SMTPHandler):
                  flood_level=10,
                  username=None,
                  password=None,
-                 ignore=(),
                  headers=None,
                  template=None,
                  charset='utf-8',
@@ -48,7 +45,6 @@ class MailingLogger(SMTPHandler):
         self.sent = 0
         self.username = username
         self.password = password
-        self.ignore = process_ignore(ignore)
         self.headers = headers or {}
         self.template = template
         self.charset = charset
@@ -63,10 +59,6 @@ class MailingLogger(SMTPHandler):
         msg = record.getMessage()
         if not self.send_empty_entries and not msg.strip():
             return
-
-        for criterion in self.ignore:
-            if criterion(msg):
-                return
 
         current_time = self.now()
         current_hour = current_time.hour

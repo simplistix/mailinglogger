@@ -85,25 +85,6 @@ API Reference
 
     default: ``10``
 
-  :param ignore:
-
-    .. warning::
-
-      .. deprecated:: 3.4.0
-
-      This method of ignoring log messages will go away in some future
-      version, `filter objects`__ should be used instead.
-
-      __ http://docs.python.org/library/logging.html#filter-objects
-
-    This sequence of strings, each of which is compiled into a regular
-    expression, allows the user to set up rules for ignoring certain
-    log entries. If the body of the message logged matched any of the
-    regular expressions, the log message will be silently discarded
-    and not mailed out.
-
-    default: ``()``
-
   :param headers:
 
     This is a dictionary containing headers and their values to be
@@ -217,25 +198,6 @@ API Reference
     currently executing python script finishes.
 
     default: ``True``
-
-  :param ignore:
-
-    .. warning::
-
-      .. deprecated:: 3.4.0
-
-      This method of ignoring log messages will go away in some future
-      version, `filter objects`__ should be used instead.
-
-      __ http://docs.python.org/library/logging.html#filter-objects
-
-    This sequence of strings, each of which is compiled into a regular
-    expression, allows the user to set up rules for ignoring certain
-    log entries. If the body of the message logged matched any of the
-    regular expressions, the log message will be silently discarded
-    and not mailed out in the summary.
-
-    default: ``()``
 
   :param headers:
 

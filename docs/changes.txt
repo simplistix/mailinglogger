@@ -10,6 +10,14 @@ Changes
 
 - Drop ZConfig support
 
+- Removed the deprecated ``ignore`` parameter to
+  :class:`MailingLogger` and :class:`SummarisingLogger`.
+
+  Use `filter objects`__ should be used instead.
+
+  __ http://docs.python.org/library/logging.html#filter-objects
+
+
 3.7.0 (18 Jan 2012)
 -------------------
 

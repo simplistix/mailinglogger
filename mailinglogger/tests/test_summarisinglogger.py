@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2011 Simplistix Ltd
+# Copyright (c) 2007-2014 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -7,7 +7,6 @@
 import logging
 import os
 
-from mailinglogger.common import RegexConversion
 from mailinglogger.SummarisingLogger import SummarisingLogger
 from shared import DummySMTP, removeHandlers
 from unittest import TestSuite,makeSuite,TestCase,main
@@ -42,14 +41,6 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent),0)
 
-    def test_send_empty_with_filtering(self):
-        self.create('from@example.com',('to@example.com',),
-                    send_empty_entries=False,
-                    ignore='rubbish')
-        self.logger.critical('This Line Contains rubbish.')
-        logging.shutdown()
-        self.assertEqual(len(DummySMTP.sent),0)
-        
     def test_send_level_filters(self):
         self.create('from@example.com',('to@example.com',),
                     send_level=logging.CRITICAL)

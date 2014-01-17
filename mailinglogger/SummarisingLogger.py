@@ -1,4 +1,4 @@
-# Copyright (c) 2004-2011 Simplistix Ltd
+# Copyright (c) 2004-2014 Simplistix Ltd
 #
 # This Software is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.html
@@ -9,7 +9,6 @@ import os
 from atexit import register
 from logging import FileHandler, Formatter, INFO, LogRecord
 from mailinglogger.MailingLogger import MailingLogger
-from mailinglogger.common import process_ignore
 from tempfile import mkstemp
 
 class SummarisingLogger(FileHandler):
@@ -25,7 +24,6 @@ class SummarisingLogger(FileHandler):
                  atexit=True,
                  username=None,
                  password=None,
-                 ignore=(),
                  headers=None,
                  send_level=None,
                  template=None,
@@ -45,7 +43,6 @@ class SummarisingLogger(FileHandler):
                                     content_type=content_type)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
-        self.ignore = process_ignore(ignore)
         self.send_level=send_level
         self.charset = charset
         self.open()
@@ -66,10 +63,6 @@ class SummarisingLogger(FileHandler):
     def emit(self,record):
         if self.closed:
             return
-
-        for criterion in self.ignore:
-            if criterion(record.msg):
-                return
 
         if record.levelno>self.maxlevelno:
             self.maxlevelno = record.levelno
