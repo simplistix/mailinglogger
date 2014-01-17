@@ -7,7 +7,7 @@
 import os
 
 from atexit import register
-from logging import FileHandler, Formatter, INFO, LogRecord
+from logging import FileHandler, Formatter, LogRecord
 from mailinglogger.MailingLogger import MailingLogger
 from tempfile import mkstemp
 

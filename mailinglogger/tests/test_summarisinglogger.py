@@ -9,7 +9,7 @@ import os
 
 from mailinglogger.SummarisingLogger import SummarisingLogger
 from shared import DummySMTP, removeHandlers
-from unittest import TestSuite,makeSuite,TestCase,main
+from unittest import TestCase
 
 class TestSummarisingLogger(TestCase):
 
@@ -103,11 +103,3 @@ class TestSummarisingLogger(TestCase):
         m = DummySMTP.sent[0][3]
         # NB: we drop the 'foo'
         self.failUnless('Content-Type: text/bar' in m, m)
-
-def test_suite():
-    return TestSuite((
-        makeSuite(TestSummarisingLogger),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(default='test_suite')

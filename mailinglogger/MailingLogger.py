@@ -8,7 +8,6 @@
 import datetime
 import os
 import smtplib
-import socket
 
 from email.Utils import formatdate, make_msgid
 from email.MIMEText import MIMEText

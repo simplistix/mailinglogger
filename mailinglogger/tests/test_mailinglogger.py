@@ -5,12 +5,10 @@
 # See license.txt for more details.
 
 import logging
-import time
 
-from email.charset import Charset
 from mailinglogger.MailingLogger import MailingLogger
 from shared import DummySMTP, setUp, tearDown
-from unittest import TestSuite,makeSuite,TestCase,main
+from unittest import TestCase
 
 class TestMailingLogger(TestCase):
 
@@ -144,11 +142,3 @@ class TestMailingLogger(TestCase):
         m = DummySMTP.sent[0][3]
         # NB: we drop the 'foo'
         self.failUnless('Content-Type: text/bar' in m, m)
-
-def test_suite():
-    return TestSuite((
-        makeSuite(TestMailingLogger),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(default='test_suite')
