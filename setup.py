@@ -33,6 +33,6 @@ setup(
     zip_safe=False,
     include_package_data=True,
     extras_require=dict(
-        test=['nose', 'nose_fixes', 'testfixtures', 'manuel'],
+        test=['nose', 'nose_fixes', 'testfixtures', 'manuel', 'nose-cov'],
         )
     )
