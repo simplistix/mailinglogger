@@ -7,7 +7,7 @@
 import logging
 
 from mailinglogger.MailingLogger import MailingLogger
-from shared import DummySMTP, setUp, tearDown
+from shared import DummySMTP, _setUp, _tearDown
 from unittest import TestCase
 
 class TestMailingLogger(TestCase):
@@ -16,10 +16,10 @@ class TestMailingLogger(TestCase):
         return logging.getLogger('')
     
     def setUp(self):
-        setUp(None, self, stdout=False)
+        _setUp(None, self, stdout=False)
 
     def tearDown(self):
-        tearDown(None,self)
+        _tearDown(None, self)
         
     def test_imports(self):
         from mailinglogger.MailingLogger import MailingLogger

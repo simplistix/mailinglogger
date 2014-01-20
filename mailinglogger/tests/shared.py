@@ -3,7 +3,6 @@ from time import tzset
 
 import atexit
 import logging
-import os
 import smtplib
 
 class DummySMTP:
@@ -94,7 +93,7 @@ def removeHandlers():
     if hl:
         hl[:]=[]
     
-def setUp(test, self=None, stdout=True):
+def _setUp(test, self=None, stdout=True):
     if self is None:
         d = test.globs
     else:
@@ -118,7 +117,7 @@ def setUp(test, self=None, stdout=True):
     d['time']=time
     d['removeHandlers']=removeHandlers
     
-def tearDown(test, self=None):
+def _tearDown(test, self=None):
     if self is None:
         d = test.globs
     else:

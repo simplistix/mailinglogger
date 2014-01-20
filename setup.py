@@ -5,6 +5,7 @@
 # See license.txt for more details.
 
 import os
+
 from setuptools import setup, find_packages
 
 this_dir = os.path.dirname(__file__)
@@ -31,4 +32,7 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     include_package_data=True,
+    extras_require=dict(
+        test=['nose', 'nose_fixes', 'testfixtures', 'manuel'],
+        )
     )
