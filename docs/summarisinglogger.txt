@@ -45,6 +45,11 @@ It can then be added as a handler for any logger as follows:
 >>> logger = logging.getLogger()
 >>> logger.addHandler(handler)
 
+.. invisible-code-block: python
+
+   logger.setLevel(logging.WARNING)
+   handler.setLevel(logging.WARNING)
+  
 However, when we log a message, nothing appears to happen:
 
 >>> logging.debug('some debugging')
@@ -67,6 +72,7 @@ Subject: Summary of Log Messages (ERROR)
 From: from@example.com
 To: to@example.com
 X-Mailer: MailingLogger...
+X-Log-Level: ERROR
 Date: ...
 Message-ID: <...MailingLogger@...>
 <BLANKLINE>
