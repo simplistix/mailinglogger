@@ -323,6 +323,8 @@ An Error
   For performance reasons, it's recommended that you don't use SMTP
   authentication unless you absolutely need to.
 
+.. _mail_extra_headers:
+
 Adding extra headers
 --------------------
 
