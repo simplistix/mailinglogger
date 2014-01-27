@@ -3,6 +3,12 @@ Changes
 
 .. currentmodule:: mailinglogger
 
+3.8.0 (27 Jan 2014)
+-------------------
+
+- Implemented flood limiting in :class:`SummarisingLogger` to prevent
+  overly large emails being sent.
+
 3.7.0 (18 Jan 2012)
 -------------------
 
