@@ -125,7 +125,7 @@ level message that has been handled by the :class:`SummarisingLogger`.
 These headers can be useful for filtering mail
 sent by :class:`MailingLogger`. If you wish to filter mail by
 environment or other configuration data, the support for adding
-:ref:`extra headers <mail_extra_headers>` may be useful.
+:ref:`extra headers <sum_extra_headers>` may be useful.
 
 Avoiding the :mod:`atexit` handler
 ----------------------------------
