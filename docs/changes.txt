@@ -3,7 +3,7 @@ Changes
 
 .. currentmodule:: mailinglogger
 
-4.0.0 (XX Jan 2014)
+4.0.0 (XX YYY 2014)
 -------------------
 
 - Drop Zope and Plone support
@@ -17,6 +17,11 @@ Changes
 
   __ http://docs.python.org/library/logging.html#filter-objects
 
+3.8.0 (27 Jan 2014)
+-------------------
+
+- Implemented flood limiting in :class:`SummarisingLogger` to prevent
+  overly large emails being sent.
 
 3.7.0 (18 Jan 2012)
 -------------------

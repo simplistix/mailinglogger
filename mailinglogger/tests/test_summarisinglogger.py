@@ -103,3 +103,63 @@ class TestSummarisingLogger(TestCase):
         m = DummySMTP.sent[0][3]
         # NB: we drop the 'foo'
         self.failUnless('Content-Type: text/bar' in m, m)
+
+    def test_flood_level_exceeded(self):
+        self.create('from@example.com', ('to@example.com', ),
+                    flood_level=3)
+        self.handler.setFormatter(
+            logging.Formatter('%(levelname)s - %(message)s')
+            )
+        for i in range(10):
+            logging.warning('message %s', i)
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent), 1)
+        m = DummySMTP.sent[0][3]
+        self.failUnless('Subject: Summary of Log Messages (WARNING)' in m, m)
+        self.failUnless('\n'.join([
+                    'WARNING - message 0',
+                    'WARNING - message 1',
+                    'WARNING - message 2',
+                    'CRITICAL - 2 messages not included as flood limit of 3 exceeded',
+                    'WARNING - message 5',
+                    'WARNING - message 6',
+                    'WARNING - message 7',
+                    'WARNING - message 8',
+                    ]) in m, repr(m))
+
+    def test_flood_highest_level_still_recorded(self):
+        self.create('from@example.com', ('to@example.com', ),
+                    flood_level=1)
+        self.handler.setFormatter(
+            logging.Formatter('%(levelname)s - %(message)s')
+            )
+        logging.info('included')
+        logging.warning('filtered')
+        for i in range(5):
+            logging.info('after %i', i)
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent), 1)
+        m = DummySMTP.sent[0][3]
+        self.failUnless('Subject: Summary of Log Messages (WARNING)' in m, m)
+        self.failUnless('\n'.join([
+                    'INFO - included',
+                    'CRITICAL - 1 messages not included as flood limit of 1 exceeded',
+                    'INFO - after 0',
+                    ]) in m, repr(m))
+
+    def test_flood_except_for_tail(self):
+        self.create('from@example.com', ('to@example.com', ),
+                    flood_level=1)
+        self.handler.setFormatter(
+            logging.Formatter('%(levelname)s - %(message)s')
+            )
+        logging.warning('message 1')
+        logging.warning('message 2')
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent), 1)
+        m = DummySMTP.sent[0][3]
+        self.failUnless('Subject: Summary of Log Messages (WARNING)' in m, m)
+        self.failUnless('\n'.join([
+                    'WARNING - message 1',
+                    'WARNING - message 2',
+                    ]) in m, repr(m))

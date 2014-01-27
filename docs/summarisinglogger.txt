@@ -131,7 +131,7 @@ level message that has been handled by the :class:`SummarisingLogger`.
 These headers can be useful for filtering mail
 sent by :class:`MailingLogger`. If you wish to filter mail by
 environment or other configuration data, the support for adding
-:ref:`extra headers <mail_extra_headers>` may be useful.
+:ref:`extra headers <sum_extra_headers>` may be useful.
 
 Avoiding the :mod:`atexit` handler
 ----------------------------------
@@ -352,6 +352,67 @@ Message-ID: <...MailingLogger@...>
 2007-01-01 12:34:56,000 [INFO] An info message
 2007-01-01 12:34:56,000 [ERROR] Something bad happened
 <BLANKLINE>
+
+Limiting the size of emails
+---------------------------
+
+All good MTAs will limit the size of message that they will accept. If
+your script logs an unexpectedly large number of messages, such as
+when something goes catastrophically wrong, this may result in no email
+notification being sent.
+
+More commonly, if you're trying to read a summary email on a mobile
+device, any more than a hundred lines or so will likely be difficult
+to read and may not even render.
+
+To prevent these problems, :class:`SummarisingLogger` allows a limit
+on the number of lines that will be included in the summary email.
+By default, this is set to 100 messages but can be overridden by passing
+the `flood_level` option to the :class:`SummarisingLogger`
+constructor:
+
+>>> handler = SummarisingLogger('from@example.com', ('to@example.com',), 
+...                             flood_level=2)
+>>> handler.setFormatter(logging.Formatter('%(levelname)s -  %(message)s'))
+>>> logger.addHandler(handler)
+>>> logging.info('message 1')
+>>> logging.info('message 2')
+>>> logging.error('message 3')
+>>> logging.info('message 4')
+>>> logging.info('message 5')
+>>> logging.info('message 6')
+>>> logging.info('message 7')
+>>> logging.info('message 8')
+>>> logging.shutdown()
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Summary of Log Messages (ERROR)
+From: from@example.com
+To: to@example.com
+X-Mailer: MailingLogger...
+X-Log-Level: ERROR
+Date: Mon, 01 Jan 2007 12:34:56 -0000
+Message-ID: <...MailingLogger@...>
+<BLANKLINE>
+INFO -  message 1
+INFO -  message 2
+CRITICAL -  1 messages not included as flood limit of 2 exceeded
+INFO -  message 4
+INFO -  message 5
+INFO -  message 6
+INFO -  message 7
+INFO -  message 8
+<BLANKLINE>
+
+The example above shows a few things. Firstly, when messages are
+excluded, a ``CRITICAL`` entry is logged with the number of messages
+that have been excluded. Secondly, excluded messages still contribute
+to the highest level logged used in both the subject and the
+``X-Log-Level`` header. Finally, the last 5 messages logged before the
+mail is sent are always included as they may well contain useful
+information such as a terminal exception or total run time.
 
 Sending empty emails
 --------------------
