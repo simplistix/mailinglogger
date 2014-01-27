@@ -285,6 +285,17 @@ API Reference
    
     default: ``text/plain``
 
+  :param flood_level:
+
+    The maximum number of messages that can be logged before flood
+    protection begins. Flood protection prevents overly large emails
+    being sent by excluding exccess messages. When this occurs, a
+    CRITICAL level message will be included detailing the number of
+    messages excluded. The last 5 messages logged before the email is
+    sent will always be included.
+   
+    default: ``100``
+
   .. method:: open()
 
     This method creates the temporary file used by
