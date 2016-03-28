@@ -1,7 +1,7 @@
 SummarisingLogger
 =================
 
-.. note:: 
+.. note::
 
   Throughout the examples below, mail messages sent using
   :mod:`smtplib` are printed to the screen so we can see what's going on:
@@ -21,7 +21,7 @@ containing all the log entries using an SMTP server when its
 This :meth:`~SummarisingLogger.close` method is, by default,
 registered as an :mod:`atexit` function so that the summary mail will
 get sent regardless of whether an explicit call is made to the
-:meth:`SummarisingLogger.close` method. 
+:meth:`SummarisingLogger.close` method.
 
 :class:`SummarisingLogger` handlers can be very useful for batch
 processes that are frequently run and where people would like an email
@@ -49,7 +49,7 @@ It can then be added as a handler for any logger as follows:
 
    logger.setLevel(logging.WARNING)
    handler.setLevel(logging.WARNING)
-  
+
 However, when we log a message, nothing appears to happen:
 
 >>> logging.debug('some debugging')
@@ -85,14 +85,14 @@ module. We can see that the handler we created above is now
 registered with this module by having a poke at its internals:
 
 >>> import atexit
->>> print atexit._exithandlers
+>>> print(atexit._exithandlers)
 [(<bound method SummarisingLogger.close of <...>, (), {})]
 
 This list can be manually cleared at any time to remove any
 registered :mod:`atexit` functions:
 
 >>> atexit._exithandlers[:] = []
->>> print atexit._exithandlers
+>>> print(atexit._exithandlers)
 []
 
 Now, to continue with the examples, just like any other handler, we
@@ -136,15 +136,15 @@ environment or other configuration data, the support for adding
 Avoiding the :mod:`atexit` handler
 ----------------------------------
 
-.. 
+..
   >>> atexit._exithandlers[:] = []
 
 In the event you wish to manually call the
 :meth:`~SummarisingLogger.close` method of the handler or use the
-logging framework's :func:`~logging.shutdown` functionality rather 
+logging framework's :func:`~logging.shutdown` functionality rather
 than registering an :mod:`atexit` function, you can create a
 :class:`SummarisingLogger` and specify that no :mod:`atexit` function
-should be registered: 
+should be registered:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             atexit=False)
@@ -152,7 +152,7 @@ should be registered:
 
 Now, we can see that no :mod:`atexit` function has been registered:
 
->>> print atexit._exithandlers
+>>> print(atexit._exithandlers)
 []
 
 With this configuration, if an entry is logged, the logging
@@ -284,15 +284,15 @@ Here's an example:
 To show things working, some entries need to be logged. Here's one at
 ``2007-01-01 10:00:00``:
 
-.. 
-  >>> time.set(2007, 1, 1, 10)  
+..
+  >>> time.set(2007, 1, 1, 10)
 
 >>> logging.warning('something happened')
 
 Here's another at ``2007-01-01 12:34:56``:
 
-.. 
-  >>> time.set(2007, 1, 1, 12, 34, 56)  
+..
+  >>> time.set(2007, 1, 1, 12, 34, 56)
 
 >>> try:
 ...   raise RuntimeError('badness')
@@ -330,7 +330,7 @@ certain log level is reached but, when the summary is sent, you want
 the summary to include logging at a lower level. To do this, you would
 pass a ``send_level`` to the :class:`SummarisingLogger` constructor:
 
->>> handler = SummarisingLogger('from@example.com', ('to@example.com',), 
+>>> handler = SummarisingLogger('from@example.com', ('to@example.com',),
 ...                             send_level=logging.ERROR)
 >>> handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
 >>> logger.addHandler(handler)
@@ -371,7 +371,7 @@ By default, this is set to 100 messages but can be overridden by passing
 the `flood_level` option to the :class:`SummarisingLogger`
 constructor:
 
->>> handler = SummarisingLogger('from@example.com', ('to@example.com',), 
+>>> handler = SummarisingLogger('from@example.com', ('to@example.com',),
 ...                             flood_level=2)
 >>> handler.setFormatter(logging.Formatter('%(levelname)s -  %(message)s'))
 >>> logger.addHandler(handler)
@@ -418,7 +418,7 @@ Sending empty emails
 --------------------
 
 By default, the :class:`SummarisingLogger` handler will always send emails
-even if they would have been empty: 
+even if they would have been empty:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
 >>> logger.addHandler(handler)
@@ -504,7 +504,7 @@ An Error
 
 If the smtp server you wish to use requires authentication,
 pass the required username and password to the :class:`SummarisingLogger`
-constructor: 
+constructor:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...				   username='auser',password='theirpassword')
