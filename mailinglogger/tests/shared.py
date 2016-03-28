@@ -46,15 +46,15 @@ class DummySMTP:
     def sendmail(self,fromaddr,toaddrs,msg):
         msg = msg.replace('\r\n','\n')
         if self.stdout:
-            print 'sending to %r from %r using %r' % (
+            print('sending to %r from %r using %r' % (
                 toaddrs,fromaddr,(self.mailhost,self.port)
-                )
+                ))
             if self.username and self.password:
-                print '(authenticated using username:%r and password:%r)' % (
+                print('(authenticated using username:%r and password:%r)' % (
                     self.username,
                     self.password,
-                    )
-            print msg
+                    ))
+            print(msg)
         else:
             self.sent.append((
                 toaddrs,

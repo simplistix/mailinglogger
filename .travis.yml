@@ -1,0 +1,12 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+install:
+  - pip install zc.buildout
+  - buildout
+script:
+  - bin/nosetests --with-xunit --with-cov --cov=mailinglogger
+after_success:
+  - pip install coveralls
+  - coveralls

@@ -5,6 +5,7 @@
 # See license.txt for more details.
 
 import os
+import sys
 
 from atexit import register
 from collections import deque
@@ -13,6 +14,8 @@ from mailinglogger.MailingLogger import MailingLogger
 from tempfile import mkstemp
 
 flood_template = '%i messages not included as flood limit of %i exceeded'
+
+PY3 = sys.version_info[:2] > (3, 0)
 
 class SummarisingLogger(FileHandler):
 
@@ -109,7 +112,9 @@ class SummarisingLogger(FileHandler):
                 
         FileHandler.close(self)
         f = os.fdopen(self.fd)
-        summary = f.read().decode(self.charset)
+        summary = f.read()
+        if not PY3:
+            summary = summary.decode(self.charset)
         f.close()
         # try and encode in ascii, to keep emails simpler:
         try:

@@ -5,5 +5,5 @@
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
-from MailingLogger import MailingLogger
-from SummarisingLogger import SummarisingLogger
+from .MailingLogger import MailingLogger
+from .SummarisingLogger import SummarisingLogger

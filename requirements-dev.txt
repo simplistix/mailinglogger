@@ -1,0 +1,6 @@
+-e .
+nose
+nose_fixes
+testfixtures
+manuel
+nose-cov

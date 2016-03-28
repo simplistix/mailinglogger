@@ -8,7 +8,7 @@ import logging
 import os
 
 from mailinglogger.SummarisingLogger import SummarisingLogger
-from shared import DummySMTP, removeHandlers
+from .shared import DummySMTP, removeHandlers
 from unittest import TestCase
 
 class TestSummarisingLogger(TestCase):

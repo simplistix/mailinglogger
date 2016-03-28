@@ -1,0 +1,12 @@
+include *.bat
+include *.py
+include *.txt
+include .coveragerc
+include buildout.cfg
+include jenkins
+include tox.ini
+recursive-include docs *.bat
+recursive-include docs *.py
+recursive-include docs *.txt
+recursive-include docs Makefile
+recursive-include mailinglogger *.txt

@@ -7,7 +7,7 @@
 import logging
 
 from mailinglogger.MailingLogger import MailingLogger
-from shared import DummySMTP, _setUp, _tearDown
+from .shared import DummySMTP, _setUp, _tearDown
 from unittest import TestCase
 
 class TestMailingLogger(TestCase):
