@@ -2,9 +2,10 @@ language: python
 python:
   - "2.7"
 install:
-  - pip install -r requirements-dev.txt
+  - pip install zc.buildout
+  - buildout
 script:
-  - nosetests --with-xunit --with-cov --cov=mailinglogger
+  - bin/nosetests --with-xunit --with-cov --cov=mailinglogger
 after_success:
   - pip install coveralls
   - coveralls
