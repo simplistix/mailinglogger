@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2004-2011 Simplistix Ltd
 # Copyright (c) 2001-2003 New Information Paradigms Ltd
 #
@@ -5,5 +6,5 @@
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
-from MailingLogger import MailingLogger
-from SummarisingLogger import SummarisingLogger
+from MailingLogger import MailingLogger  # noqa
+from SummarisingLogger import SummarisingLogger  # noqa
