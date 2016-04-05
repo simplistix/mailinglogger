@@ -8,7 +8,7 @@ import logging
 import os
 
 from mailinglogger.SummarisingLogger import SummarisingLogger
-from shared import DummySMTP, removeHandlers
+from mailinglogger.tests.shared import DummySMTP, removeHandlers
 from unittest import TestCase
 
 
@@ -72,9 +72,9 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         m = DummySMTP.sent[0][3]
         # lovely, utf-8 encoded goodness
-        self.failUnless('Subject: Summary of Log Messages (CRITICAL)' in m, m)
-        self.failUnless('Content-Type: text/plain; charset="utf-8"' in m, m)
-        self.failUnless('\nYWNjZW50dcOp' in m, m)
+        self.assertTrue('Subject: Summary of Log Messages (CRITICAL)' in m, m)
+        self.assertTrue('Content-Type: text/plain; charset="utf-8"' in m, m)
+        self.assertTrue('\nYWNjZW50dcOp' in m, m)
 
     def test_specified_charset(self):
         self.create('from@example.com', ('to@example.com',),
@@ -83,10 +83,10 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         m = DummySMTP.sent[0][3]
         # lovely, latin-1 encoded goodness
-        self.failUnless('\naccentu=E9' in m, m)
-        self.failUnless(
+        self.assertTrue('\naccentu=E9' in m, m)
+        self.assertTrue(
             'Content-Type: text/plain; charset="iso-8859-1"' in m, m)
-        self.failUnless('Subject: Summary of Log Messages (CRITICAL)' in m, m)
+        self.assertTrue('Subject: Summary of Log Messages (CRITICAL)' in m, m)
 
     def test_template(self):
         self.create('from@example.com', ('to@example.com',),
@@ -94,8 +94,8 @@ class TestSummarisingLogger(TestCase):
         logging.critical('message')
         logging.shutdown()
         m = DummySMTP.sent[0][3]
-        self.failUnless('Subject: Summary of Log Messages (CRITICAL)' in m, m)
-        self.failUnless('<before>message\n<after>' in m, repr(m))
+        self.assertTrue('Subject: Summary of Log Messages (CRITICAL)' in m, m)
+        self.assertTrue('<before>message\n<after>' in m, repr(m))
 
     def test_specified_content_type(self):
         self.create('from@example.com', ('to@example.com',),
@@ -104,7 +104,7 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         m = DummySMTP.sent[0][3]
         # NB: we drop the 'foo'
-        self.failUnless('Content-Type: text/bar' in m, m)
+        self.assertTrue('Content-Type: text/bar' in m, m)
 
     def test_flood_level_exceeded(self):
         self.create('from@example.com', ('to@example.com', ),
@@ -117,8 +117,8 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
         m = DummySMTP.sent[0][3]
-        self.failUnless('Subject: Summary of Log Messages (WARNING)' in m, m)
-        self.failUnless('\n'.join([
+        self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
+        self.assertTrue('\n'.join([
             'WARNING - message 0',
             'WARNING - message 1',
             'WARNING - message 2',
@@ -142,8 +142,8 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
         m = DummySMTP.sent[0][3]
-        self.failUnless('Subject: Summary of Log Messages (WARNING)' in m, m)
-        self.failUnless('\n'.join([
+        self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
+        self.assertTrue('\n'.join([
             'INFO - included',
             'CRITICAL - 1 messages not included as flood limit of 1 exceeded',
             'INFO - after 0',
@@ -160,8 +160,8 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
         m = DummySMTP.sent[0][3]
-        self.failUnless('Subject: Summary of Log Messages (WARNING)' in m, m)
-        self.failUnless('\n'.join([
+        self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
+        self.assertTrue('\n'.join([
             'WARNING - message 1',
             'WARNING - message 2',
         ]) in m, repr(m))

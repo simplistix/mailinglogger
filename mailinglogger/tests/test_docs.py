@@ -9,7 +9,7 @@ from doctest import REPORT_NDIFF, ELLIPSIS
 from manuel import doctest, codeblock
 from manuel.testing import TestSuite
 from os.path import dirname, pardir, join
-from shared import _setUp, _tearDown
+from mailinglogger.tests.shared import _setUp, _tearDown
 
 docs_dir = join(dirname(__file__), pardir, pardir, 'docs')
 
