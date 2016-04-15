@@ -12,7 +12,7 @@ this_dir = os.path.dirname(__file__)
 
 setup(
     name='mailinglogger',
-    version=file(os.path.join(this_dir,'mailinglogger','version.txt')).read().strip(),
+    version=open(os.path.join(this_dir,'mailinglogger','version.txt')).read().strip(),
     author='Chris Withers',
     author_email='chris@simplistix.co.uk',
     license='MIT',
@@ -28,7 +28,7 @@ setup(
     'Topic :: Communications :: Email',
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Topic :: System :: Logging',
-    ],    
+    ],
     packages=find_packages(),
     zip_safe=False,
     include_package_data=True,
