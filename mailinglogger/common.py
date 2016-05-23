@@ -4,7 +4,7 @@
 # http://www.opensource.org/licenses/mit-license.html
 # See license.txt for more details.
 
-from cgi import escape
+from .compat import escape
 from logging import Formatter
 from socket import gethostname
 
@@ -25,6 +25,6 @@ class SubjectFormatter(Formatter):
 class HTMLFilter(object):
 
     def filter(self, record):
-        record.msg = escape(record.getMessage())
+        record.msg = escape(record.getMessage(), quote=False)
         record.args = ()
         return True

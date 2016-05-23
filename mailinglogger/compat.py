@@ -11,6 +11,8 @@ if sys.version_info[:2] > (3, 0):
     from email.utils import formatdate, make_msgid
     from email.mime.text import MIMEText
 
+    from html import escape
+
 else:
 
     PY2 = True
@@ -20,3 +22,5 @@ else:
 
     from email.Utils import formatdate, make_msgid
     from email.MIMEText import MIMEText
+
+    from cgi import escape
