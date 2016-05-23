@@ -84,16 +84,27 @@ The logging on script exit is done using python's :mod:`atexit`
 module. We can see that the handler we created above is now
 registered with this module by having a poke at its internals:
 
+>>> from mailinglogger.compat import PY2
 >>> import atexit
->>> print atexit._exithandlers
+>>> if PY2:
+...     atexit._exithandlers
 [(<bound method SummarisingLogger.close of <...>, (), {})]
+>>> if not PY2:
+...     atexit._ncallbacks()
+1
 
 This list can be manually cleared at any time to remove any
 registered :mod:`atexit` functions:
 
->>> atexit._exithandlers[:] = []
->>> print atexit._exithandlers
-[]
+>>> if PY2:
+...     atexit._exithandlers[:] = []
+... else:
+...     atexit._clear()
+>>> if PY2:
+...     len(atexit._exithandlers)
+... else:
+...     atexit._ncallbacks()
+0
 
 Now, to continue with the examples, just like any other handler, we
 can also set the logging level, which will filter out messages logged
@@ -137,7 +148,10 @@ Avoiding the :mod:`atexit` handler
 ----------------------------------
 
 .. 
-  >>> atexit._exithandlers[:] = []
+  >>> if PY2:
+  ...     atexit._exithandlers[:] = []
+  ... else:
+  ...     atexit._clear()
 
 In the event you wish to manually call the
 :meth:`~SummarisingLogger.close` method of the handler or use the
@@ -152,8 +166,11 @@ should be registered:
 
 Now, we can see that no :mod:`atexit` function has been registered:
 
->>> print atexit._exithandlers
-[]
+>>> if PY2:
+...     len(atexit._exithandlers)
+... else:
+...     atexit._ncallbacks()
+0
 
 With this configuration, if an entry is logged, the logging
 framework must be manually shut down for the mail to be sent:
