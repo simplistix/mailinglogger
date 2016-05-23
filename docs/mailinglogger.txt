@@ -140,7 +140,7 @@ sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject:  
+Subject: 
 From: from@example.com
 To: to@example.com
 X-Mailer: MailingLogger...
