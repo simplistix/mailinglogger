@@ -8,7 +8,7 @@ import logging
 import smtplib
 
 
-class DummySMTP:
+class DummySMTP(object):
 
     broken = False
 
@@ -72,7 +72,7 @@ class DummySMTP:
         pass
 
 
-class Dummy:
+class Dummy(object):
 
     def __init__(self, value):
         self.value = value
