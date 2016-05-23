@@ -98,6 +98,8 @@ class MailingLogger(SMTPHandler):
 
             if isinstance(msg, Unicode):
                 email = MIMEText(msg, subtype, self.charset)
+            elif isinstance(msg, bytes):
+                email = MIMEText(msg.decode(self.charset), subtype)
             else:
                 email = MIMEText(msg, subtype)
 
