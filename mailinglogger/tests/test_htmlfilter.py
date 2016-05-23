@@ -9,6 +9,7 @@ from mailinglogger.common import HTMLFilter
 from unittest import TestCase
 from testfixtures import LogCapture
 
+
 class TestHTMLFilter(TestCase):
 
     def setUp(self):
@@ -18,7 +19,7 @@ class TestHTMLFilter(TestCase):
 
     def tearDown(self):
         self.log.uninstall()
-        
+
     def test_plain_string(self):
         self.logger.info('foo')
         self.log.check(('root', 'INFO', 'foo'),)
@@ -45,6 +46,7 @@ class TestHTMLFilter(TestCase):
 
     def test_some_object(self):
         class AnObject(object):
+
             def __repr__(self):
                 return 'obj'
             __str__ = __repr__

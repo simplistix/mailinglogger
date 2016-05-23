@@ -16,13 +16,15 @@ from logging import LogRecord, CRITICAL
 from mailinglogger.common import SubjectFormatter
 
 this_dir = os.path.dirname(__file__)
-x_mailer = 'MailingLogger '+open(os.path.join(this_dir,'version.txt')).read().strip()
-flood_template = open(os.path.join(this_dir,'flood_template.txt')).read()
+version = open(os.path.join(this_dir, 'version.txt')).read().strip()
+x_mailer = 'MailingLogger ' + version
+flood_template = open(os.path.join(this_dir, 'flood_template.txt')).read()
+
 
 class MailingLogger(SMTPHandler):
 
     now = datetime.datetime.now
-    
+
     def __init__(self,
                  fromaddr,
                  toaddrs,
@@ -36,7 +38,7 @@ class MailingLogger(SMTPHandler):
                  template=None,
                  charset='utf-8',
                  content_type='text/plain'):
-        SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
+        SMTPHandler.__init__(self, mailhost, fromaddr, toaddrs, subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
         self.flood_level = flood_level
@@ -51,10 +53,10 @@ class MailingLogger(SMTPHandler):
         if not self.mailport:
             self.mailport = smtplib.SMTP_PORT
 
-    def getSubject(self,record):
+    def getSubject(self, record):
         return self.subject_formatter.format(record)
 
-    def emit(self,record):
+    def emit(self, record):
         msg = record.getMessage()
         if not self.send_empty_entries and not msg.strip():
             return
@@ -67,15 +69,15 @@ class MailingLogger(SMTPHandler):
         if self.sent == self.flood_level:
             # send critical error
             record = LogRecord(
-                name = 'flood',
-                level = CRITICAL,
-                pathname = '',
-                lineno = 0,
-                msg = flood_template % (self.sent,
-                                        current_time.strftime('%H:%M:%S'),
-                                        current_hour+1),
-                args = (),
-                exc_info = None)
+                name='flood',
+                level=CRITICAL,
+                pathname='',
+                lineno=0,
+                msg=flood_template % (self.sent,
+                                      current_time.strftime('%H:%M:%S'),
+                                      current_hour + 1),
+                args=(),
+                exc_info=None)
         elif self.flood_level and self.sent > self.flood_level:
             # do nothing, we've sent too many emails already
             return
@@ -91,19 +93,19 @@ class MailingLogger(SMTPHandler):
                 email = MIMEText(msg, subtype, self.charset)
             else:
                 email = MIMEText(msg, subtype)
-                
-            for header,value in self.headers.items():
-                email[header]=value
-            email['Subject']=self.getSubject(record)
-            email['From']=self.fromaddr
-            email['To']=', '.join(self.toaddrs)
-            email['X-Mailer']=x_mailer
-            email['X-Log-Level']=record.levelname
-            email['Date']=formatdate()
-            email['Message-ID']=make_msgid('MailingLogger')
+
+            for header, value in self.headers.items():
+                email[header] = value
+            email['Subject'] = self.getSubject(record)
+            email['From'] = self.fromaddr
+            email['To'] = ', '.join(self.toaddrs)
+            email['X-Mailer'] = x_mailer
+            email['X-Log-Level'] = record.levelname
+            email['Date'] = formatdate()
+            email['Message-ID'] = make_msgid('MailingLogger')
             smtp = smtplib.SMTP(self.mailhost, self.mailport)
             if self.username and self.password:
-                smtp.login(self.username,self.password)
+                smtp.login(self.username, self.password)
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()
         except:
