@@ -9,8 +9,8 @@ import datetime
 import os
 import smtplib
 
-from email.Utils import formatdate, make_msgid
-from email.MIMEText import MIMEText
+from .compat import formatdate, make_msgid, MIMEText, Unicode
+
 from logging.handlers import SMTPHandler
 from logging import LogRecord, CRITICAL
 from mailinglogger.common import SubjectFormatter
@@ -89,8 +89,17 @@ class MailingLogger(SMTPHandler):
             if self.template is not None:
                 msg = self.template % msg
             subtype = self.content_type.split('/')[-1]
-            if isinstance(msg, unicode):
+            # if possible, ascii encode it.
+            if isinstance(msg, Unicode):
+                try:
+                    msg = msg.encode('ascii')
+                except UnicodeEncodeError:
+                    pass
+
+            if isinstance(msg, Unicode):
                 email = MIMEText(msg, subtype, self.charset)
+            elif isinstance(msg, bytes):
+                email = MIMEText(msg.decode(self.charset), subtype)
             else:
                 email = MIMEText(msg, subtype)
 

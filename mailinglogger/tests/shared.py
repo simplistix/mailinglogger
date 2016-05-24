@@ -1,12 +1,14 @@
 from testfixtures import Replacer, test_datetime, test_time
 from time import tzset
 
+from mailinglogger.compat import PY2
+
 import atexit
 import logging
 import smtplib
 
 
-class DummySMTP:
+class DummySMTP(object):
 
     broken = False
 
@@ -70,7 +72,7 @@ class DummySMTP:
         pass
 
 
-class Dummy:
+class Dummy(object):
 
     def __init__(self, value):
         self.value = value
@@ -133,4 +135,7 @@ def _tearDown(test, self=None):
     # make sure we have no dummy smtp
     DummySMTP.remove()
     # make sure we haven't registered any atexit funcs
-    atexit._exithandlers[:] = []
+    if PY2:
+        atexit._exithandlers[:] = []
+    else:
+        atexit._clear()

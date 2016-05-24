@@ -5,6 +5,7 @@
 # See license.txt for more details.
 
 import os
+import sys
 
 from atexit import register
 from collections import deque
@@ -13,6 +14,8 @@ from mailinglogger.MailingLogger import MailingLogger
 from tempfile import mkstemp
 
 flood_template = '%i messages not included as flood limit of %i exceeded'
+
+PY3 = sys.version_info[:2] > (3, 0)
 
 
 class SummarisingLogger(FileHandler):
@@ -108,15 +111,20 @@ class SummarisingLogger(FileHandler):
                 FileHandler.emit(self, record)
 
         FileHandler.close(self)
-        f = os.fdopen(self.fd)
-        summary = f.read().decode(self.charset)
+        if PY3:
+            f = os.fdopen(self.fd, encoding=self.charset)
+        else:
+            f = os.fdopen(self.fd)
+        summary = f.read()
+        if not PY3:
+            summary = summary.decode(self.charset)
+            # try and encode in ascii, to keep emails simpler:
+            try:
+                summary = summary.encode('ascii')
+            except UnicodeEncodeError:
+                # unicode it is then
+                pass
         f.close()
-        # try and encode in ascii, to keep emails simpler:
-        try:
-            summary = summary.encode('ascii')
-        except UnicodeEncodeError:
-            # unicode it is then
-            pass
         if os.path.exists(self.filename):
             os.remove(self.filename)
         if self.send_level is None or self.maxlevelno >= self.send_level:
