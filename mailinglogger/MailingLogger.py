@@ -115,5 +115,5 @@ class MailingLogger(SMTPHandler):
                 smtp.login(self.username,self.password)
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()
-        except:
+        except Exception:
             self.handleError(record)
