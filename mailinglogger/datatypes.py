@@ -23,25 +23,27 @@ class MailingLoggerHandlerFactory(HandlerFactory):
             return self.section.headers.values
         else:
             return {}
-        
+
     def create_loghandler(self):
+        secure = () if self.section.use_tls else None
         return MailingLogger(self.section.fromaddr,
                              self.section.toaddrs,
-                             self.mailhost(),
-                             self.section.subject,
-                             self.section.send_empty_entries,
-                             self.section.flood_level,
-                             self.section.username,
-                             self.section.password,
-                             self.section.ignore,
-                             self.headers(),
-                             self.section.template,
-                             self.section.charset,
-                             self.section.content_type)
+                             mailhost=self.mailhost(),
+                             subject=self.section.subject,
+                             send_empty_entries=self.section.send_empty_entries,
+                             flood_level=self.section.flood_level,
+                             username=self.section.username,
+                             password=self.section.password,
+                             ignore=self.section.ignore,
+                             headers=self.headers(),
+                             template=self.section.template,
+                             charset=self.section.charset,
+                             content_type=self.section.content_type,
+                             secure=secure)
 
 class SummarisingLoggerHandlerFactory(MailingLoggerHandlerFactory):
 
-    def create_loghandler(self):        
+    def create_loghandler(self):
         return SummarisingLogger(self.section.fromaddr,
                                  self.section.toaddrs,
                                  self.mailhost(),

@@ -5,29 +5,28 @@
 # See license.txt for more details.
 
 import logging
-import time
 
-from email.charset import Charset
 from mailinglogger.common import RegexConversion
 from mailinglogger.MailingLogger import MailingLogger
 from shared import DummySMTP, setUp, tearDown
-from unittest import TestSuite,makeSuite,TestCase,main
+from unittest import TestSuite, makeSuite, TestCase
+
 
 class TestMailingLogger(TestCase):
 
     def getLogger(self):
         return logging.getLogger('')
-    
+
     def setUp(self):
         setUp(None, self, stdout=False)
 
     def tearDown(self):
         tearDown(None,self)
-        
+
     def test_imports(self):
         from mailinglogger.MailingLogger import MailingLogger
         from mailinglogger import MailingLogger
-    
+
     def test_default_flood_limit(self):
         # set up logger
         self.handler = MailingLogger('from@example.com',('to@example.com',))
@@ -39,7 +38,7 @@ class TestMailingLogger(TestCase):
         # only 1st 10 should get sent
         # +1 for the final warning
         self.assertEqual(len(DummySMTP.sent),11)
-        
+
     def test_flood_protection_bug(self):
         # set up logger
         self.handler = MailingLogger('from@example.com',('to@example.com',),
@@ -115,7 +114,7 @@ class TestMailingLogger(TestCase):
         # however, if you try hard you *can* break things :-S
         self.failUnless('To: to@example.com' in m)
         self.failUnless('to: someidiot' in m)
-        
+
     def test_subject_contains_date(self):
         # set up logger
         self.handler = MailingLogger('from@example.com',('to@example.com',),
@@ -178,6 +177,23 @@ class TestMailingLogger(TestCase):
         m = DummySMTP.sent[0][3]
         # NB: we drop the 'foo'
         self.failUnless('Content-Type: text/bar' in m, m)
+
+    def test_do_not_use_tls(self):
+        handler = MailingLogger('from@example.com', ('to@example.com',))
+
+        logger = self.getLogger()
+        logger.addHandler(handler)
+        logger.critical(u"message")
+        self.assertEqual(DummySMTP.sent[0][6], None)
+
+    def test_use_tls(self):
+        handler_tls = MailingLogger('from@example.com', ('to@example.com',),
+                                    secure=())
+        logger = self.getLogger()
+        logger.addHandler(handler_tls)
+        logger.critical(u"message")
+        self.assertEqual(DummySMTP.sent[0][6], ())
+
 
 def test_suite():
     return TestSuite((

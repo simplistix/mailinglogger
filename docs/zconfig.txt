@@ -1,7 +1,7 @@
-Configuration using ZConfig 
+Configuration using ZConfig
 ===========================
 
-.. note:: 
+.. note::
 
   Throughout the examples below, mail messages sent using
   :mod:`smtplib` are printed to the screen so we can see what's going on:
@@ -16,7 +16,7 @@ Configuration using ZConfig
 
 This documentation covers the configuration of mailing loggers in
 using the :mod:`ZConfig` package for configuration.
-  
+
 The latest releases of ZConfig provides a great way to
 configure the python logging framework. Here's an example that
 configures a :class:`MailingLogger`:
@@ -35,9 +35,9 @@ configures a :class:`MailingLogger`:
 ...      <headers>
 ...        filter some-customer
 ...      </headers>
-...    </mailing-logger>    
+...    </mailing-logger>
 ...  </logger>
-... ''') 
+... ''')
 
 Now that the configuration is loaded, any logging to the
 appropriate logger will cause an email to get sent:
@@ -59,7 +59,7 @@ Message-ID: <...MailingLogger@...>
 something bad has happened
 
 .. To keep our examples working cleanly, we now remove the handler
-   we set up above: 
+   we set up above:
 
    >>> removeHandlers()
 
@@ -112,7 +112,7 @@ A sample config file that implements this schema using a
          <headers>
            filter some-customer
          </headers>
-       </mailing-logger>    
+       </mailing-logger>
      </logger>
 
 To use this configuration in your application, you need to first
@@ -181,7 +181,7 @@ The same schema can also be used for a configuration that uses a
          <headers>
            filter some-customer
          </headers>
-       </summarising-logger>    
+       </summarising-logger>
      </logger>
 
 You then need to load the configuration, using the same schema as
@@ -259,15 +259,15 @@ mailing-logger
   can be included if email log notifications should be sent to
   multiple addresses.
 
-.. describe:: smtp-server 
+.. describe:: smtp-server
 
   The SMTP server that should be used to send email
-  notifications. This can include a port number, 
-  eg: ``mail.example.com:2525`` 
+  notifications. This can include a port number,
+  eg: ``mail.example.com:2525``
 
   default: ``localhost``
 
-.. describe:: subject 
+.. describe:: subject
 
   This is a format string specifying what information will be
   included in the subject line of the email notification.
@@ -277,7 +277,7 @@ mailing-logger
 
   default: ``[%(hostname)s] %(levelname)s - %(line)s``
 
-.. describe:: format 
+.. describe:: format
 
   This is a format string specifying what information will be
   included in each message that is logged.
@@ -324,7 +324,7 @@ mailing-logger
 
   A regular expression for entries to be silently discarded
 
-  You can specify one or more regular expressions that are checked 
+  You can specify one or more regular expressions that are checked
   against when a log entry is being handled. If the log entry message
   matches at least one of the regular expressions it will be discarded
   silently.
@@ -335,14 +335,14 @@ mailing-logger
 
     A string template to use to wrap the body of the summary email.
     Should contain exactly one ``%s``.
-   
+
     default: ``None``
 
 .. describe:: charset
 
     The charset passed to :class:`~email.mime.text.MIMEText` when the
     message logged is a :class:`unicode` instance.
-   
+
     default: ``utf-8``
 
     ..  note:: This parameter is *only* used when a :class:`unicode`
@@ -354,8 +354,14 @@ mailing-logger
 
     The content type to use when setting the ``Content-Type`` header
     on any email sent. Only content types of ``text/`` are supported.
-   
+
     default: ``text/plain``
+
+.. describe:: use_tls
+
+    Whether the email is sent in tls mode.
+
+     default: ``false``
 
 summarising-logger
 ~~~~~~~~~~~~~~~~~~
@@ -391,15 +397,15 @@ summarising-logger
   can be included if email log notifications should be sent to
   multiple addresses.
 
-.. describe:: smtp-server 
+.. describe:: smtp-server
 
   The SMTP server that should be used to send the summary
-  mail. This can include a port number, 
+  mail. This can include a port number,
   eg: ``mail.example.com:2525``
 
   default: ``localhost``
 
-.. describe:: subject 
+.. describe:: subject
 
   This is a format string specifying what information will be
   included in the subject line of the summary email.
@@ -409,7 +415,7 @@ summarising-logger
 
   default: ``Summary of Log Messages``
 
-.. describe:: format 
+.. describe:: format
 
   This is a format string specifying what information will be
   included in each message that is logged.
@@ -441,7 +447,7 @@ summarising-logger
 
   A regular expression for entries to be silently discarded
 
-  You can specify one or more regular expressions that are checked 
+  You can specify one or more regular expressions that are checked
   against when a log entry is being handled. If the log entry message
   matches at least one of the regular expressions it will be discarded
   silently.
@@ -470,12 +476,12 @@ summarising-logger
 
     A string template to use to wrap the body of the summary email.
     Should contain exactly one ``%s``.
-   
+
     default: ``None``
 
 .. describe:: charset
 
-    This string value has two uses. 
+    This string value has two uses.
 
     Firstly, it is used to encode the messages logged to the summary
     and then decode the whole summary back to unicode when the summary
@@ -484,7 +490,7 @@ summarising-logger
     Secondlly, if that unicode message cannot be encoded as ``ascii``,
     it is passed to the :class:`~email.mime.text.MIMEText` used to
     produce the summary email.
-   
+
     default: ``utf-8``
 
     .. note:: This default will amost always suffice, do not pass this
@@ -494,7 +500,7 @@ summarising-logger
 
     The content type to use when setting the ``Content-Type`` header
     on any email sent. Only content types of ``text/`` are supported.
-   
+
     default: ``text/plain``
 
 

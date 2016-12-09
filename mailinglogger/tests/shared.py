@@ -12,13 +12,14 @@ class DummySMTP:
 
     sent = []
 
-    stdout=True
-    
+    stdout = True
+
     old_smtp = None
 
     username = None
     password = None
-    
+    started_tls = None
+
     @staticmethod
     def install(stdout=True):
         if DummySMTP.old_smtp is None:
@@ -32,18 +33,21 @@ class DummySMTP:
         if DummySMTP.old_smtp is not None:
             smtplib.SMTP = DummySMTP.old_smtp
             DummySMTP.old_smtp = None
-        DummySMTP.stdout=True
-    
+        DummySMTP.stdout = True
+
     def __init__(self, mailhost, port=25):
         if self.broken:
             raise RuntimeError
         self.mailhost = mailhost
         self.port = port
-        
+
     def login(self,username,password):
         self.username = username
         self.password = password
-    
+
+    def starttls(self, *args):
+        self.started_tls = args
+
     def sendmail(self,fromaddr,toaddrs,msg):
         msg = msg.replace('\r\n','\n')
         if self.stdout:
@@ -63,9 +67,13 @@ class DummySMTP:
                 (self.mailhost,self.port),
                 msg,
                 self.username,
-                self.password
+                self.password,
+                self.started_tls
                 ))
-        
+
+    def ehlo(self, **kwargs):
+        pass
+
     def quit(self):
         pass
 
@@ -76,7 +84,7 @@ class Dummy:
 
     def __call__(self, *args):
         return self.value
-    
+
 def removeHandlers():
     to_handle = [logging.getLogger()]
     for logger in logging.Logger.manager.loggerDict.values():
@@ -93,16 +101,16 @@ def removeHandlers():
     hl = getattr(logging,'_handlerList',None)
     if hl:
         hl[:]=[]
-    
+
 def setUp(test, self=None, stdout=True):
     if self is None:
         d = test.globs
     else:
         d = self.__dict__
-        
+
     removeHandlers()
     DummySMTP.install(stdout=stdout)
-    
+
     datetime = test_datetime(2007, 1, 1, 10, delta=0)
     time = test_time(2007, 1, 1, 10, delta=0)
     r = Replacer()
@@ -117,7 +125,7 @@ def setUp(test, self=None, stdout=True):
     d['datetime']=datetime
     d['time']=time
     d['removeHandlers']=removeHandlers
-    
+
 def tearDown(test, self=None):
     if self is None:
         d = test.globs
@@ -125,9 +133,9 @@ def tearDown(test, self=None):
         d = self.__dict__
     # restore stuff we've mocked out
     d['r'].restore()
-    tzset()    
+    tzset()
     # make sure we have no dummy smtp
     DummySMTP.remove()
     # make sure we haven't registered any atexit funcs
     atexit._exithandlers[:] = []
-    
+

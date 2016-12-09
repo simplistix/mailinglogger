@@ -6,6 +6,8 @@ Changes
 3.9.0 (Unreleased)
 ------------------
 
+- We can send email in tls mode.
+
 - Prevent from handling KeywordInterrupt during email send.
 
 - Added test dependencies in extra_requires.
