@@ -32,6 +32,9 @@ configures a :class:`MailingLogger`:
 ...      to      receiver@example.com
 ...      to      support@example.com
 ...      subject [MyApp] %(line)s
+...      use_tls true
+...      username john
+...      password secret
 ...      <headers>
 ...        filter some-customer
 ...      </headers>
@@ -45,6 +48,8 @@ appropriate logger will cause an email to get sent:
 >>> import logging
 >>> logging.error('something bad has happened')
 sending to ['receiver@example.com', 'support@example.com'] from 'logging@example.com' using ('localhost', 25)
+(authenticated using username:'john' and password:'secret')
+(with tls mode)
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -356,6 +361,18 @@ mailing-logger
     on any email sent. Only content types of ``text/`` are supported.
 
     default: ``text/plain``
+
+.. describe:: username
+
+    The smtp user name.
+
+    default: ``None``
+
+.. describe:: password
+
+    The smtp user password.
+
+    default: ``None``
 
 .. describe:: use_tls
 

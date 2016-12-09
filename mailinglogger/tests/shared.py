@@ -59,6 +59,8 @@ class DummySMTP:
                     self.username,
                     self.password,
                     )
+            if self.started_tls is not None:
+                print '(with tls mode)'
             print msg
         else:
             self.sent.append((
