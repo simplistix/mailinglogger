@@ -8,7 +8,7 @@
   </sectiontype>
 
   <sectiontype name="base-mailer"
-               implements="ZConfig.logger.handler" 
+               implements="ZConfig.logger.handler"
                extends="ZConfig.logger.base-log-handler">
     <key name="from" required="yes" attribute="fromaddr"/>
     <multikey name="to" required="yes" attribute="toaddrs"/>
@@ -22,32 +22,33 @@
     <key name="content_type" required="no" default="text/plain"/>
   </sectiontype>
 
-  <sectiontype name="mailing-logger" 
+  <sectiontype name="mailing-logger"
                implements="ZConfig.logger.handler"
-               datatype=".MailingLoggerHandlerFactory" 
+               datatype=".MailingLoggerHandlerFactory"
                extends="base-mailer">
     <key name="send-empty-entries" default="no" datatype="boolean"/>
     <key name="flood-level" default="10" datatype="integer"/>
-    <key name="subject" default="[%(hostname)s] %(levelname)s - %(line)s" 
+    <key name="subject" default="[%(hostname)s] %(levelname)s - %(line)s"
          datatype=".subject_log_format"/>
     <key name="format" default="%(message)s"
          datatype="ZConfig.components.logger.handlers.log_format"/>
+    <key name="use_tls" required="no" default="no" datatype="boolean"/>
   </sectiontype>
 
-  <sectiontype name="summarising-logger" 
+  <sectiontype name="summarising-logger"
                implements="ZConfig.logger.handler"
                datatype=".SummarisingLoggerHandlerFactory"
                extends="base-mailer">
     <key name="send-empty-entries" default="yes" datatype="boolean"/>
     <key name="atexit" default="yes" datatype="boolean"/>
-    <key name="subject" default="Summary of Log Messages" 
+    <key name="subject" default="Summary of Log Messages"
          datatype=".subject_log_format"/>
     <key name="format" default="%(asctime)s - %(levelname)s - %(message)s"
          datatype="ZConfig.components.logger.handlers.log_format"/>
     <key name="send_level"
          datatype="ZConfig.components.logger.datatypes.logging_level"
          default="info"/>
-      
+
   </sectiontype>
 
 </component>

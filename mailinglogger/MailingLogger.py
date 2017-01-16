@@ -22,10 +22,11 @@ this_dir = os.path.dirname(__file__)
 x_mailer = 'MailingLogger '+open(os.path.join(this_dir,'version.txt')).read().strip()
 flood_template = open(os.path.join(this_dir,'flood_template.txt')).read()
 
+
 class MailingLogger(SMTPHandler):
 
     now = datetime.datetime.now
-    
+
     def __init__(self,
                  fromaddr,
                  toaddrs,
@@ -39,7 +40,8 @@ class MailingLogger(SMTPHandler):
                  headers=None,
                  template=None,
                  charset='utf-8',
-                 content_type='text/plain'):
+                 content_type='text/plain',
+                 secure=None):
         SMTPHandler.__init__(self,mailhost,fromaddr,toaddrs,subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
@@ -53,6 +55,8 @@ class MailingLogger(SMTPHandler):
         self.template = template
         self.charset = charset
         self.content_type = content_type
+        self.secure = secure
+
         if not self.mailport:
             self.mailport = smtplib.SMTP_PORT
 
@@ -100,7 +104,7 @@ class MailingLogger(SMTPHandler):
                 email = MIMEText(msg, subtype, self.charset)
             else:
                 email = MIMEText(msg, subtype)
-                
+
             for header,value in self.headers.items():
                 email[header]=value
             email['Subject']=self.getSubject(record)
@@ -111,9 +115,12 @@ class MailingLogger(SMTPHandler):
             email['Date']=formatdate()
             email['Message-ID']=make_msgid('MailingLogger')
             smtp = smtplib.SMTP(self.mailhost, self.mailport)
+            if self.secure is not None:  # secure can be an empty tuple
+                smtp.starttls(*self.secure)
+                smtp.ehlo()
             if self.username and self.password:
                 smtp.login(self.username,self.password)
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()
-        except:
+        except Exception:
             self.handleError(record)

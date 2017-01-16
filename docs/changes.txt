@@ -3,6 +3,15 @@ Changes
 
 .. currentmodule:: mailinglogger
 
+3.9.0 (Unreleased)
+------------------
+
+- We can send email in tls mode.
+
+- Prevent from handling KeywordInterrupt during email send.
+
+- Added test dependencies in extra_requires.
+
 3.8.0 (27 Jan 2014)
 -------------------
 
@@ -78,17 +87,17 @@ Thanks to Christian Zagrodnick for these changes.
 
 3.3.1 (12 Dec 2008)
 -------------------
-  
+
 - Fix bug that occurred when subject format used %(asctime)s
 
 3.3.0 (11 Dec 2008)
 -------------------
-  
+
 - Tweak installation documentation
 
 - Add specific test runners for ZConfig, Zope 2 and Zope 3
   support
-  
+
 - %(levelname)s in the subject of a SummarisingLogger summary
   is now the highest level message handled by that logger
 
@@ -139,7 +148,7 @@ Thanks to Jens Vagelpohl for the work which was funded by Campux GmbH.
 ------------------
 
 - Added compatability for Zope 2.8.x+ at the expense of now
-  being incompatible with Zope 2.7.x. 
+  being incompatible with Zope 2.7.x.
 
 - Fixed bug in flood protection that often meant no more mail
   was ever sent after midnight on the day when the flood
