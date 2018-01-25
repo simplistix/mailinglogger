@@ -17,7 +17,9 @@ If working offline, please consult the documentation source in the
 Licensing
 =========
 
-Copyright (c) 2004-2011 Simplistix Ltd
+Copyright (c) 2015-2018 Chris Withers
+
+Copyright (c) 2004-2015 Simplistix Ltd
 
 Copyright (c) 2001-2003 New Information Paradigms Ltd
 

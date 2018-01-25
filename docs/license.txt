@@ -2,7 +2,9 @@
 License
 =======
 
-Copyright (c) 2004-2010 Simplistix Ltd
+Copyright (c) 2015-2018 Chris Withers
+
+Copyright (c) 2004-2015 Simplistix Ltd
 
 Copyright (c) 2001-2003 New Information Paradigms Ltd
 
