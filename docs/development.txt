@@ -3,57 +3,58 @@ Development
 
 .. highlight:: bash
 
-Once you've obtained a source checkout, you can follow these
+This package is developed using continuous integration which can be
+found here:
+
+https://travis-ci.org/Simplistix/mailinglogger
+
+
+
+If you wish to contribute to this project, then you should fork the
+repository found here:
+
+https://github.com/Simplistix/mailinglogger
+
+Once that has been done and you have a checkout, you can follow these
 instructions to perform various development tasks:
 
-Setting up the buildout
+Setting up a virtualenv
 -----------------------
 
-All development requires that you run the buildout::
+The recommended way to set up a development environment is to turn
+your checkout into a virtualenv and then install the package in
+editable form as follows::
 
-  $ python bootstrap.py
-  $ bin/buildout
-
-.. note:: 
-
- The tests will only pass fully on Python 2.6, although MailingLogger
- works fine with versions of Python above 2.0.
+  $ virtualenv .
+  $ bin/pip install -U -e .[test,build]
 
 Running the tests
 -----------------
 
-Once you have a buildout, the tests can be run as follows::
+Once you've set up a virtualenv, the tests can be run as follows::
 
-  $ bin/test
+  $ bin/pytest
 
 Building the documentation
 --------------------------
 
 The Sphinx documentation is built by doing the following from the
-directory containg setup.py::
+directory containing setup.py::
 
+  $ source bin/activate
   $ cd docs
   $ make html
 
-Making a release
-----------------
+To check that the description that will be used on PyPI renders properly,
+do the following::
 
-The first thing to do when making a release is to check that the ReST
-to be uploaded to PyPI is valid::
+  $ python setup.py --long-description | rst2html.py > desc.html
 
-  $ bin/docpy setup.py --long-description | bin/rst2 html \
-    --link-stylesheet \
-    --stylesheet=http://www.python.org/styles/styles.css > build/desc.html
+The resulting ``desc.html`` should be checked by opening in a browser.
 
-Once you're certain everything is as it should be, the following will
-build the distribution, upload it to PyPI, register the metadata with
-PyPI and upload the Sphinx documentation to PyPI::
+To check that the README that will be used on GitHub renders properly,
+do the following::
 
-  $ bin/buildout -o
-  $ bin/docpy setup.py sdist upload register upload_sphinx --upload-dir=docs/_build/html
+  $ cat README.rst | rst2html.py > readme.html
 
-The ``bin/buildout`` will make sure the correct package information is
-used.
 
-This should all be done on a unix box so that a `.tgz` source
-distribution is produced.

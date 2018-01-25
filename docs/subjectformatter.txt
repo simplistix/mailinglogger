@@ -66,7 +66,7 @@ format it with our formatter:
 The example above, however, would not generate a valid email, as
 the subject line would contain newlines. For this reason, an
 additional keyword substitution is provided that is computed to be the
-first line of any message	 logged:
+first line of any message logged:
 
 >>> f = SubjectFormatter('%(line)r')
 
@@ -105,7 +105,7 @@ representing this entry:
 >>> print Formatter().format(record)
 bad things caught
 Traceback (most recent call last):
-  File "<doctest subjectformatter.txt[0]>", line 2, in <module>
+  File "...", line 2, in <module>
 NameError: name 'RuntimeException' is not defined
 
 However, if we use the subject formatter we previously created,

@@ -6,3 +6,5 @@
 /*.egg-info/
 /parts/
 *.pyc
+.cache
+.coverage

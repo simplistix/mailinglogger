@@ -97,12 +97,7 @@ def removeHandlers():
         hl[:] = []
 
 
-def _setUp(test, self=None, stdout=True):
-    if self is None:
-        d = test.globs
-    else:
-        d = self.__dict__
-
+def _setUp(d, stdout=True):
     removeHandlers()
     DummySMTP.install(stdout=stdout)
 
@@ -122,11 +117,7 @@ def _setUp(test, self=None, stdout=True):
     d['removeHandlers'] = removeHandlers
 
 
-def _tearDown(test, self=None):
-    if self is None:
-        d = test.globs
-    else:
-        d = self.__dict__
+def _tearDown(d):
     # restore stuff we've mocked out
     d['r'].restore()
     tzset()

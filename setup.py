@@ -27,6 +27,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     extras_require=dict(
-        test=['nose', 'nose_fixes', 'testfixtures', 'manuel', 'nose-cov'],
+        test=['coverage', 'pytest', 'sybil', 'testfixtures'],
+        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine'],
         )
     )

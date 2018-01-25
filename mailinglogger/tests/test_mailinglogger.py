@@ -11,10 +11,10 @@ class TestMailingLogger(TestCase):
         return logging.getLogger('')
 
     def setUp(self):
-        _setUp(None, self, stdout=False)
+        _setUp(self.__dict__, stdout=False)
 
     def tearDown(self):
-        _tearDown(None, self)
+        _tearDown(self.__dict__)
 
     def test_imports(self):
         from mailinglogger.MailingLogger import MailingLogger

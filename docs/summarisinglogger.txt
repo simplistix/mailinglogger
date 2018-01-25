@@ -507,7 +507,7 @@ pass the required username and password to the :class:`SummarisingLogger`
 constructor: 
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
-...				   username='auser',password='theirpassword')
+...                             username='auser',password='theirpassword')
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()

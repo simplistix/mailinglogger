@@ -92,6 +92,7 @@ is just such a filter:
 
 Now the handler can be added to a logger and used as normal:
 
+>>> logger = logging.getLogger()
 >>> logger.addHandler(handler)
 >>> logger.setLevel(logging.INFO)
 >>> logger.info('An info message')
