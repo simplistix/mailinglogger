@@ -1,4 +1,8 @@
 language: python
+
+# for container-y goodness:
+sudo: false
+
 python:
   - "2.7"
 
