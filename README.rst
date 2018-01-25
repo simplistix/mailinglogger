@@ -4,23 +4,16 @@
 .. image:: https://coveralls.io/repos/Simplistix/mailinglogger/badge.svg?branch=master&service=github
    :target: https://coveralls.io/github/Simplistix/mailinglogger?branch=master
 
-=============
+.. |Docs| image:: https://readthedocs.org/projects/mailinglogger/badge/?version=latest
+.. _Docs: http://mailinglogger.readthedocs.org/en/latest/
+
 MailingLogger
 =============
 
-For full documentation please see:
-http://www.simplistix.co.uk/software/python/mailinglogger
+Enhanced emailing handlers for the python logging package.
 
-If working offline, please consult the documentation source in the
-`docs` directory.
+The latest documentation can be found at:
+http://mailinglogger.readthedocs.org/en/latest/
 
-Licensing
-=========
-
-Copyright (c) 2015-2018 Chris Withers
-
-Copyright (c) 2004-2015 Simplistix Ltd
-
-Copyright (c) 2001-2003 New Information Paradigms Ltd
-
-See docs/license.txt for details.
+Development takes place here:
+https://github.com/Simplistix/mailinglogger

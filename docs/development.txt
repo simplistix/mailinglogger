@@ -8,7 +8,9 @@ found here:
 
 https://travis-ci.org/Simplistix/mailinglogger
 
+The latest development version of the documentation can be found here:
 
+http://mailinglogger.readthedocs.org/en/latest/
 
 If you wish to contribute to this project, then you should fork the
 repository found here:
