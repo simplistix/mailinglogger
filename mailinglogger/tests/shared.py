@@ -35,8 +35,6 @@ class DummySMTP:
         DummySMTP.stdout = True
 
     def __init__(self, mailhost, port=25):
-        if self.broken:
-            raise RuntimeError
         self.mailhost = mailhost
         self.port = port
 

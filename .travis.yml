@@ -16,3 +16,15 @@ script: coverage run --source mailinglogger -m pytest
 
 after_success:
   - coveralls
+
+jobs:
+  include:
+
+    - stage: coverage
+      if: type != cron
+      python: 2.7
+      after_success: skip
+
+      install: "pip install -U coveralls-check"
+      script: "coveralls-check $TRAVIS_COMMIT"
+

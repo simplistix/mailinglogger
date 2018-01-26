@@ -159,3 +159,9 @@ class TestSummarisingLogger(TestCase):
             'WARNING - message 1',
             'WARNING - message 2',
         ]) in m, repr(m))
+
+    def test_reopen(self):
+        self.create('from@example.com', ('to@example.com',))
+        self.handler.reopen()
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent), 2)

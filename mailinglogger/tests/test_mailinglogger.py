@@ -2,6 +2,7 @@ import logging
 
 from mailinglogger.MailingLogger import MailingLogger
 from mailinglogger.tests.shared import DummySMTP, _setUp, _tearDown
+from testfixtures import OutputCapture
 from unittest import TestCase
 
 
@@ -138,3 +139,12 @@ class TestMailingLogger(TestCase):
         m = DummySMTP.sent[0][3]
         # NB: we drop the 'foo'
         self.assertTrue('Content-Type: text/bar' in m, m)
+
+    def test_send_failure(self):
+        handler = MailingLogger('from@example.com', ('to@example.com',),
+                                template='x')
+        logger = self.getLogger()
+        logger.addHandler(handler)
+        with OutputCapture() as output:
+            logger.critical(u"message")
+        assert 'TypeError: not all arguments converted' in output.captured
