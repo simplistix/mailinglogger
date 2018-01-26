@@ -3,7 +3,7 @@ Changes
 
 .. currentmodule:: mailinglogger
 
-4.0.0 (XX YYY 2014)
+4.0.0 (26 Jan 2018)
 -------------------
 
 - Drop Zope and Plone support
@@ -16,6 +16,24 @@ Changes
   Use `filter objects`__ should be used instead.
 
   __ http://docs.python.org/library/logging.html#filter-objects
+
+- Move from ``zope.testrunner` to `pytest`__ for running tests.
+
+  __ https://docs.pytest.org/en/latest/
+
+- Switch from `manuel`__ to `sybil`__ for checking examples in
+  documentation. This introduces a backwards incompatible change
+  in that :class:`~testfixtures.sybil.FileParser` replaces the Manuel
+  plugin that is no longer included.
+
+  __ http://packages.python.org/manuel/
+
+  __ http://sybil.readthedocs.io/en/latest/
+
+- Moved from buildout to virtualenv for development.
+
+- Gracefully handle bugs elsewhere that call :meth:`SummarisingLogger.close`
+  more than once in a multi-threaded or multi-process environment.
 
 3.8.0 (27 Jan 2014)
 -------------------

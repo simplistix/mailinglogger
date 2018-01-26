@@ -39,7 +39,7 @@ jobs:
         provider: pypi
         user: chrisw
         password:
-          secure:
+          secure: C1eX1FigupxF5iQfgKWbYKdmio+NgsxG9IvDzY8dXQt6ORSrYS0l5//L/hyHVwK0Y4Evt41rNodDngc5p7XK31cfBTyPSRY80KV4MtIPGdJQdk3J/L12JnemQR2RN+qJRjG39ehZdGlPAPtMrlrbpbbRa9zf3QD5+9UZPHHtde0=
         on:
           tags: true
           repo: Simplistix/mailinglogger
