@@ -22,9 +22,7 @@ Changes
   __ https://docs.pytest.org/en/latest/
 
 - Switch from `manuel`__ to `sybil`__ for checking examples in
-  documentation. This introduces a backwards incompatible change
-  in that :class:`~testfixtures.sybil.FileParser` replaces the Manuel
-  plugin that is no longer included.
+  documentation.
 
   __ http://packages.python.org/manuel/
 
