@@ -81,17 +81,9 @@ class Dummy:
 
 def removeHandlers():
     to_handle = [logging.getLogger()]
-    for logger in logging.Logger.manager.loggerDict.values():
-        to_handle.append(logger)
     for logger in to_handle:
-        if isinstance(logger, logging.PlaceHolder):
-            continue
         for handler in list(logger.handlers):
             logger.removeHandler(handler)
-    # the old way
-    for k in tuple(logging._handlers.keys()):
-        del logging._handlers[k]
-    # the new way
     hl = getattr(logging, '_handlerList', None)
     if hl:
         hl[:] = []
