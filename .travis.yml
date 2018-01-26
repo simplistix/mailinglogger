@@ -28,3 +28,23 @@ jobs:
       install: "pip install -U coveralls-check"
       script: "coveralls-check $TRAVIS_COMMIT"
 
+    - stage: release
+      if: tag IS present
+      python: 2.7
+      script: skip
+      # work around https://github.com/travis-ci/travis-ci/issues/8337:
+      after_success: true
+
+      install:
+      - "pip install --upgrade pip setuptools"
+      - "pip install -Ue .[build]"
+      deploy:
+        provider: pypi
+        user: chrisw
+        password:
+          secure:
+        on:
+          tags: true
+          repo: Simplistix/mailinglogger
+        skip_cleanup: true
+        distributions: "sdist bdist_wheel"

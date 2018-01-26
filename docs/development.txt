@@ -59,4 +59,12 @@ do the following::
 
   $ cat README.rst | rst2html.py > readme.html
 
+The resulting ``readme.html`` should be checked by opening in a browser.
 
+Making a release
+----------------
+
+To make a release, just update the version in ``setup.py``,
+update the change log, tag it
+and push to https://github.com/Simplistix/mailinglogger
+and Travis CI should take care of the rest.
