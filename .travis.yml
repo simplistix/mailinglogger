@@ -6,19 +6,16 @@ sudo: false
 python:
   - "2.7"
 
-# command to install dependencies
-install: 
-- "pip install --upgrade pip setuptools"
-- "pip install -Ue .[test]"
-
-# command to run tests, e.g. python setup.py test
-script: coverage run --source mailinglogger -m pytest
-
-after_success:
-  - coveralls
-
 jobs:
   include:
+
+    - stage: test
+      install:
+      - "pip install --upgrade pip setuptools"
+      - "pip install -Ue .[test]"
+      script: coverage run --source mailinglogger -m pytest
+      after_success:
+        - coveralls
 
     - stage: coverage
       if: type != cron
