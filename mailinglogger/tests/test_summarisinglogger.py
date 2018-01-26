@@ -1,4 +1,6 @@
 import logging
+import threading
+
 import os
 
 from mailinglogger.SummarisingLogger import SummarisingLogger
@@ -165,3 +167,13 @@ class TestSummarisingLogger(TestCase):
         self.handler.reopen()
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 2)
+
+    def test_safe_close(self):
+        self.create('from@example.com', ('to@example.com', ))
+        threads = []
+        for i in range(2):
+            t = threading.Thread(target=self.handler.close)
+            threads.append(t)
+            t.start()
+        [t.join() for t in threads]
+        self.assertEqual(len(DummySMTP.sent), 1)

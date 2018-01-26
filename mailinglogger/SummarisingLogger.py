@@ -81,6 +81,7 @@ class SummarisingLogger(FileHandler):
     def close(self):
         if self.closed:
             return
+        self.closed = True
 
         if self.message_count > self.flood_level:
             hidden = self.message_count - self.flood_level - len(self.tail)
@@ -125,7 +126,6 @@ class SummarisingLogger(FileHandler):
                     exc_info=None
                 )
             )
-        self.closed = True
 
     def reopen(self):
         self.close()
