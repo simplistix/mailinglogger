@@ -12,7 +12,7 @@ setup(
     license='MIT',
     description="Enhanced emailing handlers for the python logging package.",
     long_description=open(os.path.join(this_dir,'docs','description.txt')).read(),
-    url='http://www.simplistix.co.uk/software/python/mailinglogger',
+    url='https://github.com/Simplistix/mailinglogger',
     keywords="logging email",
     classifiers=[
     'Development Status :: 6 - Mature',
