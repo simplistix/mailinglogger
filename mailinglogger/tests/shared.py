@@ -1,9 +1,10 @@
-from testfixtures import Replacer, test_datetime, test_time
-from time import tzset
-
-import atexit
 import logging
 import smtplib
+from email.parser import Parser
+from time import tzset
+
+from six import PY3
+from testfixtures import Replacer, test_datetime, test_time
 
 from mailinglogger.common import clear_at_exit_handlers
 
@@ -117,3 +118,11 @@ def _tearDown(d):
     DummySMTP.remove()
     # make sure we haven't registered any atexit funcs
     clear_at_exit_handlers()
+
+
+def _check_sent_message(expected_message, m):
+    sent_email = Parser().parsestr(m)
+    sent_message = sent_email.get_payload(decode=True)
+    if PY3:
+        sent_message = sent_message.decode(sent_email.get_content_charset())
+    assert expected_message in sent_message, "Expected: %s to be in sent email:\n%s" % (expected_message, sent_message)

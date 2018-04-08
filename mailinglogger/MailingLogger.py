@@ -2,6 +2,8 @@ import datetime
 import os
 import smtplib
 
+from six import text_type
+
 try:
     from email.Utils import formatdate, make_msgid
     from email.MIMEText import MIMEText
@@ -86,7 +88,7 @@ class MailingLogger(SMTPHandler):
             if self.template is not None:
                 msg = self.template % msg
             subtype = self.content_type.split('/')[-1]
-            if isinstance(msg, unicode):
+            if isinstance(msg, text_type):
                 email = MIMEText(msg, subtype, self.charset)
             else:
                 email = MIMEText(msg, subtype)

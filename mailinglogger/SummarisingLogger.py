@@ -3,6 +3,8 @@ from collections import deque
 from logging import CRITICAL, FileHandler, Formatter, LogRecord
 from tempfile import mkstemp
 
+from six import PY3
+
 from mailinglogger.MailingLogger import MailingLogger
 from mailinglogger.common import register_at_exit_handler
 
@@ -103,15 +105,22 @@ class SummarisingLogger(FileHandler):
                 FileHandler.emit(self, record)
 
         FileHandler.close(self)
-        f = os.fdopen(self.fd)
-        summary = f.read().decode(self.charset)
+
+
+        if PY3:
+            f = open(self.fd, encoding=self.charset)
+            summary = f.read()
+        else:
+            f = os.fdopen(self.fd)
+            summary = f.read().decode(self.charset)
+            # try and encode in ascii, to keep emails simpler:
+            try:
+                summary = summary.encode('ascii')
+            except UnicodeEncodeError:
+                # unicode it is then
+                pass
         f.close()
-        # try and encode in ascii, to keep emails simpler:
-        try:
-            summary = summary.encode('ascii')
-        except UnicodeEncodeError:
-            # unicode it is then
-            pass
+
         if os.path.exists(self.filename):
             os.remove(self.filename)
         if self.send_level is None or self.maxlevelno >= self.send_level:
