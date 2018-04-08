@@ -1,10 +1,10 @@
 import os
-
-from atexit import register
 from collections import deque
 from logging import CRITICAL, FileHandler, Formatter, LogRecord
-from mailinglogger.MailingLogger import MailingLogger
 from tempfile import mkstemp
+
+from mailinglogger.MailingLogger import MailingLogger
+from mailinglogger.common import register_at_exit_handler
 
 flood_template = '%i messages not included as flood limit of %i exceeded'
 
@@ -51,7 +51,7 @@ class SummarisingLogger(FileHandler):
         self.open()
         # register our close method
         if atexit:
-            register(self.close)
+            register_at_exit_handler(self.close)
 
     def open(self):
         # create a temp file logger to store log entries

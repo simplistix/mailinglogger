@@ -5,6 +5,8 @@ import atexit
 import logging
 import smtplib
 
+from mailinglogger.common import clear_at_exit_handlers
+
 
 class DummySMTP:
 
@@ -114,4 +116,4 @@ def _tearDown(d):
     # make sure we have no dummy smtp
     DummySMTP.remove()
     # make sure we haven't registered any atexit funcs
-    atexit._exithandlers[:] = []
+    clear_at_exit_handlers()
