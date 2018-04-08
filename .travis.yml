@@ -33,7 +33,7 @@ jobs:
       after_success: skip
 
       install: "pip install -U coveralls-check"
-      script: "coveralls-check $TRAVIS_COMMIT"
+      script: "coveralls-check --fail-under=95 $TRAVIS_COMMIT"
 
     - stage: release
       if: tag IS present
