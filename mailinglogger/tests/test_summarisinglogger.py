@@ -12,7 +12,7 @@ class TestSummarisingLogger(TestCase):
 
     def setUp(self):
         removeHandlers()
-        DummySMTP.install(stdout=False)
+        DummySMTP.install()
 
     def tearDown(self):
         DummySMTP.remove()

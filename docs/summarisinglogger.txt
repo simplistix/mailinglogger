@@ -1,16 +1,18 @@
 SummarisingLogger
 =================
 
-.. note:: 
+.. note::
 
   Throughout the examples below, mail messages sent using
-  :mod:`smtplib` are printed to the screen so we can see what's going on:
+  :mod:`smtplib` are checked against the expected message so that we can
+  see what's going on:
 
   >>> import smtplib
   >>> server = smtplib.SMTP('localhost')
   >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
-  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
-  The message
+  >>> server.compare_sent_message("""\
+  ... The message""")
+  True
 
 .. currentmodule:: mailinglogger
 
@@ -64,35 +66,36 @@ when the script that calls the logging function exits.
 If we manually close our log handler, we can see the mail gets sent:
 
 >>> handler.close()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-X-Log-Level: ERROR
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-a warning
-my message
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... a warning
+... my message
+... <BLANKLINE>""")
+True
 
 The logging on script exit is done using python's :mod:`atexit`
 module. We can see that the handler we created above is now
 registered with this module by having a poke at its internals:
 
 >>> from mailinglogger.common import exit_handler_manager
->>> print exit_handler_manager._AT_EXIT_HANDLERS
+>>> print(exit_handler_manager._AT_EXIT_HANDLERS)
 [<bound method SummarisingLogger.close of <...>>]
 
 This list can be manually cleared at any time to remove any
 registered :mod:`atexit` functions:
 
 >>> exit_handler_manager.clear_at_exit_handlers()
->>> print exit_handler_manager._AT_EXIT_HANDLERS
+>>> print(exit_handler_manager._AT_EXIT_HANDLERS)
 []
 
 Now, to continue with the examples, just like any other handler, we
@@ -106,20 +109,21 @@ below the level set:
 >>> handler.setLevel(logging.WARNING)
 >>> logging.warning('a warning')
 >>> handler.close()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (WARNING)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-X-Log-Level: WARNING
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-a warning
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (WARNING)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: WARNING
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... a warning
+... <BLANKLINE>""")
+True
 
 As with :class:`MailingLogger`, you can see from the above examples
 that :class:`SummarisingLogger` sends mail messages that are correctly
@@ -152,7 +156,7 @@ should be registered:
 
 Now, we can see that no :mod:`atexit` function has been registered:
 
->>> print exit_handler_manager._AT_EXIT_HANDLERS
+>>> print(exit_handler_manager._AT_EXIT_HANDLERS)
 []
 
 With this configuration, if an entry is logged, the logging
@@ -160,19 +164,21 @@ framework must be manually shut down for the mail to be sent:
 
 >>> logging.error('my message')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-my message
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... my message
+... <BLANKLINE>""")
+True
 
 Because the users of :class:`SummarisingLogger` may not have control
 over when or how often the logging handlers they configure are closed,
@@ -200,19 +206,21 @@ This can be set to a fixed value:
 >>> logger.addHandler(handler)
 >>> logging.error('a message')
 >>> handler.close()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: My Logging Summary
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-a message
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: My Logging Summary
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... a message
+... <BLANKLINE>""")
+True
 
 It can also be set using any of the substitution variables described
 in the :doc:`subjectformatter` documentation, for example:
@@ -224,21 +232,22 @@ in the :doc:`subjectformatter` documentation, for example:
 >>> logging.info('a message')
 >>> logging.error('an error')
 >>> handler.close()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [host.example.com] ERROR - a message
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-X-Log-Level: ERROR
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-a message
-an error
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: [host.example.com] ERROR - a message
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... a message
+... an error
+... <BLANKLINE>""")
+True
 
 You'll notice that the ``%(line)`` substitution inserts the first line
 of the whole summary mail when used with a :class:`SummarisingLogger`.
@@ -254,18 +263,20 @@ will be the string ``NOTSET``:
 ...                             subject='[%(levelname)s] summary')
 >>> logger.addHandler(handler)
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [NOTSET] summary
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: [NOTSET] summary
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: NOTSET
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... <BLANKLINE>""")
+True
 
 Formatting messages in the body of the summary email
 ----------------------------------------------------
@@ -302,23 +313,25 @@ Here's another at ``2007-01-01 12:34:56``:
 The following shows the mail that would be sent:
 
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-2007-01-01 10:00:00,000 [WARNING] something happened
-2007-01-01 12:34:56,000 [ERROR] bad things happened
-Traceback (most recent call last):
-...
-RuntimeError: badness
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... 2007-01-01 10:00:00,000 [WARNING] something happened
+... 2007-01-01 12:34:56,000 [ERROR] bad things happened
+... Traceback (most recent call last):
+... ...
+... RuntimeError: badness
+... <BLANKLINE>""")
+True
 
 .. _record-and-send-different:
 
@@ -337,21 +350,22 @@ pass a ``send_level`` to the :class:`SummarisingLogger` constructor:
 >>> logging.info('An info message')
 >>> logging.error('Something bad happened')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-X-Log-Level: ERROR
-Date: Mon, 01 Jan 2007 12:34:56 -0000
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-2007-01-01 12:34:56,000 [INFO] An info message
-2007-01-01 12:34:56,000 [ERROR] Something bad happened
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: Mon, 01 Jan 2007 12:34:56 -0000
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... 2007-01-01 12:34:56,000 [INFO] An info message
+... 2007-01-01 12:34:56,000 [ERROR] Something bad happened
+... <BLANKLINE>""")
+True
 
 Limiting the size of emails
 ---------------------------
@@ -384,27 +398,28 @@ constructor:
 >>> logging.info('message 7')
 >>> logging.info('message 8')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-X-Log-Level: ERROR
-Date: Mon, 01 Jan 2007 12:34:56 -0000
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-INFO -  message 1
-INFO -  message 2
-CRITICAL -  1 messages not included as flood limit of 2 exceeded
-INFO -  message 4
-INFO -  message 5
-INFO -  message 6
-INFO -  message 7
-INFO -  message 8
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: Mon, 01 Jan 2007 12:34:56 -0000
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... INFO -  message 1
+... INFO -  message 2
+... CRITICAL -  1 messages not included as flood limit of 2 exceeded
+... INFO -  message 4
+... INFO -  message 5
+... INFO -  message 6
+... INFO -  message 7
+... INFO -  message 8
+... <BLANKLINE>""")
+True
 
 The example above shows a few things. Firstly, when messages are
 excluded, a ``CRITICAL`` entry is logged with the number of messages
@@ -424,19 +439,21 @@ even if they would have been empty:
 >>> logger.addHandler(handler)
 >>> logging.error(' ')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-<BLANKLINE>
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... <BLANKLINE>
+... <BLANKLINE>""")
+True
 
 Sending empty emails is helpful for batch processes as even if no
 activity is logged, the mail itself is an indication that the batch
@@ -464,19 +481,21 @@ mail, this can be done by specifying the `mailhost` parameter to the
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-An Error
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... An Error
+... <BLANKLINE>""")
+True
 
 If the smtp server you wish to use is running on non-standard port,
 you can configure :class:`SummarisingLogger` to use this port by specifying
@@ -488,19 +507,21 @@ port on which it is listening:
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 2500)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-An Error
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... An Error
+... <BLANKLINE>""")
+True
 
 If the smtp server you wish to use requires authentication,
 pass the required username and password to the :class:`SummarisingLogger`
@@ -511,20 +532,21 @@ constructor:
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-(authenticated using username:'auser' and password:'theirpassword')
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-An Error
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... An Error
+... <BLANKLINE>""")
+True
 
 .. warning::
 
@@ -548,19 +570,21 @@ be sent with the configured headers:
 
 >>> logging.error('The Error!')
 >>> logging.shutdown()
-sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-foo: bar
-Baz: bob
-Subject: Summary of Log Messages (ERROR)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger ...
-Date: ...
-Message-ID: <...MailingLogger@...>
-<BLANKLINE>
-The Error!
-<BLANKLINE>
+>>> server.compare_sent_message("""\
+... Content-Type: text/plain; charset="us-ascii"
+... MIME-Version: 1.0
+... Content-Transfer-Encoding: 7bit
+... foo: bar
+... Baz: bob
+... Subject: Summary of Log Messages (ERROR)
+... From: from@example.com
+... To: to@example.com
+... X-Mailer: MailingLogger ...
+... X-Log-Level: ERROR
+... Date: ...
+... Message-ID: <...MailingLogger@...>
+... <BLANKLINE>
+... The Error!
+... <BLANKLINE>""")
+True
 

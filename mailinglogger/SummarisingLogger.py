@@ -113,11 +113,12 @@ class SummarisingLogger(FileHandler):
         else:
             f = os.fdopen(self.fd)
             summary = f.read().decode(self.charset)
-            # try and encode in ascii, to keep emails simpler:
             try:
-                summary = summary.encode('ascii')
+                summary.encode('ascii')
+                self.mailer.charset = 'ascii'
+                if not PY3:
+                    summary = summary.encode('ascii')
             except UnicodeEncodeError:
-                # unicode it is then
                 pass
         f.close()
 

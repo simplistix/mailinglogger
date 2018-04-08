@@ -2,7 +2,7 @@ import datetime
 import os
 import smtplib
 
-from six import text_type
+from six import text_type, PY3
 
 try:
     from email.Utils import formatdate, make_msgid
@@ -89,7 +89,12 @@ class MailingLogger(SMTPHandler):
                 msg = self.template % msg
             subtype = self.content_type.split('/')[-1]
             if isinstance(msg, text_type):
-                email = MIMEText(msg, subtype, self.charset)
+                try:
+                    msg = msg.encode('ascii')
+                    charset = 'ascii'
+                except UnicodeEncodeError:
+                    charset = self.charset
+                email = MIMEText(msg, subtype, charset)
             else:
                 email = MIMEText(msg, subtype)
 
