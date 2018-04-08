@@ -6,7 +6,7 @@ from tempfile import mkstemp
 from six import PY3
 
 from mailinglogger.MailingLogger import MailingLogger
-from mailinglogger.common import register_at_exit_handler
+from mailinglogger.common import exit_handler_manager
 
 flood_template = '%i messages not included as flood limit of %i exceeded'
 
@@ -53,7 +53,7 @@ class SummarisingLogger(FileHandler):
         self.open()
         # register our close method
         if atexit:
-            register_at_exit_handler(self.close)
+            exit_handler_manager.register_at_exit_handler(self.close)
 
     def open(self):
         # create a temp file logger to store log entries

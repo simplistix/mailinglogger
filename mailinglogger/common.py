@@ -4,17 +4,29 @@ from socket import gethostname
 
 import atexit
 
-_AT_EXIT_HANDLERS = []
+class Borg:
+    _shared_state = {}
+    def __init__(self):
+        self.__dict__ = self._shared_state
 
-def register_at_exit_handler(handler):
-    _AT_EXIT_HANDLERS.append(handler)
-    atexit.register(handler)
+class AtExitHandlerManager(Borg):
+    def __init__(self,):
+        Borg.__init__(self)
+        self._AT_EXIT_HANDLERS = []
 
-def clear_at_exit_handlers():
-    if hasattr(atexit,'unregister'):
-        [atexit.unregister(f) for f in _AT_EXIT_HANDLERS]
-    else:
-        atexit._exithandlers[:] = []
+    def register_at_exit_handler(self, handler):
+        self._AT_EXIT_HANDLERS.append(handler)
+        atexit.register(handler)
+
+    def clear_at_exit_handlers(self):
+
+        if hasattr(atexit,'unregister'):
+            [atexit.unregister(f) for f in self._AT_EXIT_HANDLERS]
+        else:
+            atexit._exithandlers[:] = []
+        self._AT_EXIT_HANDLERS = []
+
+exit_handler_manager = AtExitHandlerManager()
 
 class SubjectFormatter(Formatter):
 

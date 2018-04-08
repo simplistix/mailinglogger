@@ -6,7 +6,7 @@ from time import tzset
 from six import PY3
 from testfixtures import Replacer, test_datetime, test_time
 
-from mailinglogger.common import clear_at_exit_handlers
+from mailinglogger.common import exit_handler_manager
 
 
 class DummySMTP:
@@ -117,7 +117,7 @@ def _tearDown(d):
     # make sure we have no dummy smtp
     DummySMTP.remove()
     # make sure we haven't registered any atexit funcs
-    clear_at_exit_handlers()
+    exit_handler_manager.clear_at_exit_handlers()
 
 
 def _check_sent_message(expected_message, m):

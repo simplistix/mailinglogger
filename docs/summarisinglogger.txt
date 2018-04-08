@@ -84,16 +84,15 @@ The logging on script exit is done using python's :mod:`atexit`
 module. We can see that the handler we created above is now
 registered with this module by having a poke at its internals:
 
->>> from mailinglogger.common import _AT_EXIT_HANDLERS
->>> print _AT_EXIT_HANDLERS
+>>> from mailinglogger.common import exit_handler_manager
+>>> print exit_handler_manager._AT_EXIT_HANDLERS
 [<bound method SummarisingLogger.close of <...>>]
 
 This list can be manually cleared at any time to remove any
 registered :mod:`atexit` functions:
 
->>> from mailinglogger.common import clear_at_exit_handlers
->>> clear_at_exit_handlers()
->>> print _AT_EXIT_HANDLERS
+>>> exit_handler_manager.clear_at_exit_handlers()
+>>> print exit_handler_manager._AT_EXIT_HANDLERS
 []
 
 Now, to continue with the examples, just like any other handler, we
@@ -138,14 +137,14 @@ Avoiding the :mod:`atexit` handler
 ----------------------------------
 
 .. 
-  >>> clear_at_exit_handlers()
+  >>> exit_handler_manager.clear_at_exit_handlers()
 
 In the event you wish to manually call the
 :meth:`~SummarisingLogger.close` method of the handler or use the
 logging framework's :func:`~logging.shutdown` functionality rather 
 than registering an :mod:`atexit` function, you can create a
 :class:`SummarisingLogger` and specify that no :mod:`atexit` function
-should be registered: 
+should be registered:
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
 ...                             atexit=False)
@@ -153,7 +152,7 @@ should be registered:
 
 Now, we can see that no :mod:`atexit` function has been registered:
 
->>> print _AT_EXIT_HANDLERS
+>>> print exit_handler_manager._AT_EXIT_HANDLERS
 []
 
 With this configuration, if an entry is logged, the logging
