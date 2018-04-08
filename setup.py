@@ -28,6 +28,6 @@ setup(
     include_package_data=True,
     extras_require=dict(
         test=['coverage', 'coveralls', 'pytest', 'sybil', 'testfixtures'],
-        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine'],
+        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine', 'six'],
         )
     )
