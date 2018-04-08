@@ -2,8 +2,12 @@ import datetime
 import os
 import smtplib
 
-from email.Utils import formatdate, make_msgid
-from email.MIMEText import MIMEText
+try:
+    from email.Utils import formatdate, make_msgid
+    from email.MIMEText import MIMEText
+except ImportError:
+    from email.utils import formatdate, make_msgid
+    from email.mime.text import MIMEText
 from logging.handlers import SMTPHandler
 from logging import LogRecord, CRITICAL
 from mailinglogger.common import SubjectFormatter
