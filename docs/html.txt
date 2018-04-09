@@ -9,8 +9,11 @@ Sending HTML Emails
   >>> import smtplib
   >>> server = smtplib.SMTP('localhost')
   >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
-  >>> server.compare_sent_message("""\
-  ... The message""")
+  >>> server.check_sent_message_matches("""\
+  ... The message""",
+  ... hostname='localhost',
+  ... from_addr='from@example.com',
+  ... to_addr=['to@example.com'])
   True
 
 .. currentmodule:: mailinglogger
@@ -105,7 +108,7 @@ Now when the summary is sent, you can see that it is a correctly
 formatted HTML message:
 
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/html; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit

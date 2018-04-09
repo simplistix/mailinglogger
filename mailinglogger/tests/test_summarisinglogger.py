@@ -52,7 +52,7 @@ class TestSummarisingLogger(TestCase):
         self.logger.critical('something critical')
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
-        message_text = DummySMTP.sent[0][3]
+        message_text = DummySMTP.sent[0].msg
         _check_sent_message('a warning', message_text)
         _check_sent_message('something critical', message_text)
 
@@ -66,7 +66,7 @@ class TestSummarisingLogger(TestCase):
         self.create('from@example.com', ('to@example.com',), )
         self.logger.critical(u"accentu\u00E9")
         logging.shutdown()
-        m = DummySMTP.sent[0][3]
+        m = DummySMTP.sent[0].msg
         # lovely, utf-8 encoded goodness
         self.assertTrue('Subject: Summary of Log Messages (CRITICAL)' in m, m)
         self.assertTrue('Content-Type: text/plain; charset="utf-8"' in m, m)
@@ -77,7 +77,7 @@ class TestSummarisingLogger(TestCase):
                     charset='iso-8859-1')
         self.logger.critical(u"accentu\u00E9")
         logging.shutdown()
-        m = DummySMTP.sent[0][3]
+        m = DummySMTP.sent[0].msg
         # lovely, latin-1 encoded goodness
         self.assertTrue('\naccentu=E9' in m, m)
         self.assertTrue(
@@ -89,7 +89,7 @@ class TestSummarisingLogger(TestCase):
                     template='<before>%s<after>')
         logging.critical('message')
         logging.shutdown()
-        m = DummySMTP.sent[0][3]
+        m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (CRITICAL)' in m, m)
         _check_sent_message('<before>message\n<after>', m)
 
@@ -98,7 +98,7 @@ class TestSummarisingLogger(TestCase):
                     content_type='foo/bar')
         self.logger.critical(u"message")
         logging.shutdown()
-        m = DummySMTP.sent[0][3]
+        m = DummySMTP.sent[0].msg
         # NB: we drop the 'foo'
         self.assertTrue('Content-Type: text/bar' in m, m)
 
@@ -112,7 +112,7 @@ class TestSummarisingLogger(TestCase):
             logging.warning('message %s', i)
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
-        m = DummySMTP.sent[0][3]
+        m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
         _check_sent_message('\n'.join([
             'WARNING - message 0',
@@ -137,7 +137,7 @@ class TestSummarisingLogger(TestCase):
             logging.info('after %i', i)
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
-        m = DummySMTP.sent[0][3]
+        m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
         _check_sent_message('\n'.join([
             'INFO - included',
@@ -155,7 +155,7 @@ class TestSummarisingLogger(TestCase):
         logging.warning('message 2')
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
-        m = DummySMTP.sent[0][3]
+        m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
         _check_sent_message('\n'.join([
             'WARNING - message 1',

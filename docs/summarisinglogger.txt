@@ -10,7 +10,7 @@ SummarisingLogger
   >>> import smtplib
   >>> server = smtplib.SMTP('localhost')
   >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
-  >>> server.compare_sent_message("""\
+  >>> server.check_sent_message_matches("""\
   ... The message""")
   True
 
@@ -66,7 +66,7 @@ when the script that calls the logging function exits.
 If we manually close our log handler, we can see the mail gets sent:
 
 >>> handler.close()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -109,7 +109,7 @@ below the level set:
 >>> handler.setLevel(logging.WARNING)
 >>> logging.warning('a warning')
 >>> handler.close()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -164,7 +164,7 @@ framework must be manually shut down for the mail to be sent:
 
 >>> logging.error('my message')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -206,7 +206,7 @@ This can be set to a fixed value:
 >>> logger.addHandler(handler)
 >>> logging.error('a message')
 >>> handler.close()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -232,7 +232,7 @@ in the :doc:`subjectformatter` documentation, for example:
 >>> logging.info('a message')
 >>> logging.error('an error')
 >>> handler.close()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -263,7 +263,7 @@ will be the string ``NOTSET``:
 ...                             subject='[%(levelname)s] summary')
 >>> logger.addHandler(handler)
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -313,7 +313,7 @@ Here's another at ``2007-01-01 12:34:56``:
 The following shows the mail that would be sent:
 
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -350,7 +350,7 @@ pass a ``send_level`` to the :class:`SummarisingLogger` constructor:
 >>> logging.info('An info message')
 >>> logging.error('Something bad happened')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -398,7 +398,7 @@ constructor:
 >>> logging.info('message 7')
 >>> logging.info('message 8')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -439,7 +439,7 @@ even if they would have been empty:
 >>> logger.addHandler(handler)
 >>> logging.error(' ')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -481,7 +481,7 @@ mail, this can be done by specifying the `mailhost` parameter to the
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -494,7 +494,8 @@ mail, this can be done by specifying the `mailhost` parameter to the
 ... Message-ID: <...MailingLogger@...>
 ... <BLANKLINE>
 ... An Error
-... <BLANKLINE>""")
+... <BLANKLINE>""",
+... hostname='smtp.example.com')
 True
 
 If the smtp server you wish to use is running on non-standard port,
@@ -507,7 +508,7 @@ port on which it is listening:
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -520,7 +521,8 @@ port on which it is listening:
 ... Message-ID: <...MailingLogger@...>
 ... <BLANKLINE>
 ... An Error
-... <BLANKLINE>""")
+... <BLANKLINE>""",
+... hostname='smtp.example.com', port=2500)
 True
 
 If the smtp server you wish to use requires authentication,
@@ -532,7 +534,7 @@ constructor:
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -545,7 +547,8 @@ constructor:
 ... Message-ID: <...MailingLogger@...>
 ... <BLANKLINE>
 ... An Error
-... <BLANKLINE>""")
+... <BLANKLINE>""",
+... username='auser', password='theirpassword')
 True
 
 .. warning::
@@ -570,7 +573,7 @@ be sent with the configured headers:
 
 >>> logging.error('The Error!')
 >>> logging.shutdown()
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit

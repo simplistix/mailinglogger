@@ -1,12 +1,15 @@
 import logging
 import smtplib
+from collections import namedtuple
 from email.parser import Parser
 from time import tzset
 
 from six import PY3
-from testfixtures import Replacer, test_datetime, test_time, compare, StringComparison
+from testfixtures import Replacer, test_datetime, test_time, compare
 
 from mailinglogger.common import exit_handler_manager
+
+SentMessage = namedtuple('SentMessage', ['to_addr', 'from_addr', 'host', 'port', 'msg', 'username', 'password'])
 
 
 class DummySMTP:
@@ -46,22 +49,57 @@ class DummySMTP:
 
     def sendmail(self, fromaddr, toaddrs, msg):
         msg = msg.replace('\r\n', '\n')
-        self.sent.append((
-            toaddrs,
-            fromaddr,
-            (self.mailhost, self.port),
-            msg,
-            self.username,
-            self.password
+        self.sent.append(SentMessage(
+            to_addr=toaddrs,
+            from_addr=fromaddr,
+            host=self.mailhost,
+            port=self.port,
+            msg=msg,
+            username=self.username,
+            password=self.password,
         ))
 
     def quit(self):
         pass
 
-    def compare_sent_message(self, expected_message):
-        latest_sent_message = self.sent[-1][3]
-        actual_email = Parser().parsestr(latest_sent_message)
+    def check_sent_message_matches(self, expected_message, hostname='localhost', to_addr=None,
+                                   from_addr='from@example.com', port=25, username=None, password=None):
+
+        last_sent_email = self.sent[-1]
+        self._check_server_configuration(from_addr, hostname, last_sent_email, password, port, to_addr, username)
+
+        actual_email = Parser().parsestr(last_sent_email.msg)
         expected_email = Parser().parsestr(expected_message.replace('<BLANKLINE>', ''))
+
+        self._check_headers_match(actual_email, expected_email)
+        self._check_bodies_match(actual_email, expected_email)
+        return True
+
+    def _check_server_configuration(self, from_addr, hostname, last_sent_email, password, port, to_addr, username):
+        to_addr = to_addr or ['to@example.com']
+        compare(actual=last_sent_email.to_addr, expected=to_addr)
+        compare(actual=last_sent_email.from_addr, expected=from_addr)
+        compare(actual=last_sent_email.host, expected=hostname)
+        compare(actual=last_sent_email.port, expected=port)
+        compare(actual=last_sent_email.username, expected=username)
+        compare(actual=last_sent_email.password, expected=password)
+
+    def _check_bodies_match(self, actual_email, expected_email):
+        expected_payload = expected_email.get_payload().strip()
+        actual_payload = actual_email.get_payload().strip()
+        for line_number, (expected, actual) in enumerate(
+                zip(expected_payload.split('\n'), actual_payload.split('\n'))):
+            if '...' in expected:
+                self._check_line_containing_ellipsis(actual, expected, 'line', line_number)
+            elif len(expected) == 0:
+                assert not actual.strip(), '\nExpected line: %s to be blank in message:\n%s' % (
+                    line_number, actual_payload)
+            else:
+                assert expected.strip() == actual.strip(), '\nExpected:%s\nActual:%s\nWhen comparing line:%i with actual message: %s' % (
+                    expected, actual, line_number,
+                    actual_payload)
+
+    def _check_headers_match(self, actual_email, expected_email):
         actual_header_keys = set(actual_email.keys())
         expected_header_keys = set(expected_email.keys())
         assert actual_header_keys == expected_header_keys, "Headers differ\nExpected headers:\n%s\nActual headers:\n%s" % (
@@ -70,30 +108,16 @@ class DummySMTP:
             actual_header = actual_email[key]
             expected_header = expected_email[key]
             if '...' in expected_header:
-                for fragment in actual_header.split('...'):
-                    assert fragment in actual_header, '\nExpected fragment %s not found in:\n%s\nwhen comparing header: %s' % (
-                        fragment, actual_header, key)
+                self._check_line_containing_ellipsis(actual_header, expected_header, 'header', key)
             else:
                 assert actual_header == expected_header, "Headers %s differs.\nExpected: %s\nActual:%s" % (
                     key, expected_header,
                     actual_header)
 
-        expected_payload = expected_email.get_payload().strip()
-        actual_payload = actual_email.get_payload().strip()
-        for line_number, (expected, actual) in enumerate(
-                zip(expected_payload.split('\n'), actual_payload.split('\n'))):
-            if '...' in expected:
-                for fragment in actual.split('...'):
-                    assert fragment in actual, '\nExpected fragment %s not found in:\n%s\nwhen comparing line: %s' % (
-                        fragment, actual, line_number)
-            elif len(expected) == 0:
-                assert not actual.strip(), '\nExpected line: %s to be blank in message:\n%s' % (
-                    line_number, actual_payload)
-            else:
-                assert expected.strip() == actual.strip(), '\nExpected:%s\nActual:%s\nWhen comparing line:%i with actual message: %s' % (
-                    expected, actual, line_number,
-                    actual_payload)
-        return True
+    def _check_line_containing_ellipsis(self, actual_header, expected_header, identifier, key):
+        for fragment in expected_header.split('...'):
+            assert fragment in actual_header, '\nExpected fragment %s not found in:\n%s\nwhen comparing header: %s' % (
+                fragment, actual_header, identifier, key)
 
 
 class Dummy:

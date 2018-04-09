@@ -10,7 +10,7 @@ MailingLogger
   >>> import smtplib
   >>> server = smtplib.SMTP('localhost')
   >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
-  >>> server.compare_sent_message("""\
+  >>> server.check_sent_message_matches("""\
   ... The message""")
   True
 
@@ -40,7 +40,7 @@ Now, when that logger receives a message, an email containing the
 message will be sent:
 
 >>> logging.error('my message')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -75,7 +75,7 @@ will not result in emails being sent:
 >>> logging.error('my message')
 >>> handler.setLevel(logging.WARNING)
 >>> logging.warning('my message')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -106,7 +106,7 @@ instantiating the handler object:
 ...                         subject='[MyLogger] %(line)s')
 >>> logger.addHandler(handler)
 >>> logging.error('my %i message',13)
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -143,7 +143,7 @@ to do is supply the `send_empty_entries` parameter:
 ...                         send_empty_entries=True)
 >>> logger.addHandler(handler)
 >>> logging.error(' ')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -182,7 +182,7 @@ option to the :class:`MailingLogger` constructor:
 With this setup, we can log at most one message:
 
 >>> logging.error('An Error')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -201,7 +201,7 @@ Now that the flood level has been reached, a final warning message is
 sent if any more messages are logged:
 
 >>> logging.error('Another Error')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -237,7 +237,7 @@ Any further messages logged will not result in an email being sent:
     >>> time.set(2007, 1, 1, 11)
 
     >>> logging.error('Yet Another Error')
-    >>> server.compare_sent_message("""\
+    >>> server.check_sent_message_matches("""\
     ... Content-Type: text/plain; charset="us-ascii"
     ... MIME-Version: 1.0
     ... Content-Transfer-Encoding: 7bit
@@ -268,7 +268,7 @@ mail, this can be done by specifying the `mailhost` parameter to the
 ...                         mailhost='smtp.example.com')
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -280,7 +280,8 @@ mail, this can be done by specifying the `mailhost` parameter to the
 ... Date: ...
 ... Message-ID: <...MailingLogger@...>
 ... <BLANKLINE>
-... An Error """)
+... An Error """,
+... hostname='smtp.example.com')
 True
 
 If the smtp server you wish to use is running on non-standard port,
@@ -296,7 +297,7 @@ port on which it is listening:
 ...                         mailhost=('smtp.example.com',2500))
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -308,7 +309,8 @@ port on which it is listening:
 ... Date: ...
 ... Message-ID: <...MailingLogger@...>
 ... <BLANKLINE>
-... An Error""")
+... An Error""",
+... hostname='smtp.example.com', port=2500)
 True
 
 If the smtp server you wish to use requires authentication,
@@ -323,7 +325,7 @@ constructor:
 ...                         username='auser',password='theirpassword')
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit
@@ -335,7 +337,8 @@ constructor:
 ... Date: ...
 ... Message-ID: <...MailingLogger@...>
 ... <BLANKLINE>
-... An Error""")
+... An Error""",
+... username='auser', password='theirpassword')
 True
 
 .. warning::
@@ -360,7 +363,7 @@ Now, when a log message results in an email being send, the email will
 be sent with the configured headers:
 
 >>> logging.error('The Error!')
->>> server.compare_sent_message("""\
+>>> server.check_sent_message_matches("""\
 ... Content-Type: text/plain; charset="us-ascii"
 ... MIME-Version: 1.0
 ... Content-Transfer-Encoding: 7bit

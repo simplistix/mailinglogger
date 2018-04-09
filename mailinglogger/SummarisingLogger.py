@@ -3,7 +3,7 @@ from collections import deque
 from logging import CRITICAL, FileHandler, Formatter, LogRecord
 from tempfile import mkstemp
 
-from six import PY3
+from six import PY2
 
 from mailinglogger.MailingLogger import MailingLogger
 from mailinglogger.common import exit_handler_manager
@@ -107,20 +107,21 @@ class SummarisingLogger(FileHandler):
         FileHandler.close(self)
 
 
-        if PY3:
-            f = open(self.fd, encoding=self.charset)
-            summary = f.read()
-        else:
+        if PY2:
             f = os.fdopen(self.fd)
             summary = f.read().decode(self.charset)
-            try:
-                summary.encode('ascii')
-                self.mailer.charset = 'ascii'
-                if not PY3:
-                    summary = summary.encode('ascii')
-            except UnicodeEncodeError:
-                pass
+        else:
+            f = open(self.fd, encoding=self.charset)
+            summary = f.read()
         f.close()
+        try:
+            summary.encode('ascii')
+            self.mailer.charset = 'ascii'
+            if PY2:
+                summary = summary.encode('ascii')
+        except UnicodeEncodeError:
+            pass
+
 
         if os.path.exists(self.filename):
             os.remove(self.filename)
