@@ -12,12 +12,11 @@ Changes
 
 - Removed the deprecated ``ignore`` parameter to
   :class:`MailingLogger` and :class:`SummarisingLogger`.
-
-  Use `filter objects`__ should be used instead.
+  Use `filter objects`__ instead.
 
   __ http://docs.python.org/library/logging.html#filter-objects
 
-- Move from ``zope.testrunner` to `pytest`__ for running tests.
+- Move from ``zope.testrunner`` to `pytest`__ for running tests.
 
   __ https://docs.pytest.org/en/latest/
 
