@@ -6,7 +6,7 @@ this_dir = os.path.dirname(__file__)
 
 setup(
     name='mailinglogger',
-    version=file(os.path.join(this_dir,'mailinglogger','version.txt')).read().strip(),
+    version=open(os.path.join(this_dir,'mailinglogger','version.txt')).read().strip(),
     author='Chris Withers',
     author_email='chris@simplistix.co.uk',
     license='MIT',
@@ -28,6 +28,6 @@ setup(
     include_package_data=True,
     extras_require=dict(
         test=['coverage', 'coveralls', 'pytest', 'sybil', 'testfixtures'],
-        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine'],
+        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine', 'six'],
         )
     )

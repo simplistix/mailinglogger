@@ -2,8 +2,14 @@ import datetime
 import os
 import smtplib
 
-from email.Utils import formatdate, make_msgid
-from email.MIMEText import MIMEText
+from six import text_type, PY3
+
+try:
+    from email.Utils import formatdate, make_msgid
+    from email.MIMEText import MIMEText
+except ImportError:
+    from email.utils import formatdate, make_msgid
+    from email.mime.text import MIMEText
 from logging.handlers import SMTPHandler
 from logging import LogRecord, CRITICAL
 from mailinglogger.common import SubjectFormatter
@@ -82,8 +88,13 @@ class MailingLogger(SMTPHandler):
             if self.template is not None:
                 msg = self.template % msg
             subtype = self.content_type.split('/')[-1]
-            if isinstance(msg, unicode):
-                email = MIMEText(msg, subtype, self.charset)
+            if isinstance(msg, text_type):
+                try:
+                    msg = msg.encode('ascii')
+                    charset = 'ascii'
+                except UnicodeEncodeError:
+                    charset = self.charset
+                email = MIMEText(msg, subtype, charset)
             else:
                 email = MIMEText(msg, subtype)
 

@@ -1,10 +1,12 @@
 import os
-
-from atexit import register
 from collections import deque
 from logging import CRITICAL, FileHandler, Formatter, LogRecord
-from mailinglogger.MailingLogger import MailingLogger
 from tempfile import mkstemp
+
+from six import PY2
+
+from mailinglogger.MailingLogger import MailingLogger
+from mailinglogger.common import exit_handler_manager
 
 flood_template = '%i messages not included as flood limit of %i exceeded'
 
@@ -51,7 +53,7 @@ class SummarisingLogger(FileHandler):
         self.open()
         # register our close method
         if atexit:
-            register(self.close)
+            exit_handler_manager.register_at_exit_handler(self.close)
 
     def open(self):
         # create a temp file logger to store log entries
@@ -103,15 +105,24 @@ class SummarisingLogger(FileHandler):
                 FileHandler.emit(self, record)
 
         FileHandler.close(self)
-        f = os.fdopen(self.fd)
-        summary = f.read().decode(self.charset)
+
+
+        if PY2:
+            f = os.fdopen(self.fd)
+            summary = f.read().decode(self.charset)
+        else:
+            f = open(self.fd, encoding=self.charset)
+            summary = f.read()
         f.close()
-        # try and encode in ascii, to keep emails simpler:
         try:
-            summary = summary.encode('ascii')
+            summary.encode('ascii')
+            self.mailer.charset = 'ascii'
+            if PY2:
+                summary = summary.encode('ascii')
         except UnicodeEncodeError:
-            # unicode it is then
             pass
+
+
         if os.path.exists(self.filename):
             os.remove(self.filename)
         if self.send_level is None or self.maxlevelno >= self.send_level:

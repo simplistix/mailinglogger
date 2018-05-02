@@ -14,6 +14,16 @@ jobs:
       - "pip install --upgrade pip setuptools"
       - "pip install -Ue .[test]"
       script: coverage run --source mailinglogger -m pytest
+      python: 2.7
+      after_success:
+        - coveralls
+
+    - stage: test
+      install:
+      - "pip install --upgrade pip setuptools"
+      - "pip install -Ue .[test]"
+      script: coverage run --source mailinglogger -m pytest
+      python: 3.6
       after_success:
         - coveralls
 
@@ -23,7 +33,7 @@ jobs:
       after_success: skip
 
       install: "pip install -U coveralls-check"
-      script: "coveralls-check $TRAVIS_COMMIT"
+      script: "coveralls-check --fail-under=95 $TRAVIS_COMMIT"
 
     - stage: release
       if: tag IS present

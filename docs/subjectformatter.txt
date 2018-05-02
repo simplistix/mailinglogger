@@ -45,7 +45,7 @@ format it with our formatter:
 ...               msg='msgline%i\nmsgline%i',
 ...               args=(1,2), 
 ...               exc_info=None)
->>> print formatter.format(record)
+>>> print(formatter.format(record))
 <BLANKLINE>
 'aname'
 10
@@ -73,7 +73,7 @@ first line of any message logged:
 We can now see how this formatter represents the log record
 generated previously:
 
->>> print f.format(record)
+>>> print(f.format(record))
 'msgline1'
 
 As you can see, this only includes the first line of the message
@@ -102,7 +102,7 @@ Normally, a logging formatter would include a traceback when
 representing this entry:
 
 >>> from logging import Formatter
->>> print Formatter().format(record)
+>>> print(Formatter().format(record))
 bad things caught
 Traceback (most recent call last):
   File "...", line 2, in <module>
@@ -111,7 +111,7 @@ NameError: name 'RuntimeException' is not defined
 However, if we use the subject formatter we previously created,
 the log entry is formatted as follows:
 
->>> print f.format(record)
+>>> print(f.format(record))
 'bad things caught'
 
 To aid administration where the same python software runs
@@ -119,7 +119,7 @@ on a cluster of machines, the hostname of the machine from which
 the message is logged can also be easilly included:
 
 >>> f = SubjectFormatter('[%(hostname)s] %(line)r')
->>> print f.format(record)
+>>> print(f.format(record))
 [host.example.com] 'bad things caught'
 
 Available LogRecord attributes
