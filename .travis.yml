@@ -4,40 +4,34 @@ language: python
 sudo: false
 
 python:
+  - "3.6"
   - "2.7"
+
+# command to install dependencies
+install:
+- "pip install --upgrade pip setuptools"
+- "pip install -Ue .[test]"
+
+# command to run tests, e.g. python setup.py test
+script: coverage run --source mailinglogger -m pytest
+
+after_success:
+  - coveralls
 
 jobs:
   include:
 
-    - stage: test
-      install:
-      - "pip install --upgrade pip setuptools"
-      - "pip install -Ue .[test]"
-      script: coverage run --source mailinglogger -m pytest
-      python: 2.7
-      after_success:
-        - coveralls
-
-    - stage: test
-      install:
-      - "pip install --upgrade pip setuptools"
-      - "pip install -Ue .[test]"
-      script: coverage run --source mailinglogger -m pytest
-      python: 3.6
-      after_success:
-        - coveralls
-
     - stage: coverage
       if: type != cron
-      python: 2.7
+      python: 3.6
       after_success: skip
 
       install: "pip install -U coveralls-check"
-      script: "coveralls-check --fail-under=95 $TRAVIS_COMMIT"
+      script: "coveralls-check $TRAVIS_COMMIT"
 
     - stage: release
       if: tag IS present
-      python: 2.7
+      python: 3.6
       script: skip
       # work around https://github.com/travis-ci/travis-ci/issues/8337:
       after_success: true
