@@ -8,6 +8,3 @@
 *.pyc
 .*cache
 .coverage
-/venv/
-/venv3/
-.idea
