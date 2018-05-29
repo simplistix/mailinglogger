@@ -28,6 +28,7 @@ setup(
     include_package_data=True,
     extras_require=dict(
         test=['coverage', 'coveralls', 'pytest', 'sybil', 'testfixtures'],
-        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine', 'six'],
+        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine', 'six',
+               'sphinx_rtd_theme'],
         )
     )
