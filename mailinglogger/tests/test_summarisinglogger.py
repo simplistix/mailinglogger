@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mailinglogger.SummarisingLogger import SummarisingLogger
 from mailinglogger.common import exit_handler_manager
-from mailinglogger.tests.shared import DummySMTP, removeHandlers, _check_sent_message
+from mailinglogger.tests.shared import DummySMTP, removeHandlers
 
 
 class TestSummarisingLogger(TestCase):
@@ -53,8 +53,8 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         self.assertEqual(len(DummySMTP.sent), 1)
         message_text = DummySMTP.sent[0].msg
-        _check_sent_message('a warning', message_text)
-        _check_sent_message('something critical', message_text)
+        self.assertTrue('a warning' in message_text)
+        self.assertTrue('something critical' in message_text)
 
     def test_tmpfile_goes_away(self):
         self.create('from@example.com', ('to@example.com',))
@@ -91,7 +91,7 @@ class TestSummarisingLogger(TestCase):
         logging.shutdown()
         m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (CRITICAL)' in m, m)
-        _check_sent_message('<before>message\n<after>', m)
+        self.assertTrue('<before>message\n<after>' in m, repr(m))
 
     def test_specified_content_type(self):
         self.create('from@example.com', ('to@example.com',),
@@ -114,7 +114,7 @@ class TestSummarisingLogger(TestCase):
         self.assertEqual(len(DummySMTP.sent), 1)
         m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
-        _check_sent_message('\n'.join([
+        self.assertTrue('\n'.join([
             'WARNING - message 0',
             'WARNING - message 1',
             'WARNING - message 2',
@@ -123,7 +123,7 @@ class TestSummarisingLogger(TestCase):
             'WARNING - message 6',
             'WARNING - message 7',
             'WARNING - message 8',
-        ]), m)
+        ]) in m, repr(m))
 
     def test_flood_highest_level_still_recorded(self):
         self.create('from@example.com', ('to@example.com', ),
@@ -139,11 +139,11 @@ class TestSummarisingLogger(TestCase):
         self.assertEqual(len(DummySMTP.sent), 1)
         m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
-        _check_sent_message('\n'.join([
+        self.assertTrue('\n'.join([
             'INFO - included',
             'CRITICAL - 1 messages not included as flood limit of 1 exceeded',
             'INFO - after 0',
-        ]), m)
+        ]) in m, repr(m))
 
     def test_flood_except_for_tail(self):
         self.create('from@example.com', ('to@example.com', ),
@@ -157,10 +157,10 @@ class TestSummarisingLogger(TestCase):
         self.assertEqual(len(DummySMTP.sent), 1)
         m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: Summary of Log Messages (WARNING)' in m, m)
-        _check_sent_message('\n'.join([
+        self.assertTrue('\n'.join([
             'WARNING - message 1',
             'WARNING - message 2',
-        ]), m)
+        ]) in m, repr(m))
 
     def test_reopen(self):
         self.create('from@example.com', ('to@example.com',))

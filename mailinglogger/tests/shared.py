@@ -167,11 +167,3 @@ def _tearDown(d):
     DummySMTP.remove()
     # make sure we haven't registered any atexit funcs
     exit_handler_manager.clear_at_exit_handlers()
-
-
-def _check_sent_message(expected_message, m):
-    sent_email = Parser().parsestr(m)
-    sent_message = sent_email.get_payload(decode=True)
-    if PY3:
-        sent_message = sent_message.decode(sent_email.get_content_charset())
-    assert expected_message in sent_message, "Expected: %s to be in sent email:\n%s" % (expected_message, sent_message)

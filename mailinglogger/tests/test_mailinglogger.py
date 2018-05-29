@@ -4,7 +4,7 @@ from unittest import TestCase
 from testfixtures import OutputCapture
 
 from mailinglogger.MailingLogger import MailingLogger
-from mailinglogger.tests.shared import DummySMTP, _setUp, _tearDown, _check_sent_message
+from mailinglogger.tests.shared import DummySMTP, _setUp, _tearDown
 
 
 class TestMailingLogger(TestCase):
@@ -20,7 +20,6 @@ class TestMailingLogger(TestCase):
 
     def test_imports(self):
         pass
-
 
     def test_default_flood_limit(self):
         # set up logger
@@ -103,7 +102,7 @@ class TestMailingLogger(TestCase):
         logger.critical('message')
         m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: message' in m, m)
-        _check_sent_message('<before>message<after>',m)
+        self.assertTrue('<before>message<after>' in m, m)
 
     def test_default_charset(self):
         self.handler = MailingLogger('from@example.com', ('to@example.com',), )
