@@ -130,10 +130,10 @@ class Dummy:
 
 
 def removeHandlers():
-    to_handle = [logging.getLogger()]
-    for logger in to_handle:
-        for handler in list(logger.handlers):
-            logger.removeHandler(handler)
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    for handler in list(logger.handlers):
+        logger.removeHandler(handler)
     hl = getattr(logging, '_handlerList', None)
     if hl:
         hl[:] = []
