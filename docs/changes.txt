@@ -17,7 +17,7 @@ Changes
 
   __ http://docs.python.org/library/logging.html#filter-objects
 
-- Move from ``zope.testrunner` to `pytest`__ for running tests.
+- Move from ``zope.testrunner`` to `pytest`__ for running tests.
 
   __ https://docs.pytest.org/en/latest/
 
