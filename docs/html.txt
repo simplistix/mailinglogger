@@ -105,16 +105,16 @@ formatted HTML message:
 
 >>> logging.shutdown()
 sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
-Content-Type: text/html; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Summary of Log Messages (CRITICAL)
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger ...
-X-Log-Level: CRITICAL
+Content-Type: text/html; charset="us-ascii"
 Date: Mon, 01 Jan 2007 10:00:00 -0000
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: ...
+Subject: Summary of Log Messages (CRITICAL)
+To: to@example.com
+X-Log-Level: CRITICAL
+X-Mailer: MailingLogger ...
 <BLANKLINE>
 <html><head><style>
     tt {

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys, os, pkginfo, datetime
+import os, pkginfo, datetime, time
 
 pkg_info = pkginfo.Develop(os.path.join(os.path.dirname(__file__),'..'))
+build_date = datetime.datetime.utcfromtimestamp(int(os.environ.get('SOURCE_DATE_EPOCH', time.time())))
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -16,14 +17,14 @@ intersphinx_mapping = dict(
 source_suffix = '.txt'
 master_doc = 'index'
 project = pkg_info.name
-copyright = '2003-%s Simplistix Ltd' % datetime.datetime.now().year
+copyright = '2001-2003 New Information Paradigms Ltd, 2003-2015 Simplistix Ltd, 2015-%s Chris Withers' % build_date.year
 version = release = pkg_info.version
 exclude_trees = ['_build']
-unused_docs = ['description']
+exclude_patterns = ['description.txt']
 pygments_style = 'sphinx'
 
 # Options for HTML output
-html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
 htmlhelp_basename = project+'doc'
 
 # Options for LaTeX output

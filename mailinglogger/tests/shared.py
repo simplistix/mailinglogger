@@ -1,9 +1,13 @@
-from testfixtures import Replacer, test_datetime, test_time
-from time import tzset
+from __future__ import print_function
 
-import atexit
 import logging
 import smtplib
+from collections import namedtuple
+from time import tzset
+
+from testfixtures import Replacer, test_datetime, test_time
+
+SentMessage = namedtuple('SentMessage', ['to_addr', 'from_addr', 'host', 'port', 'msg', 'username', 'password'])
 
 
 class DummySMTP:
@@ -20,7 +24,7 @@ class DummySMTP:
     password = None
 
     @staticmethod
-    def install(stdout=True):
+    def install(stdout=False):
         if DummySMTP.old_smtp is None:
             DummySMTP.old_smtp = smtplib.SMTP
             smtplib.SMTP = DummySMTP
@@ -43,7 +47,15 @@ class DummySMTP:
         self.password = password
 
     def sendmail(self, fromaddr, toaddrs, msg):
-        msg = msg.replace('\r\n', '\n')
+        sent = SentMessage(
+            to_addr=toaddrs,
+            from_addr=fromaddr,
+            host=self.mailhost,
+            port=self.port,
+            msg=msg.replace('\r\n', '\n'),
+            username=self.username,
+            password=self.password,
+        )
         if self.stdout:
             print('sending to %r from %r using %r' % (
                 toaddrs, fromaddr, (self.mailhost, self.port)
@@ -53,16 +65,17 @@ class DummySMTP:
                     self.username,
                     self.password,
                 ))
-            print(msg)
+            parts = msg.split('\n\n', 1)
+            if len(parts)>1:
+                headers, body = parts
+                headers = '\n'.join(sorted(headers.split('\n')))
+                print(headers, end='')
+                print('\n\n', end='')
+                print(body)
+            else:
+                print(msg)
         else:
-            self.sent.append((
-                toaddrs,
-                fromaddr,
-                (self.mailhost, self.port),
-                msg,
-                self.username,
-                self.password
-            ))
+            self.sent.append(sent)
 
     def quit(self):
         pass
@@ -78,10 +91,10 @@ class Dummy:
 
 
 def removeHandlers():
-    to_handle = [logging.getLogger()]
-    for logger in to_handle:
-        for handler in list(logger.handlers):
-            logger.removeHandler(handler)
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    for handler in list(logger.handlers):
+        logger.removeHandler(handler)
     hl = getattr(logging, '_handlerList', None)
     if hl:
         hl[:] = []
@@ -91,15 +104,18 @@ def _setUp(d, stdout=True):
     removeHandlers()
     DummySMTP.install(stdout=stdout)
 
+    atexit_handlers = []
     datetime = test_datetime(2007, 1, 1, 10, delta=0)
     time = test_time(2007, 1, 1, 10, delta=0)
     r = Replacer()
+    r.replace('atexit.register', atexit_handlers.append)
     r.replace('mailinglogger.MailingLogger.now', datetime.now)
     r.replace('mailinglogger.common.gethostname', Dummy('host.example.com'))
     r.replace('time.time', time)
     r.replace('os.environ.TZ', 'GMT', strict=False)
     tzset()
 
+    d['atexit_handlers'] = atexit_handlers
     d['r'] = r
     d['smtp'] = DummySMTP
     d['datetime'] = datetime
@@ -113,5 +129,3 @@ def _tearDown(d):
     tzset()
     # make sure we have no dummy smtp
     DummySMTP.remove()
-    # make sure we haven't registered any atexit funcs
-    atexit._exithandlers[:] = []

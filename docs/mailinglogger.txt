@@ -39,16 +39,16 @@ message will be sent:
 
 >>> logging.error('my message')
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: my message
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
-X-Log-Level: ERROR
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: my message
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
 <BLANKLINE>
 my message
 
@@ -73,15 +73,16 @@ will not result in emails being sent:
 >>> handler.setLevel(logging.WARNING)
 >>> logging.warning('my message')
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: my message
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: my message
+To: to@example.com
+X-Log-Level: WARNING
+X-Mailer: MailingLogger...
 <BLANKLINE>
 my message
 
@@ -102,15 +103,16 @@ instantiating the handler object:
 >>> logger.addHandler(handler)
 >>> logging.error('my %i message',13)
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [MyLogger] my 13 message
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: [MyLogger] my 13 message
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
 <BLANKLINE>
 my 13 message
 
@@ -137,15 +139,16 @@ to do is supply the `send_empty_entries` parameter:
 >>> logger.addHandler(handler)
 >>> logging.error(' ')
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: 
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: ...
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
 <BLANKLINE>
 <BLANKLINE>
   
@@ -174,15 +177,16 @@ With this setup, we can log at most one message:
 
 >>> logging.error('An Error')
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: An Error
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: Mon, 01 Jan 2007 10:00:00 -0000
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
 <BLANKLINE>
 An Error
 
@@ -191,15 +195,16 @@ sent if any more messages are logged:
 
 >>> logging.error('Another Error')
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Too Many Log Entries
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: Mon, 01 Jan 2007 10:00:00 -0000
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: Too Many Log Entries
+To: to@example.com
+X-Log-Level: CRITICAL
+X-Mailer: MailingLogger...
 <BLANKLINE>
 Too Many Log Entries
 <BLANKLINE>
@@ -225,15 +230,16 @@ Any further messages logged will not result in an email being sent:
 
     >>> logging.error('Yet Another Error')
     sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-    Content-Type: text/plain; charset="us-ascii"
-    MIME-Version: 1.0
     Content-Transfer-Encoding: 7bit
-    Subject: Yet Another Error
-    From: from@example.com
-    To: to@example.com
-    X-Mailer: MailingLogger...
+    Content-Type: text/plain; charset="us-ascii"
     Date: Mon, 01 Jan 2007 11:00:00 -0000
+    From: from@example.com
+    MIME-Version: 1.0
     Message-ID: <...MailingLogger@...>
+    Subject: Yet Another Error
+    To: to@example.com
+    X-Log-Level: ERROR
+    X-Mailer: MailingLogger...
     <BLANKLINE>
     Yet Another Error
 
@@ -254,15 +260,16 @@ mail, this can be done by specifying the `mailhost` parameter to the
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: An Error
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
 <BLANKLINE>
 An Error
 
@@ -280,15 +287,16 @@ port on which it is listening:
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
 sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 2500)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: An Error
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
 <BLANKLINE>
 An Error
 
@@ -306,15 +314,16 @@ constructor:
 >>> logging.error('An Error')
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
 (authenticated using username:'auser' and password:'theirpassword')
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: An Error
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger...
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
 <BLANKLINE>
 An Error
 
@@ -341,16 +350,17 @@ be sent with the configured headers:
 
 >>> logging.error('The Error!')
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-foo: bar
 Baz: bob
-Subject: The Error!
-From: from@example.com
-To: to@example.com
-X-Mailer: MailingLogger ...
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 Date: ...
+From: from@example.com
+MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
+Subject: The Error!
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger ...
+foo: bar
 <BLANKLINE>
 The Error!
