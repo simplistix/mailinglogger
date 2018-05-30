@@ -3,7 +3,7 @@ from logging import CRITICAL, FileHandler, Formatter, LogRecord
 import atexit as atexit_module
 import os
 
-from mailinglogger.MailingLogger import MailingLogger
+from mailinglogger.mailinglogger_ import MailingLogger
 from six import PY2
 from tempfile import mkstemp
 

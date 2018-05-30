@@ -1,2 +1,2 @@
-from mailinglogger.MailingLogger import MailingLogger
-from mailinglogger.SummarisingLogger import SummarisingLogger
+from mailinglogger.mailinglogger_ import MailingLogger
+from mailinglogger.summarisinglogger_ import SummarisingLogger

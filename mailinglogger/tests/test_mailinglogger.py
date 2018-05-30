@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from testfixtures import OutputCapture
 
-from mailinglogger.MailingLogger import MailingLogger
+from mailinglogger.mailinglogger_ import MailingLogger
 from mailinglogger.tests.shared import DummySMTP, _setUp, _tearDown
 
 
