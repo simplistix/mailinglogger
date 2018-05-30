@@ -1,14 +1,11 @@
 from __future__ import print_function
+
 import logging
 import smtplib
 from collections import namedtuple
-from email.parser import Parser
 from time import tzset
 
-from six import PY3
-from testfixtures import Replacer, test_datetime, test_time, compare
-
-from mailinglogger.common import exit_handler_manager
+from testfixtures import Replacer, test_datetime, test_time
 
 SentMessage = namedtuple('SentMessage', ['to_addr', 'from_addr', 'host', 'port', 'msg', 'username', 'password'])
 
@@ -107,15 +104,18 @@ def _setUp(d, stdout=True):
     removeHandlers()
     DummySMTP.install(stdout=stdout)
 
+    atexit_handlers = []
     datetime = test_datetime(2007, 1, 1, 10, delta=0)
     time = test_time(2007, 1, 1, 10, delta=0)
     r = Replacer()
+    r.replace('atexit.register', atexit_handlers.append)
     r.replace('mailinglogger.MailingLogger.now', datetime.now)
     r.replace('mailinglogger.common.gethostname', Dummy('host.example.com'))
     r.replace('time.time', time)
     r.replace('os.environ.TZ', 'GMT', strict=False)
     tzset()
 
+    d['atexit_handlers'] = atexit_handlers
     d['r'] = r
     d['smtp'] = DummySMTP
     d['datetime'] = datetime
@@ -129,5 +129,3 @@ def _tearDown(d):
     tzset()
     # make sure we have no dummy smtp
     DummySMTP.remove()
-    # make sure we haven't registered any atexit funcs
-    exit_handler_manager.clear_at_exit_handlers()

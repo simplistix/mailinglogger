@@ -4,7 +4,6 @@ import threading
 from unittest import TestCase
 
 from mailinglogger.SummarisingLogger import SummarisingLogger
-from mailinglogger.common import exit_handler_manager
 from mailinglogger.tests.shared import DummySMTP, removeHandlers
 
 
@@ -16,7 +15,6 @@ class TestSummarisingLogger(TestCase):
 
     def tearDown(self):
         DummySMTP.remove()
-        exit_handler_manager.clear_at_exit_handlers()
 
     def test_imports(self):
         pass
