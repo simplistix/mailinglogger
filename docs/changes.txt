@@ -3,6 +3,16 @@ Changes
 
 .. currentmodule:: mailinglogger
 
+5.0.0 (30 May 2018)
+-------------------
+
+- Python 3 support
+
+- Renaming the modules within the ``mailinglogger`` package to have
+  sane capitalisation.
+
+Thanks to Max Shepherd for breaking the back of the Python 3 work.
+
 4.0.0 (26 Jan 2018)
 -------------------
 
