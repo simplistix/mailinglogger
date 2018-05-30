@@ -114,12 +114,13 @@ class SummarisingLogger(FileHandler):
             summary = f.read()
         f.close()
         try:
-            summary.encode('ascii')
+            encoded_summary = summary.encode('ascii')
             self.mailer.charset = 'ascii'
-            if PY2:
-                summary = summary.encode('ascii')
         except UnicodeEncodeError:
             pass
+        else:
+            if PY2:
+                summary = encoded_summary
 
 
         if os.path.exists(self.filename):
