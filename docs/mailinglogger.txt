@@ -4,15 +4,13 @@ MailingLogger
 .. note:: 
 
   Throughout the examples below, mail messages sent using
-  :mod:`smtplib` are checked against the expected message so that we can
-  see what's going on:
+  :mod:`smtplib` are printed to the screen so we can see what's going on:
 
   >>> import smtplib
   >>> server = smtplib.SMTP('localhost')
   >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
-  >>> server.check_sent_message_matches("""\
-  ... The message""")
-  True
+  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+  The message
 
 .. currentmodule:: mailinglogger
 
@@ -40,20 +38,19 @@ Now, when that logger receives a message, an email containing the
 message will be sent:
 
 >>> logging.error('my message')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: my message
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: ERROR
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... my message""")
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: my message
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
+<BLANKLINE>
+my message
 
 From the above example, you can see that :class:`MailingLogger` sends
 mail messages that are correctly formatted, including ``Date`` and
@@ -75,20 +72,19 @@ will not result in emails being sent:
 >>> logging.error('my message')
 >>> handler.setLevel(logging.WARNING)
 >>> logging.warning('my message')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: my message
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: WARNING
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... my message""")
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: my message
+To: to@example.com
+X-Log-Level: WARNING
+X-Mailer: MailingLogger...
+<BLANKLINE>
+my message
 
 Controlling the subject line
 ----------------------------
@@ -106,20 +102,19 @@ instantiating the handler object:
 ...                         subject='[MyLogger] %(line)s')
 >>> logger.addHandler(handler)
 >>> logging.error('my %i message',13)
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: [MyLogger] my 13 message
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: ERROR
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... my 13 message""")
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: [MyLogger] my 13 message
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
+<BLANKLINE>
+my 13 message
 
 Full details of how the subject line can be formatted can be found in
 the :doc:`subjectformatter` documentation.
@@ -143,20 +138,19 @@ to do is supply the `send_empty_entries` parameter:
 ...                         send_empty_entries=True)
 >>> logger.addHandler(handler)
 >>> logging.error(' ')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject:
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: ERROR
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... <BLANKLINE>""")
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: ...
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
+<BLANKLINE>
+<BLANKLINE>
   
 Limiting the number of emails sent
 ----------------------------------
@@ -182,49 +176,47 @@ option to the :class:`MailingLogger` constructor:
 With this setup, we can log at most one message:
 
 >>> logging.error('An Error')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: An Error
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: ERROR
-... Date: Mon, 01 Jan 2007 10:00:00 -0000
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... An Error""")
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 01 Jan 2007 10:00:00 -0000
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
+<BLANKLINE>
+An Error
 
 Now that the flood level has been reached, a final warning message is
 sent if any more messages are logged:
 
 >>> logging.error('Another Error')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: Too Many Log Entries
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: CRITICAL
-... Date: Mon, 01 Jan 2007 10:00:00 -0000
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... Too Many Log Entries
-... <BLANKLINE>
-... More than 1 entries have been logged that would have resulted in
-... emails being sent.
-... <BLANKLINE>
-... No further emails will be sent for log entries generated between
-... 10:00:00 and 11:00:00
-... <BLANKLINE>
-... Please consult any other configured logs, such as a File Logger,
-... that may contain important entries that have not been emailed.
-... <BLANKLINE>""")
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 01 Jan 2007 10:00:00 -0000
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: Too Many Log Entries
+To: to@example.com
+X-Log-Level: CRITICAL
+X-Mailer: MailingLogger...
+<BLANKLINE>
+Too Many Log Entries
+<BLANKLINE>
+More than 1 entries have been logged that would have resulted in
+emails being sent.
+<BLANKLINE>
+No further emails will be sent for log entries generated between
+10:00:00 and 11:00:00
+<BLANKLINE>
+Please consult any other configured logs, such as a File Logger,
+that may contain important entries that have not been emailed.
+<BLANKLINE>
 
 Any further messages logged will not result in an email being sent:
 
@@ -237,20 +229,19 @@ Any further messages logged will not result in an email being sent:
     >>> time.set(2007, 1, 1, 11)
 
     >>> logging.error('Yet Another Error')
-    >>> server.check_sent_message_matches("""\
-    ... Content-Type: text/plain; charset="us-ascii"
-    ... MIME-Version: 1.0
-    ... Content-Transfer-Encoding: 7bit
-    ... Subject: Yet Another Error
-    ... From: from@example.com
-    ... To: to@example.com
-    ... X-Mailer: MailingLogger...
-    ... X-Log-Level: ERROR
-    ... Date: Mon, 01 Jan 2007 11:00:00 -0000
-    ... Message-ID: <...MailingLogger@...>
-    ... <BLANKLINE>
-    ... Yet Another Error""")
-    True
+    sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+    Content-Transfer-Encoding: 7bit
+    Content-Type: text/plain; charset="us-ascii"
+    Date: Mon, 01 Jan 2007 11:00:00 -0000
+    From: from@example.com
+    MIME-Version: 1.0
+    Message-ID: <...MailingLogger@...>
+    Subject: Yet Another Error
+    To: to@example.com
+    X-Log-Level: ERROR
+    X-Mailer: MailingLogger...
+    <BLANKLINE>
+    Yet Another Error
 
 Specifying the host to send email through
 -----------------------------------------
@@ -268,21 +259,19 @@ mail, this can be done by specifying the `mailhost` parameter to the
 ...                         mailhost='smtp.example.com')
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: An Error
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: ERROR
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... An Error """,
-... hostname='smtp.example.com')
-True
+sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
+<BLANKLINE>
+An Error
 
 If the smtp server you wish to use is running on non-standard port,
 you can configure :class:`MailingLogger` to use this port by specifying
@@ -297,21 +286,19 @@ port on which it is listening:
 ...                         mailhost=('smtp.example.com',2500))
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: An Error
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: ERROR
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... An Error""",
-... hostname='smtp.example.com', port=2500)
-True
+sending to ('to@example.com',) from 'from@example.com' using ('smtp.example.com', 2500)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
+<BLANKLINE>
+An Error
 
 If the smtp server you wish to use requires authentication,
 pass the required username and password to the :class:`MailingLogger`
@@ -325,21 +312,20 @@ constructor:
 ...                         username='auser',password='theirpassword')
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: An Error
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger...
-... X-Log-Level: ERROR
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... An Error""",
-... username='auser', password='theirpassword')
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+(authenticated using username:'auser' and password:'theirpassword')
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: An Error
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger...
+<BLANKLINE>
+An Error
 
 .. warning::
 
@@ -363,19 +349,18 @@ Now, when a log message results in an email being send, the email will
 be sent with the configured headers:
 
 >>> logging.error('The Error!')
->>> server.check_sent_message_matches("""\
-... Content-Type: text/plain; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... foo: bar
-... Baz: bob
-... Subject: The Error!
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger ...
-... X-Log-Level: ERROR
-... Date: ...
-... Message-ID: <...MailingLogger@...>
-... <BLANKLINE>
-... The Error!""")
-True
+sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
+Baz: bob
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Date: ...
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: <...MailingLogger@...>
+Subject: The Error!
+To: to@example.com
+X-Log-Level: ERROR
+X-Mailer: MailingLogger ...
+foo: bar
+<BLANKLINE>
+The Error!

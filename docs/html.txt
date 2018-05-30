@@ -9,12 +9,8 @@ Sending HTML Emails
   >>> import smtplib
   >>> server = smtplib.SMTP('localhost')
   >>> server.sendmail('from@example.com', ['to@example.com'], 'The message')
-  >>> server.check_sent_message_matches("""\
-  ... The message""",
-  ... hostname='localhost',
-  ... from_addr='from@example.com',
-  ... to_addr=['to@example.com'])
-  True
+  sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+  The message
 
 .. currentmodule:: mailinglogger
 
@@ -108,38 +104,37 @@ Now when the summary is sent, you can see that it is a correctly
 formatted HTML message:
 
 >>> logging.shutdown()
->>> server.check_sent_message_matches("""\
-... Content-Type: text/html; charset="us-ascii"
-... MIME-Version: 1.0
-... Content-Transfer-Encoding: 7bit
-... Subject: Summary of Log Messages (CRITICAL)
-... From: from@example.com
-... To: to@example.com
-... X-Mailer: MailingLogger ...
-... X-Log-Level: CRITICAL
-... Date: Mon, 01 Jan 2007 10:00:00 -0000
-... Message-ID: ...
-... <BLANKLINE>
-... <html><head><style>
-...     tt {
-...       padding: 0;
-...       margin: 0;
-...       color: #444444;
-...     }
-...     tt.WARNING {
-...       color: #CC6600
-...     }
-...     tt.ERROR {
-...       color: #990000
-...     }
-...     tt.CRITICAL {
-...       color: #990000
-...     }
-...     </style></head>
-...     <body><pre><tt class="INFO">2007-01-01 10:00:00 INFO     An info message</tt>
-... <tt class="WARNING">2007-01-01 10:00:00 WARNING  Malformed html: &lt;a href="&gt;foo &amp;&amp;</tt>
-... <tt class="ERROR">2007-01-01 10:00:00 ERROR    An error</tt>
-... <tt class="CRITICAL">2007-01-01 10:00:00 CRITICAL Something critical</tt>
-... </pre></body></html>
-... <BLANKLINE>""")
-True
+sending to ['to@example.com'] from 'from@example.com' using ('localhost', 25)
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="us-ascii"
+Date: Mon, 01 Jan 2007 10:00:00 -0000
+From: from@example.com
+MIME-Version: 1.0
+Message-ID: ...
+Subject: Summary of Log Messages (CRITICAL)
+To: to@example.com
+X-Log-Level: CRITICAL
+X-Mailer: MailingLogger ...
+<BLANKLINE>
+<html><head><style>
+    tt {
+      padding: 0;
+      margin: 0;
+      color: #444444;
+    }
+    tt.WARNING {
+      color: #CC6600
+    }
+    tt.ERROR {
+      color: #990000
+    }
+    tt.CRITICAL {
+      color: #990000
+    }
+    </style></head>
+    <body><pre><tt class="INFO">2007-01-01 10:00:00 INFO     An info message</tt>
+<tt class="WARNING">2007-01-01 10:00:00 WARNING  Malformed html: &lt;a href="&gt;foo &amp;&amp;</tt>
+<tt class="ERROR">2007-01-01 10:00:00 ERROR    An error</tt>
+<tt class="CRITICAL">2007-01-01 10:00:00 CRITICAL Something critical</tt>
+</pre></body></html>
+<BLANKLINE>

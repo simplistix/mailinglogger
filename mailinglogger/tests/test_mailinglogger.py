@@ -13,7 +13,7 @@ class TestMailingLogger(TestCase):
         return logging.getLogger('')
 
     def setUp(self):
-        _setUp(self.__dict__)
+        _setUp(self.__dict__, stdout=False)
 
     def tearDown(self):
         _tearDown(self.__dict__)
