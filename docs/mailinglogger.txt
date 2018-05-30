@@ -25,7 +25,7 @@ __ http://docs.python.org/howto/logging.html#configuring-logging
 
 A :class:`MailingLogger` is instantiated as follows:
 
->>> from mailinglogger.MailingLogger import MailingLogger
+>>> from mailinglogger import MailingLogger
 >>> handler = MailingLogger('from@example.com',('to@example.com',))
 
 It can then be added as a handler for any logger as follows:

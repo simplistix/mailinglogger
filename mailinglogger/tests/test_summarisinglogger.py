@@ -3,7 +3,7 @@ import os
 import threading
 from unittest import TestCase
 
-from mailinglogger.summarisinglogger_ import SummarisingLogger
+from mailinglogger.summarisinglogger import SummarisingLogger
 from mailinglogger.tests.shared import DummySMTP, removeHandlers
 
 

@@ -12,7 +12,7 @@ except ImportError:
     from email.mime.text import MIMEText
 from logging.handlers import SMTPHandler
 from logging import LogRecord, CRITICAL
-from mailinglogger.common import SubjectFormatter
+from .common import SubjectFormatter
 
 this_dir = os.path.dirname(__file__)
 version = open(os.path.join(this_dir, 'version.txt')).read().strip()

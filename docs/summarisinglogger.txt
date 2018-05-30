@@ -36,7 +36,7 @@ __ http://docs.python.org/howto/logging.html#configuring-logging
 A :class:`SummarisingLogger` is instantiated as follows:
 
 >>> import logging
->>> from mailinglogger.SummarisingLogger import SummarisingLogger
+>>> from mailinglogger import SummarisingLogger
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',))
 
 It can then be added as a handler for any logger as follows:

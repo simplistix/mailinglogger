@@ -1,2 +1,3 @@
-from mailinglogger.mailinglogger_ import MailingLogger
-from mailinglogger.summarisinglogger_ import SummarisingLogger
+from __future__ import absolute_import
+from .mailinglogger import MailingLogger
+from .summarisinglogger import SummarisingLogger
