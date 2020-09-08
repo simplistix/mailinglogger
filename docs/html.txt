@@ -133,7 +133,7 @@ X-Mailer: MailingLogger ...
     }
     </style></head>
     <body><pre><tt class="INFO">2007-01-01 10:00:00 INFO     An info message</tt>
-<tt class="WARNING">2007-01-01 10:00:00 WARNING  Malformed html: &lt;a href="&gt;foo &amp;&amp;</tt>
+<tt class="WARNING">2007-01-01 10:00:00 WARNING  Malformed html: &lt;a href=&quot;&gt;foo &amp;&amp;</tt>
 <tt class="ERROR">2007-01-01 10:00:00 ERROR    An error</tt>
 <tt class="CRITICAL">2007-01-01 10:00:00 CRITICAL Something critical</tt>
 </pre></body></html>
