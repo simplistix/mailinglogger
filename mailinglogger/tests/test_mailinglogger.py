@@ -87,6 +87,17 @@ class TestMailingLogger(TestCase):
         m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: 2007-01-01 10:00:00,000' in m, m)
 
+    def test_subject_contains_hostname(self):
+        # set up logger
+        self.handler = MailingLogger('from@example.com', ('to@example.com',),
+                                     subject="%(hostname)s")
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical('message')
+        self.assertEqual(len(DummySMTP.sent), 1)
+        m = DummySMTP.sent[0].msg
+        self.assertTrue('Subject: host.example.com' in m, m)
+
     def test_non_string_error_messages_dont_break_logging(self):
         self.handler = MailingLogger('from@example.com', ('to@example.com',),)
         logger = self.getLogger()
