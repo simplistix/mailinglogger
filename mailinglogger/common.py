@@ -9,6 +9,11 @@ from socket import gethostname
 
 
 class SubjectFormatter(Formatter):
+    def __init__(self, fmt=None, datefmt=None):
+        if version_info >= (3, 8):
+            super().__init__(fmt, datefmt, validate=False)
+        else:
+            Formatter.__init__(fmt, datefmt)
 
     def format(self, record):
         record.message = record.getMessage()
