@@ -1,4 +1,9 @@
-from cgi import escape
+from sys import version_info
+if version_info >= (3, 8):
+    from html import escape
+else:
+    from cgi import escape
+
 from logging import Formatter
 from socket import gethostname
 
