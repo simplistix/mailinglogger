@@ -98,6 +98,16 @@ class TestMailingLogger(TestCase):
         m = DummySMTP.sent[0].msg
         self.assertTrue('Subject: host.example.com' in m, m)
 
+    def test_mailserver_authentication(self):
+        # set up logger
+        self.handler = MailingLogger('from@example.com', ('to@example.com',), username="user", password="pass")
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical('message')
+        self.assertEqual(len(DummySMTP.sent), 1)
+        self.assertEqual(DummySMTP.sent[0].username, "user")
+        self.assertEqual(DummySMTP.sent[0].password, "pass")
+
     def test_non_string_error_messages_dont_break_logging(self):
         self.handler = MailingLogger('from@example.com', ('to@example.com',),)
         logger = self.getLogger()
