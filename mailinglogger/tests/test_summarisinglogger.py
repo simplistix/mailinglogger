@@ -54,6 +54,20 @@ class TestSummarisingLogger(TestCase):
         self.assertTrue('a warning' in message_text)
         self.assertTrue('something critical' in message_text)
 
+    def test_set_level_filters_lower_level(self):
+        self.create('from@example.com', ('to@example.com',),
+                    send_level=logging.CRITICAL)
+        self.handler.setLevel(logging.WARNING)
+        self.logger.info('an information')
+        self.logger.warning('a warning')
+        self.logger.critical('something critical')
+        logging.shutdown()
+        self.assertEqual(len(DummySMTP.sent), 1)
+        message_text = DummySMTP.sent[0].msg
+        self.assertFalse('an information' in message_text)
+        self.assertTrue('a warning' in message_text)
+        self.assertTrue('something critical' in message_text)
+
     def test_tmpfile_goes_away(self):
         self.create('from@example.com', ('to@example.com',))
         os.remove(self.handler.filename)
