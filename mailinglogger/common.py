@@ -13,7 +13,7 @@ class SubjectFormatter(Formatter):
         if version_info >= (3, 8):
             super().__init__(fmt, datefmt, validate=False)
         else:
-            Formatter.__init__(fmt, datefmt)
+            Formatter.__init__(self, fmt, datefmt)
 
     def format(self, record):
         record.message = record.getMessage()
