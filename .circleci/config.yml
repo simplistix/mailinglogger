@@ -12,7 +12,7 @@ common: &common
             image:
               - circleci/python:2.7
               - circleci/python:3.6
-              - circleci/python:3.7
+              - circleci/python:3.8
 
     - python/coverage:
         name: coverage
