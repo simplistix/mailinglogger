@@ -1,16 +1,13 @@
-|Travis|_ |Coveralls|_ |Docs|_
+MailingLogger
+=============
 
-.. |Travis| image:: https://travis-ci.org/Simplistix/mailinglogger.svg?branch=master
-.. _Travis: https://travis-ci.org/Simplistix/mailinglogger
+|CircleCI|_ |Docs|_
 
-.. |Coveralls| image:: https://coveralls.io/repos/Simplistix/mailinglogger/badge.svg?branch=master&service=github
-.. _Coveralls: https://coveralls.io/github/Simplistix/mailinglogger?branch=master
+.. |CircleCI| image:: https://circleci.com/gh/cjw296/sybil/tree/master.svg?style=shield
+.. _CircleCI: https://circleci.com/gh/cjw296/sybil/tree/master
 
 .. |Docs| image:: https://readthedocs.org/projects/mailinglogger/badge/?version=latest
 .. _Docs: http://mailinglogger.readthedocs.org/en/latest/
-
-MailingLogger
-=============
 
 Enhanced emailing handlers for the python logging package.
 

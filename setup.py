@@ -32,7 +32,7 @@ setup(
     include_package_data=True,
     install_requires=['six'],
     extras_require=dict(
-        test=['coverage', 'coveralls', 'pytest', 'sybil', 'testfixtures'],
+        test=['pytest', 'pytest-cov', 'sybil', 'testfixtures'],
         build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine',
                'sphinx_rtd_theme'],
         )
