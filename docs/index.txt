@@ -1,8 +1,4 @@
-MailingLogger documentation
-===========================
-
-This package provides more flexible and powerful email log handling for
-python's standard logging framework. 
+.. include:: ../README.rst
 
 Two log handlers are provided:
 
