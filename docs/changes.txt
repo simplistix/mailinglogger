@@ -3,6 +3,12 @@ Changes
 
 .. currentmodule:: mailinglogger
 
+5.1.0 (8 Sept 2020)
+-------------------
+
+- Python 3.8 support.
+
+Thanks to
 5.0.0 (30 May 2018)
 -------------------
 
