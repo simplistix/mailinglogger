@@ -33,7 +33,6 @@ setup(
     install_requires=['six'],
     extras_require=dict(
         test=['pytest', 'pytest-cov', 'sybil', 'testfixtures'],
-        build=['sphinx', 'pkginfo', 'setuptools-git', 'wheel', 'twine',
-               'sphinx_rtd_theme'],
+        build=['sphinx', 'setuptools-git', 'wheel', 'twine', 'sphinx_rtd_theme'],
         )
     )

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import os, pkginfo, datetime, time
+import os, pkg_resources, datetime, time
 
-pkg_info = pkginfo.Develop(os.path.join(os.path.dirname(__file__),'..'))
 build_date = datetime.datetime.utcfromtimestamp(int(os.environ.get('SOURCE_DATE_EPOCH', time.time())))
 
 extensions = [
@@ -16,9 +15,9 @@ intersphinx_mapping = dict(
 # General
 source_suffix = '.txt'
 master_doc = 'index'
-project = pkg_info.name
+project = 'mailinglogger'
 copyright = '2001-2003 New Information Paradigms Ltd, 2003-2015 Simplistix Ltd, 2015-%s Chris Withers' % build_date.year
-version = release = pkg_info.version
+version = release = pkg_resources.get_distribution(project).version
 exclude_trees = ['_build']
 exclude_patterns = ['description.txt']
 pygments_style = 'sphinx'
