@@ -17,7 +17,7 @@ install:
 script: coverage run --source mailinglogger -m pytest
 
 after_success:
-  - "COVERALLS_PARALLEL=true coveralls"
+  - "coveralls"
 
 jobs:
   include:
@@ -27,10 +27,8 @@ jobs:
       python: 3.8
       after_success: skip
 
-      install: "pip install -U coveralls coveralls-check"
-      script:
-        - "coveralls --finish"
-        - "coveralls-check $TRAVIS_COMMIT"
+      install: "pip install -U coveralls-check"
+      script: "coveralls-check $TRAVIS_COMMIT"
 
     - stage: release
       if: tag IS present
