@@ -9,10 +9,5 @@ MailingLogger
 .. |Docs| image:: https://readthedocs.org/projects/mailinglogger/badge/?version=latest
 .. _Docs: http://mailinglogger.readthedocs.org/en/latest/
 
-Enhanced emailing handlers for the python logging package.
-
-The latest documentation can be found at:
-http://mailinglogger.readthedocs.org/en/latest/
-
-Development takes place here:
-https://github.com/Simplistix/mailinglogger
+This package provides more flexible and powerful email log handling for
+python's standard logging framework.
