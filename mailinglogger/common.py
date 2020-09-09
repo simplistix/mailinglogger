@@ -24,6 +24,6 @@ class SubjectFormatter(Formatter):
 class HTMLFilter(object):
 
     def filter(self, record):
-        record.msg = escape(record.getMessage())
+        record.msg = escape(record.getMessage(), quote=True)
         record.args = ()
         return True
