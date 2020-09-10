@@ -57,5 +57,5 @@ Making a release
 ----------------
 
 To make a release, just update the version in ``setup.py``,
-and push to https://github.com/cjw296/sybil
+and push to https://github.com/Simplistix/mailinglogger
 and Carthorse should take care of the rest.
