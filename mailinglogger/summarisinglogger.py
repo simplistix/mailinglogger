@@ -30,6 +30,7 @@ class SummarisingLogger(FileHandler):
                  template=None,
                  charset='utf-8',
                  content_type='text/plain',
+                 secure=None,  # if tuple with 0, 1, or 2 arguments: use TLS. See smtplib.SMTP.starttls
                  flood_level=100,
                  ):
         # create the "real" mailinglogger
@@ -43,7 +44,8 @@ class SummarisingLogger(FileHandler):
                                     headers=headers,
                                     template=template,
                                     charset=charset,
-                                    content_type=content_type)
+                                    content_type=content_type,
+                                    secure=secure)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.send_level = send_level
