@@ -30,7 +30,8 @@ class MailingLogger(SMTPHandler):
                  headers=None,
                  template=None,
                  charset='utf-8',
-                 content_type='text/plain'):
+                 content_type='text/plain',
+                 secure = None):
         SMTPHandler.__init__(self, mailhost, fromaddr, toaddrs, subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
@@ -43,6 +44,7 @@ class MailingLogger(SMTPHandler):
         self.template = template
         self.charset = charset
         self.content_type = content_type
+        self.secure = secure
         if not self.mailport:
             self.mailport = smtplib.SMTP_PORT
 
@@ -100,6 +102,9 @@ class MailingLogger(SMTPHandler):
             email['Message-ID'] = make_msgid('MailingLogger')
             smtp = smtplib.SMTP(self.mailhost, self.mailport)
             if self.username and self.password:
+                if self.secure is not None:
+                    smtp.starttls(*self.secure)
+                    smtp.ehlo()
                 smtp.login(self.username, self.password)
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()
