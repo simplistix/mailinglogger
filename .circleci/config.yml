@@ -13,6 +13,8 @@ common: &common
               - circleci/python:2.7
               - circleci/python:3.6
               - circleci/python:3.8
+              - circleci/python:3.9
+              - circleci/python:3.10
 
     - python/coverage:
         name: coverage
