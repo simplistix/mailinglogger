@@ -4,7 +4,6 @@ import atexit as atexit_module
 import os
 
 from .mailinglogger import MailingLogger
-from six import PY2
 from tempfile import mkstemp
 
 flood_template = '%i messages not included as flood limit of %i exceeded'
