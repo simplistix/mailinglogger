@@ -1,18 +1,16 @@
 version: 2.1
 
 orbs:
-  python: cjw296/python-ci@1.2
+  python: cjw296/python-ci@3.1
 
 common: &common
   jobs:
-
     - python/pip-run-tests:
         matrix:
           parameters:
             image:
-              - circleci/python:2.7
-              - circleci/python:3.6
-              - circleci/python:3.8
+              - cimg/python:3.7
+              - cimg/python:3.10
 
     - python/coverage:
         name: coverage
