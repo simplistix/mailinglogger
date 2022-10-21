@@ -1,7 +1,6 @@
 import logging
 import smtplib
 from collections import namedtuple
-from time import tzset
 
 from testfixtures import Replacer, test_datetime, test_time
 
@@ -111,7 +110,6 @@ def _setUp(d, stdout=True):
     r.replace('mailinglogger.common.gethostname', Dummy('host.example.com'))
     r.replace('time.time', time)
     r.replace('os.environ.TZ', 'GMT', strict=False)
-    tzset()
 
     d['atexit_handlers'] = atexit_handlers
     d['r'] = r
@@ -124,6 +122,5 @@ def _setUp(d, stdout=True):
 def _tearDown(d):
     # restore stuff we've mocked out
     d['r'].restore()
-    tzset()
     # make sure we have no dummy smtp
     DummySMTP.remove()
