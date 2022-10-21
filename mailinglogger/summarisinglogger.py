@@ -105,26 +105,12 @@ class SummarisingLogger(FileHandler):
 
         FileHandler.close(self)
 
-
-        if PY2:
-            f = os.fdopen(self.fd)
-            summary = f.read().decode(self.charset)
-        else:
-            f = open(self.fd, encoding=self.charset)
+        with open(self.fd, encoding=self.charset) as f:
             summary = f.read()
-        f.close()
-        try:
-            encoded_summary = summary.encode('ascii')
-            self.mailer.charset = 'ascii'
-        except UnicodeEncodeError:
-            pass
-        else:
-            if PY2:
-                summary = encoded_summary
-
 
         if os.path.exists(self.filename):
             os.remove(self.filename)
+
         if self.send_level is None or self.maxlevelno >= self.send_level:
             self.mailer.handle(
                 LogRecord(

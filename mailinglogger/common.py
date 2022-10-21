@@ -1,8 +1,5 @@
 from sys import version_info
-if version_info >= (3, 2):
-    from html import escape
-else:
-    from cgi import escape
+from html import escape
 
 from logging import Formatter
 from socket import gethostname
