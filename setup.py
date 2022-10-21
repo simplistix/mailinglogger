@@ -32,7 +32,6 @@ setup(
     zip_safe=False,
     include_package_data=True,
     python_requires=">=3.7",
-    install_requires=['six'],
     extras_require=dict(
         test=['pytest', 'pytest-cov', 'sybil', 'testfixtures'],
         build=['sphinx', 'setuptools-git', 'wheel', 'twine', 'sphinx_rtd_theme'],
