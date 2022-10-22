@@ -538,34 +538,34 @@ An Error
 
 If the smtp server you wish to use requires TLS (Transport Level Security),
 pass the required username and password and the secure parameter to the
-:class:`SummarisingLogger` constructor. ``secure`` must be an empty tuple or
-contain one or two members. See the `smtplib`__ documentation for details:
-
-__ https://docs.python.org/3/library/smtplib.html
+:class:`SummarisingLogger` constructor. ``secure`` must be either a boolean
+or an :class:`ssl.SSLContext` object:
 
 .. invisible-code-block: python
 
   logging.getLogger('').removeHandler(handler)
 
 >>> handler = SummarisingLogger('from@example.com',('to@example.com',),
-...                         username='auser',password='theirpassword',
-...                         secure=())
+...                         username='auser',password='apassword',
+...                         secure=True)
 >>> logger.addHandler(handler)
 >>> logging.error('An Error')
+>>> logging.shutdown()
 sending to ('to@example.com',) from 'from@example.com' using ('localhost', 25)
-(authenticated using username:'auser' and password:'theirpassword')
+(authenticated using username:'auser' and password:'apassword')
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"
 Date: ...
 From: from@example.com
 MIME-Version: 1.0
 Message-ID: <...MailingLogger@...>
-Subject: An Error
+Subject: Summary of Log Messages (ERROR)
 To: to@example.com
 X-Log-Level: ERROR
 X-Mailer: MailingLogger...
 <BLANKLINE>
 An Error
+<BLANKLINE>
 
 .. _sum_extra_headers:
 

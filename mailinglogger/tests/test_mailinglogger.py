@@ -1,7 +1,9 @@
 import logging
+from ssl import SSLContext, PROTOCOL_TLS_SERVER
 from unittest import TestCase
 
-from testfixtures import OutputCapture
+from testfixtures import OutputCapture, compare, ShouldRaise
+from testfixtures.mock import call
 
 from mailinglogger.mailinglogger import MailingLogger
 from mailinglogger.tests.shared import DummySMTP, _setUp, _tearDown
@@ -169,3 +171,39 @@ class TestMailingLogger(TestCase):
         with OutputCapture() as output:
             logger.critical(u"message")
         assert 'TypeError: not all arguments converted' in output.captured
+
+    def test_secure_no_username_or_password(self):
+        with ShouldRaise(TypeError('username and password required for secure')):
+            MailingLogger('from@example.com', ('to@example.com',),
+                          secure=True)
+
+    def test_secure(self):
+        self.handler = MailingLogger('from@example.com', ('to@example.com',),
+                                     username='foo', password='bar',
+                                     secure=True)
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical(u"message")
+        compare(DummySMTP.calls, expected=[
+            call.starttls(context=None),
+            call.ehlo(),
+            call.login('foo', 'bar'),
+            call.sendmail('from@example.com', ('to@example.com',), '...'),
+            call.quit()
+        ])
+
+    def test_secure_context_provided(self):
+        context = SSLContext(PROTOCOL_TLS_SERVER)
+        self.handler = MailingLogger('from@example.com', ('to@example.com',),
+                                     username='foo', password='bar',
+                                     secure=context)
+        logger = self.getLogger()
+        logger.addHandler(self.handler)
+        logger.critical(u"message")
+        compare(DummySMTP.calls, expected=[
+            call.starttls(context=context),
+            call.ehlo(),
+            call.login('foo', 'bar'),
+            call.sendmail('from@example.com', ('to@example.com',), '...'),
+            call.quit()
+        ])

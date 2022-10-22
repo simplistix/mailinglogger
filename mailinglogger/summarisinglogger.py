@@ -2,6 +2,8 @@ from collections import deque
 from logging import CRITICAL, FileHandler, Formatter, LogRecord
 import atexit as atexit_module
 import os
+from ssl import SSLContext
+from typing import Union
 
 from .mailinglogger import MailingLogger
 from tempfile import mkstemp
@@ -29,7 +31,7 @@ class SummarisingLogger(FileHandler):
                  template=None,
                  charset='utf-8',
                  content_type='text/plain',
-                 secure=None,  # if tuple with 0, 1, or 2 arguments: use TLS. See smtplib.SMTP.starttls
+                 secure: Union[bool, SSLContext] = None,
                  flood_level=100,
                  ):
         # create the "real" mailinglogger

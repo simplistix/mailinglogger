@@ -120,11 +120,8 @@ API Reference
   
   :param secure:
 
-    If TLS is required, this must be an empty tuple ``()`` or a tuple
-    containing either one ``(keyfile)`` or two ``(keyfile, certfile)``
-    parameters. See `smtplib SMTP.starttls()`__ for details.
-
-    __ https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls
+    If TLS is required, this must be ``True`` or an :class:`ssl.SSLContext`
+    object which will be passed to :meth:`smtplib.SMTP.starttls`.
 
     ..  note:: If TLS is required, both username and password must also be
                provided.
@@ -262,11 +259,8 @@ API Reference
   
   :param secure:
 
-    If TLS is required, this must be an empty tuple ``()`` or a tuple
-    containing either one ``(keyfile)`` or two ``(keyfile, certfile)``
-    parameters. See `smtplib SMTP.starttls()`__ for details.
-
-    __ https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls
+    If TLS is required, this must be ``True`` or an :class:`ssl.SSLContext`
+    object which will be passed to :meth:`smtplib.SMTP.starttls`.
 
     ..  note:: If TLS is required, both username and password must also be
                provided.

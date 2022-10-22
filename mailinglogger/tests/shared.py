@@ -1,8 +1,11 @@
 import logging
 import smtplib
 from collections import namedtuple
+from ssl import SSLContext
 
 from testfixtures import Replacer, test_datetime, test_time
+from testfixtures.mock import call
+
 
 SentMessage = namedtuple('SentMessage', ['to_addr', 'from_addr', 'host', 'port', 'msg', 'username', 'password'])
 
@@ -12,6 +15,7 @@ class DummySMTP:
     broken = False
 
     sent = []
+    calls = []
 
     stdout = True
 
@@ -26,6 +30,7 @@ class DummySMTP:
             DummySMTP.old_smtp = smtplib.SMTP
             smtplib.SMTP = DummySMTP
         DummySMTP.sent = []
+        DummySMTP.calls = []
         DummySMTP.stdout = stdout
 
     @staticmethod
@@ -40,6 +45,7 @@ class DummySMTP:
         self.port = port
 
     def login(self, username, password):
+        self.calls.append(call.login(username, password))
         self.username = username
         self.password = password
 
@@ -53,6 +59,7 @@ class DummySMTP:
             username=self.username,
             password=self.password,
         )
+        self.calls.append(call.sendmail(fromaddr, toaddrs, '...'))
         if self.stdout:
             print('sending to %r from %r using %r' % (
                 toaddrs, fromaddr, (self.mailhost, self.port)
@@ -75,7 +82,15 @@ class DummySMTP:
             self.sent.append(sent)
 
     def quit(self):
-        pass
+        self.calls.append(call.quit())
+
+    def starttls(self, context=None):
+        if context:
+            assert isinstance(context, SSLContext)
+        self.calls.append(call.starttls(context=context))
+
+    def ehlo(self):
+        self.calls.append(call.ehlo())
 
 
 class Dummy:
