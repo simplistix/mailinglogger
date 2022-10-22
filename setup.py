@@ -29,11 +29,10 @@ setup(
         'Programming Language :: Python :: 3.10',
     ],
     packages=find_packages(),
-    zip_safe=False,
-    include_package_data=True,
+    package_data={'mailinglogger': ['*.txt']},
     python_requires=">=3.7",
     extras_require=dict(
         test=['pytest', 'pytest-cov', 'sybil', 'testfixtures'],
-        build=['sphinx', 'setuptools-git', 'wheel', 'twine', 'sphinx_rtd_theme'],
+        build=['sphinx', 'wheel', 'twine', 'sphinx_rtd_theme'],
         )
     )
