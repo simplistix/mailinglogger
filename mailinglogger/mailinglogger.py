@@ -5,6 +5,8 @@ from email.mime.text import MIMEText
 from email.utils import formatdate, make_msgid
 from logging import LogRecord, CRITICAL
 from logging.handlers import SMTPHandler
+from ssl import SSLContext
+from typing import Union
 
 from .common import SubjectFormatter
 
@@ -30,7 +32,8 @@ class MailingLogger(SMTPHandler):
                  headers=None,
                  template=None,
                  charset='utf-8',
-                 content_type='text/plain'):
+                 content_type='text/plain',
+                 secure: Union[bool, SSLContext] = None):
         SMTPHandler.__init__(self, mailhost, fromaddr, toaddrs, subject)
         self.subject_formatter = SubjectFormatter(subject)
         self.send_empty_entries = send_empty_entries
@@ -43,6 +46,9 @@ class MailingLogger(SMTPHandler):
         self.template = template
         self.charset = charset
         self.content_type = content_type
+        self.secure: Union[bool, SSLContext] = secure
+        if secure and not (username and password):
+            raise TypeError('username and password required for secure')
         if not self.mailport:
             self.mailport = smtplib.SMTP_PORT
 
@@ -100,6 +106,13 @@ class MailingLogger(SMTPHandler):
             email['Message-ID'] = make_msgid('MailingLogger')
             smtp = smtplib.SMTP(self.mailhost, self.mailport)
             if self.username and self.password:
+                if self.secure is not None:
+                    if isinstance(self.secure, SSLContext):
+                        context=self.secure
+                    else:
+                        context=None
+                    smtp.starttls(context=context)
+                    smtp.ehlo()
                 smtp.login(self.username, self.password)
             smtp.sendmail(self.fromaddr, self.toaddrs, email.as_string())
             smtp.quit()

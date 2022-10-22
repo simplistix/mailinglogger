@@ -2,6 +2,8 @@ from collections import deque
 from logging import CRITICAL, FileHandler, Formatter, LogRecord
 import atexit as atexit_module
 import os
+from ssl import SSLContext
+from typing import Union
 
 from .mailinglogger import MailingLogger
 from tempfile import mkstemp
@@ -29,6 +31,7 @@ class SummarisingLogger(FileHandler):
                  template=None,
                  charset='utf-8',
                  content_type='text/plain',
+                 secure: Union[bool, SSLContext] = None,
                  flood_level=100,
                  ):
         # create the "real" mailinglogger
@@ -42,7 +45,8 @@ class SummarisingLogger(FileHandler):
                                     headers=headers,
                                     template=template,
                                     charset=charset,
-                                    content_type=content_type)
+                                    content_type=content_type,
+                                    secure=secure)
         # set the mailing logger's log format
         self.mailer.setFormatter(Formatter('%(message)s'))
         self.send_level = send_level
