@@ -11,3 +11,11 @@ MailingLogger
 
 This package provides more flexible and powerful email log handling for
 python's standard logging framework.
+
+Full documentation can be found `here`__.
+
+__ https://mailinglogger.readthedocs.io/en/latest/
+
+Releases can be found `here`__.
+
+__ https://pypi.org/project/mailinglogger/#history
